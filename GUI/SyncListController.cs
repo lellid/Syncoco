@@ -189,6 +189,19 @@ namespace Syncoco
           list.Add(_view.GetItem(i).Tag);
       }
 
+      if(count>0 && list.Count==0)
+      {
+        DialogResult dlgres = MessageBox.Show(Current.MainForm, "Nothing selected! Do you want to synchronize all items in the list?",
+          "Nothing selected!",MessageBoxButtons.YesNo,MessageBoxIcon.Question,MessageBoxDefaultButton.Button1);
+
+        if(DialogResult.Yes==dlgres)
+        {
+          for(int i=0;i<count;i++)
+            list.Add(_view.GetItem(i).Tag);
+        }
+      }
+
+
       DocumentActions.SynchronizeFilesAction action = new DocumentActions.SynchronizeFilesAction(Current.Document,list);
       action.BackgroundExecute();
     }

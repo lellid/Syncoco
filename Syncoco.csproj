@@ -100,7 +100,7 @@
             <Include>
                 <File
                     RelPath = "App.ico"
-                    BuildAction = "Content"
+                    BuildAction = "EmbeddedResource"
                 />
                 <File
                     RelPath = "AssemblyInfo.cs"
@@ -253,6 +253,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "DocumentActions\SaveDocumentAndCleanIfNecessaryAction.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "DocumentActions\SynchronizeFilesAction.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -286,6 +291,16 @@
                     RelPath = "Filter\PathFilter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "GUI\AboutDialog.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "GUI\AboutDialog.resx"
+                    DependentUpon = "AboutDialog.cs"
+                    BuildAction = "EmbeddedResource"
                 />
                 <File
                     RelPath = "GUI\BackgroundCancelDialog.cs"

@@ -19,7 +19,12 @@ namespace Syncoco
 
     public event EventHandler DirtyChanged;
     public event EventHandler FileNameChanged;
+
     
+    public static string DefaultXmlExtension    = ".syncox";
+    public static string DefaultBinaryExtension = ".syncob";
+    public static string DefaultFilterExtension = ".syncof";
+
 
     //ArrayList _root1, _root2;
     string    _root1ComputerName, _root2ComputerName;
@@ -47,9 +52,9 @@ namespace Syncoco
     {
       
       if(!System.IO.Path.HasExtension(filename))
-        filename += ".stc";
+        filename += DefaultXmlExtension;
 
-      if(System.IO.Path.GetExtension(filename).ToLower()==".stcbin")
+      if(System.IO.Path.GetExtension(filename).ToLower()==DefaultBinaryExtension)
         SaveBinary(filename);
       else
         SaveXML(filename);
@@ -167,7 +172,7 @@ namespace Syncoco
     {
    
       if(!System.IO.Path.HasExtension(filename))
-        filename += ".flt";
+        filename += DefaultFilterExtension;
 
       string tempfilename=null;
       Exception exception=null;

@@ -36,6 +36,7 @@ namespace Syncoco
       }
 
       MainForm = new Syncoco();
+      MainForm.Icon = new System.Drawing.Icon(typeof(Current),"App.ico");
       System.Windows.Forms.Application.Run(MainForm);
     }
   }

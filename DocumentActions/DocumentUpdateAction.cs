@@ -26,9 +26,6 @@ namespace Syncoco.DocumentActions
 
     public override void BackgroundExecute()
     {
-      if(!_doc.HasFileName)
-        throw new ApplicationException("This operation is possible only if the document has a file name");
-    
       base.BackgroundExecute();
     }
 
