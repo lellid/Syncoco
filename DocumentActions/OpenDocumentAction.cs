@@ -58,6 +58,10 @@ namespace Syncoco.DocumentActions
       {
         _reporter.ReportError(string.Format("during file open: {0}", fnfex.Message));
       }
+      catch(DocumentNotForThisComputerException dnftce)
+      {
+        _reporter.ReportError(dnftce.Message);
+      }
       catch(Exception ex)
       {
         _reporter.ReportError(string.Format("Unexpeced exception occured during action {0}: {1}",this.GetType().ToString(),ex.ToString()));

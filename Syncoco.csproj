@@ -103,6 +103,11 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "ApplicationExceptions.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "AssemblyInfo.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

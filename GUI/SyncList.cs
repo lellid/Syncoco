@@ -134,6 +134,21 @@ namespace Syncoco
       _controller.EhView_Overwrite_Rollback();
     }
 
+    protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+    {
+      if((Keys.A | Keys.Control)==keyData)
+      {
+        for(int i=0;i<lvSyncList.Items.Count;i++)
+          this.lvSyncList.Items[i].Selected=true;
+
+        
+
+      }
+
+      return base.ProcessCmdKey (ref msg, keyData);
+    }
+
+
     /// <summary> 
     /// Clean up any resources being used.
     /// </summary>

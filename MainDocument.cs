@@ -271,8 +271,17 @@ namespace Syncoco
 
     public void Read(System.Xml.XmlTextReader tr)
     {
-      _root1ComputerName = tr.ReadElementString("ComputerName1");
-      _root2ComputerName = tr.ReadElementString("ComputerName2");
+      string compu1 = tr.ReadElementString("ComputerName1");
+      string compu2 = tr.ReadElementString("ComputerName2");
+
+
+      if(Current.ComputerName!=compu1 && Current.ComputerName!=compu2)
+      {
+        throw new DocumentNotForThisComputerException(string.Format("The file loaded is intended for synchronization between {0} and {1}, and not for your computer {2} !",compu1,compu2, Current.ComputerName));
+      }
+
+      _root1ComputerName = compu1;
+      _root2ComputerName = compu2;
 
       tr.ReadStartElement("RootPairs");
       while(tr.LocalName=="RootPair")

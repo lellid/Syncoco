@@ -11,7 +11,7 @@
                     RemoteDebugEnabled = "false"
                     RemoteDebugMachine = ""
                     StartAction = "Project"
-                    StartArguments = "-m C-BOB c:\temp\synctest.syncox"
+                    StartArguments = ""
                     StartPage = ""
                     StartProgram = ""
                     StartURL = ""

@@ -340,6 +340,7 @@ namespace Syncoco
       this._tabControl.SelectedIndex = 0;
       this._tabControl.Size = new System.Drawing.Size(520, 398);
       this._tabControl.TabIndex = 0;
+      this._tabControl.SelectedIndexChanged += new System.EventHandler(this._tabControl_SelectedIndexChanged);
       // 
       // Syncoco
       // 
@@ -706,14 +707,14 @@ namespace Syncoco
     
     }
 
-
-  
-  
-
-  
-
- 
-   
+    private void _tabControl_SelectedIndexChanged(object sender, System.EventArgs e)
+    {
+      TabPage selected = _tabControl.SelectedTab;
+      if(selected!=null && selected.Controls.Count>0)
+      {
+        selected.Controls[0].Focus();
+      }
+    }
 
   }
 }

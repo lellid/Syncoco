@@ -126,7 +126,8 @@ namespace Syncoco
         ListViewItem.ListViewSubItem actionItem = item.SubItems.Add(action.ToString());
         actionItem.BackColor = this.GetBackColor(action);
 
-        item.SubItems.Add(directoryname);
+        string fullDirectoryName = PathUtil.Combine_Abspath_RelPath(Current.Document.MyRoot(rootListIndex).FilePath,directoryname);
+        item.SubItems.Add(fullDirectoryName);
 
         if(!isDirectory)
         {
