@@ -67,6 +67,236 @@ namespace SyncTwoCo
       return System.IO.Path.GetDirectoryName(relativename).Split(directorysplitchars);
     }
 
+    public static string Combine_Abspath_RelPath(string abspath, string relpath)
+    {
+#if DEBUG
+      Assert_Abspath(abspath);
+      Assert_Relpath(relpath);
+#endif
 
+      string result = abspath+relpath.Substring(1);
+#if DEBUG
+      Assert_Abspath(result);
+#endif
+      return result;
+    }
+
+    /// <summary>
+    /// Determines from the name if this is a directory name (directorie names end with a directory separator).
+    /// </summary>
+    /// <param name="name">The name.</param>
+    /// <returns>True if the name ends with a directory separator.</returns>
+    public static bool IsDirectoryName(string name)
+    {
+      return name!=null && name.Length>0 && name[name.Length-1]==System.IO.Path.DirectorySeparatorChar;
+    }
+    
+
+    /// <summary>
+    /// Combine a relative path (starts and ends with DirectorySeparatorChar) with a file name (must not contain DirectorySeparatorChar) to a new name.
+    /// </summary>
+    /// <param name="relpath">The path (starts and ends with DirectorySeparatorChar)</param>
+    /// <param name="filename">The file name (must not contain DirectorySeparatorChar's)</param>
+    /// <returns>The new path/filename name (not ending with a DirectorySeparatorChar).</returns>
+    public static string Combine_Relpath_Filename(string relpath, string filename)
+    {
+#if DEBUG
+      Assert_Relpath(relpath);
+      Assert_Filename(filename);
+#endif
+      return relpath+filename;
+    }
+
+    /// <summary>
+    /// Combine a absolue path (starts with either driveletter: or with \\ and ends with a DirectorySeparatorChar) with a file name (must not contain DirectorySeparatorChar) to a new name.
+    /// </summary>
+    /// <param name="relpath">The path (starts and ends with DirectorySeparatorChar)</param>
+    /// <param name="filename">The file name (must not contain DirectorySeparatorChar's)</param>
+    /// <returns>The new path/filename name (not ending with a DirectorySeparatorChar).</returns>
+    public static string Combine_Abspath_Filename(string abspath, string filename)
+    {
+#if DEBUG
+      Assert_Abspath(abspath);
+      Assert_Filename(filename);
+#endif
+      return abspath+filename;
+    }
+
+    /// <summary>
+    /// Combine a absolue path (starts with either driveletter: or with \\ and ends with a DirectorySeparatorChar) with a relative file name (must start with DirectorySeparatorChar) to a absolute file name.
+    /// </summary>
+    /// <param name="relpath">The path (starts and ends with DirectorySeparatorChar)</param>
+    /// <param name="relpathFilename">A relative path the plus file name.</param>
+    /// <returns>The new path/filename name.</returns>
+    public static string Combine_Abspath_RelpathFilename(string abspath, string relpathFilename)
+    {
+#if DEBUG
+      Assert_Abspath(abspath);
+      Assert_RelpathFilename(relpathFilename);
+#endif
+      return abspath+relpathFilename;
+    }
+   
+    /// <summary>
+    /// Combine a absolue path (starts with either driveletter: or with \\ and ends with a DirectorySeparatorChar) with a file name (must not contain DirectorySeparatorChar) to a new name.
+    /// </summary>
+    /// <param name="relpath">The path (starts and ends with DirectorySeparatorChar)</param>
+    /// <param name="filename">Either a relative path or a relative path plus file name.</param>
+    /// <returns>The new path/filename name.</returns>
+    public static string Combine_Abspath_RelpathOrFilename(string abspath, string filename)
+    {
+#if DEBUG
+      Assert_Abspath(abspath);
+      Assert_RelpathOrFilename(filename);
+#endif
+      return abspath+filename;
+    }
+
+    /// <summary>
+    /// Combine a relative path (starts and ends with DirectorySeparatorChar) with a directory name (must not contain DirectorySeparatorChar) to a new relative path that end
+    /// with a DirectorySeparatorChar.
+    /// </summary>
+    /// <param name="relpath">The relative path (starts and ends with DirectorySeparatorChar)</param>
+    /// <param name="dirname">The directory name (must not contain DirectorySeparatorChar's)</param>
+    /// <returns>The new relative path name starting and ending with a DirectorySeparatorChar.</returns>
+    public static string Combine_Relpath_Dirname(string relpath, string dirname)
+    {
+#if DEBUG
+      Assert_Relpath(relpath);
+      Assert_Dirname(dirname);
+#endif
+      string result = relpath+dirname+System.IO.Path.DirectorySeparatorChar;
+
+#if DEBUG
+      Assert_Relpath(result);
+#endif
+
+      return result;
+    }
+
+    /// <summary>
+    /// Combine a absolute path (ends with DirectorySeparatorChar) with a directory name (must not contain DirectorySeparatorChar) to a new path that end
+    /// with a DirectorySeparatorChar.
+    /// </summary>
+    /// <param name="abspath">The absolute path (starts with driveletter: or \\ and ends with DirectorySeparatorChar)</param>
+    /// <param name="dirname">The directory name (must not contain DirectorySeparatorChar's)</param>
+    /// <returns>The new path name ending with a DirectorySeparatorChar.</returns>
+    public static string Combine_Abspath_Dirname(string abspath, string dirname)
+    {
+#if DEBUG
+      Assert_Abspath(abspath);
+      Assert_Dirname(dirname);
+#endif
+
+      string result = abspath+dirname+System.IO.Path.DirectorySeparatorChar;
+
+#if DEBUG
+      Assert_Abspath(result);
+#endif
+
+      return result;
+    }
+
+    public static void Assert_NameOrNameWithEndSeparator(string name)
+    {
+      System.Diagnostics.Debug.Assert(name!=null);
+      System.Diagnostics.Debug.Assert(name.Length>=1);
+      int pos = name.IndexOf(System.IO.Path.DirectorySeparatorChar);
+      System.Diagnostics.Debug.Assert(pos<0 || (name.Length>=2 && pos==name.Length-1));
+    }
+
+
+    public static void Assert_Filename(string name)
+    {
+      System.Diagnostics.Debug.Assert(name!=null);
+      System.Diagnostics.Debug.Assert(name.Length>0);
+      System.Diagnostics.Debug.Assert(name.IndexOf(System.IO.Path.DirectorySeparatorChar)<0);
+    }
+
+    public static void Assert_Dirname(string name)
+    {
+      System.Diagnostics.Debug.Assert(name!=null);
+      System.Diagnostics.Debug.Assert(name.Length>0);
+      System.Diagnostics.Debug.Assert(name.IndexOf(System.IO.Path.DirectorySeparatorChar)<0);
+    }
+
+    public static void Assert_RelpathOrFilename(string name)
+    {
+      System.Diagnostics.Debug.Assert(name!=null);
+      System.Diagnostics.Debug.Assert(name.Length>0);
+      System.Diagnostics.Debug.Assert(name[0]==System.IO.Path.DirectorySeparatorChar);
+      System.Diagnostics.Debug.Assert(name.Length==1 || name[1]!=System.IO.Path.DirectorySeparatorChar);
+    }
+
+    public static void Assert_RelpathFilename(string name)
+    {
+      System.Diagnostics.Debug.Assert(name!=null);
+      System.Diagnostics.Debug.Assert(name.Length>=2); // at least Separator and a letter
+      System.Diagnostics.Debug.Assert(name[0]==System.IO.Path.DirectorySeparatorChar);
+      System.Diagnostics.Debug.Assert(name[1]!=System.IO.Path.DirectorySeparatorChar);
+      System.Diagnostics.Debug.Assert(name[name.Length-1]!=System.IO.Path.DirectorySeparatorChar);
+    }
+
+
+    public static void Assert_Relpath(string name)
+    {
+      Assert_RelpathOrFilename(name);
+      System.Diagnostics.Debug.Assert(name[name.Length-1]==System.IO.Path.DirectorySeparatorChar);
+    }
+
+    public static void Assert_Abspath(string name)
+    {
+      System.Diagnostics.Debug.Assert(name!=null);
+      System.Diagnostics.Debug.Assert(name.Length>=3);
+      System.Diagnostics.Debug.Assert((name[1]==':'  && name[2]==System.IO.Path.DirectorySeparatorChar) || (name[0]==System.IO.Path.DirectorySeparatorChar && name[1]==System.IO.Path.DirectorySeparatorChar));
+      System.Diagnostics.Debug.Assert(name[name.Length-1]==System.IO.Path.DirectorySeparatorChar);
+    }
+
+    public static void Assert_AbspathFilename(string name)
+    {
+      System.Diagnostics.Debug.Assert(name!=null);
+      System.Diagnostics.Debug.Assert(name.Length>=4);
+      System.Diagnostics.Debug.Assert((name[1]==':' && name[2]==System.IO.Path.DirectorySeparatorChar) || (name[0]==System.IO.Path.DirectorySeparatorChar && name[1]==System.IO.Path.DirectorySeparatorChar));
+    }
+
+    public static void SplitInto_Relpath_Filename(string relpathfilename, out string relpath, out string filename)
+    {
+      int pos = relpathfilename.LastIndexOf(System.IO.Path.DirectorySeparatorChar);
+      relpath = relpathfilename.Substring(0,pos+1);
+      filename = relpathfilename.Substring(pos+1);
+
+#if DEBUG
+      Assert_Relpath(relpath);
+      Assert_Filename(filename);
+#endif
+    }
+
+    public static void SplitInto_Relpath_Dirname(string relpathfilename, out string relpath, out string dirname)
+    {
+      int pos = relpathfilename.LastIndexOf(System.IO.Path.DirectorySeparatorChar,2);
+      relpath = relpathfilename.Substring(0,pos+1);
+      dirname = relpathfilename.Substring(pos+1,relpathfilename.Length-pos-1);
+
+#if DEBUG
+      Assert_Relpath(relpath);
+      Assert_Dirname(dirname);
+#endif
+    }
+    
+    /// <summary>
+    /// Returns a path with is forced to end with a DirectorySeparatorChar
+    /// </summary>
+    /// <param name="path">The path to normalize.</param>
+    /// <returns>The normalized path.</returns>
+    public static string NormalizeAbspath(string path)
+    {
+      string result = path;
+      if(path[path.Length-1]!=System.IO.Path.DirectorySeparatorChar)
+        result += System.IO.Path.DirectorySeparatorChar;
+#if DEBUG
+      Assert_Abspath(result);
+#endif
+      return result;
+    }
   }
 }

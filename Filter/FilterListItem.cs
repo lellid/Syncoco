@@ -24,6 +24,9 @@ namespace SyncTwoCo.Filter
 
     public FilterListItem(string path)
     {
+#if DEBUG
+      PathUtil.Assert_Relpath(path);
+#endif
       this.Path = path;
     }
 
@@ -38,6 +41,7 @@ namespace SyncTwoCo.Filter
 
     public void Open(System.Xml.XmlTextReader tr)
     {
+      
       Path = tr.ReadElementString("Path");
       tr.ReadStartElement("Filter");
       this.Filter = new FilterList(tr);
@@ -56,7 +60,10 @@ namespace SyncTwoCo.Filter
       get { return _path; }
       set 
       {
-        _path = NormalizePath(value);
+#if DEBUG
+        PathUtil.Assert_Relpath(value);
+#endif
+        _path = value;
         _subDirs = _path.Trim(System.IO.Path.DirectorySeparatorChar).Split(new char[]{System.IO.Path.DirectorySeparatorChar});
       }
     }
@@ -83,17 +90,6 @@ namespace SyncTwoCo.Filter
       get { return _subDirs.Length; }
     }
 
-    /// <summary>
-    /// Returns a path with is forced to end with a DirectorySeparatorChar
-    /// </summary>
-    /// <param name="path">The path to normalize.</param>
-    /// <returns>The normalized path.</returns>
-    public static string NormalizePath(string path)
-    {
-      if(path.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
-        return path;
-      else
-        return path+System.IO.Path.DirectorySeparatorChar;
-    }
+    
   }
 }

@@ -7,6 +7,7 @@ using System.IO;
 namespace SyncTwoCo
 {
   using Filter;
+  using Traversing;
 
   /// <summary>
   /// Summary description for FileSystemRoot.
@@ -29,12 +30,14 @@ namespace SyncTwoCo
 
     public FileSystemRoot(string path)
     {
+      PathUtil.Assert_Abspath(path);
       SetFilePath(path);
     }
 
     public FileSystemRoot(string path, DirectoryNode dirnode)
     {
-      _FilePath = NormalizePath(path);
+      PathUtil.Assert_Abspath(path);
+      _FilePath = path;
       _DirectoryNode = dirnode;
     }
 
@@ -60,7 +63,8 @@ namespace SyncTwoCo
     public void Read(System.Xml.XmlTextReader tr)
     {
       _FilePath = tr.ReadElementString("Path");
-      _FilePath = NormalizePath(_FilePath);
+
+
       if(tr.LocalName=="DirectoryNode")
       {
        
@@ -90,10 +94,11 @@ namespace SyncTwoCo
 
     public void SetFilePath(string path)
     {
-      _FilePath = NormalizePath(path);
+      PathUtil.Assert_Abspath(_FilePath);
+
       System.IO.DirectoryInfo dirinfo = new System.IO.DirectoryInfo(_FilePath);
       if(dirinfo.Exists)
-        _DirectoryNode = new DirectoryNode(dirinfo,null);
+        _DirectoryNode = DirectoryUpdater.NewEmptyDirectoryNode(dirinfo);
       else
         _DirectoryNode = null;
     }
@@ -105,6 +110,9 @@ namespace SyncTwoCo
 
     public FileNode GetFileNode(string pathname)
     {
+#if DEBUG
+      PathUtil.Assert_RelpathFilename(pathname);
+#endif
       if(_DirectoryNode==null)
         return null;
       else
@@ -113,6 +121,9 @@ namespace SyncTwoCo
 
     public void DeleteFileNode(string pathname)
     {
+#if DEBUG
+      PathUtil.Assert_RelpathFilename(pathname);
+#endif
       if(_DirectoryNode!=null)
         _DirectoryNode.DeleteFileNodeFullPath(pathname);
     }
@@ -123,8 +134,9 @@ namespace SyncTwoCo
     /// <param name="path">The full path name (from the root dir) to the subdirectory including a trailing DirectorySeparatorChar.</param>
     public void DeleteSubDirectoryNode(string path)
     {
-      System.Diagnostics.Debug.Assert(path[path.Length-1]==Path.DirectorySeparatorChar);
-
+#if DEBUG
+      PathUtil.Assert_Relpath(path);
+#endif
       if(_DirectoryNode!=null)
         _DirectoryNode.DeleteSubDirectoryNodeFullPath(path);
     }
@@ -134,41 +146,33 @@ namespace SyncTwoCo
       System.IO.DirectoryInfo dirinfo = new System.IO.DirectoryInfo(_FilePath);
 
       if(null!=_DirectoryNode)
-        _DirectoryNode.Update(dirinfo,pathFilter, forceUpdateHash);
+        new DirectoryUpdater(pathFilter).Update(DirectoryNode, dirinfo, forceUpdateHash);
       else
-        _DirectoryNode = new DirectoryNode(dirinfo,pathFilter);
+        _DirectoryNode = new DirectoryUpdater(pathFilter).NewDirectoryNode(dirinfo);
     }
 
     public FileNode UpdateMyFile(FileInfo fileinfo, bool forceUpdateHash)
     {
       DirectoryInfo dirinfo = new DirectoryInfo(this._FilePath);
 
-      return DirectoryNode.UpdateFileNode(_DirectoryNode,dirinfo,fileinfo,forceUpdateHash);
+      return DirectoryUpdater.UpdateFileNode(_DirectoryNode,dirinfo,fileinfo,forceUpdateHash);
     }
 
     public void FillMd5HashTable(MD5SumHashTable table)
     {
       if(null!=this._DirectoryNode && null!=this.FilePath)
-        this._DirectoryNode.FillMd5HashTable(table,this.FilePath);
+      {
+        Traversing.Md5HashTableCollector coll = new Traversing.Md5HashTableCollector(this.DirectoryNode,this.FilePath,table);
+        coll.Traverse();
+      }
     }
 
     public void FillMD5SumFileNodesHashTable(MD5SumFileNodesHashTable table)
     {
-      this._DirectoryNode.FillMD5SumFileNodesHashTable(table,this.FilePath);
+      Traversing.MD5SumFileNodesHashTableCollector coll = new Traversing.MD5SumFileNodesHashTableCollector(this.DirectoryNode,this.FilePath,table);
+      coll.Traverse();
     }
    
-    /// <summary>
-    /// Returns a path with is forced to end with a DirectorySeparatorChar
-    /// </summary>
-    /// <param name="path">The path to normalize.</param>
-    /// <returns>The normalized path.</returns>
-    public static string NormalizePath(string path)
-    {
-      if(path.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
-        return path;
-      else
-        return path+System.IO.Path.DirectorySeparatorChar;
-    }
     #region IParentDirectory Members
 
     public bool IsFileSystemRoot

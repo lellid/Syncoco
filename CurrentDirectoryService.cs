@@ -64,6 +64,10 @@ namespace SyncTwoCo
     /// <param name="name">The name of the subdirectory.</param>
     public virtual void EnterSubDirectory(string name)
     {
+#if DEBUG
+      PathUtil.Assert_Dirname(name);
+#endif
+
       _subDirectory[_subDirectoryLevel] = name;
       ++_subDirectoryLevel;
    
@@ -82,6 +86,7 @@ namespace SyncTwoCo
     /// <param name="name">The name of the subdirectory to leave.</param>
     public virtual void LeaveSubDirectory(string name)
     {
+      System.Diagnostics.Debug.Assert(_subDirectory[_subDirectoryLevel-1]==name);
       --_subDirectoryLevel;
 
       // Invalidate
@@ -105,8 +110,12 @@ namespace SyncTwoCo
     /// <param name="filename">The file name.</param>
     /// <returns>The relative full path name, but not with the first <c>relativeSubDirLevel</c> number of subdirectories. The relative full
     /// path name starts always with a DirectorySeparatorChar.</returns>
-    public string GetRelativeFileName(int relativeSubDirLevel, string filename)
+    public string GetBiasedpathFilename(int relativeSubDirLevel, string filename)
     {
+#if DEBUG
+      PathUtil.Assert_NameOrNameWithEndSeparator(filename);
+#endif
+
       if(!_relativeSubDirPathValid || relativeSubDirLevel!=_relativeSubDirLevel)
       {
         _relativeSubDirLevel=relativeSubDirLevel;
@@ -120,17 +129,28 @@ namespace SyncTwoCo
         }
       }    
 
-      return _relativeSubDirPath.ToString() + filename;
+      string relativesubdirpath = _relativeSubDirPath.ToString();
+#if DEBUG
+      PathUtil.Assert_Relpath(relativesubdirpath);
+#endif
+      return relativesubdirpath + filename;
     }
+
+
 
     /// <summary>
     /// Returns the file name for subdirLevel 0, i.e. the whole relative file name, starting with a DirectorySeparatorChar.
     /// </summary>
     /// <param name="filename"></param>
     /// <returns></returns>
-    public string GetZeroLevelFileName(string filename)
+    public string GetZeroLevelFileName(string name)
     {
-      return CurrentDirectoryPath+filename;
+
+#if DEBUG
+      PathUtil.Assert_NameOrNameWithEndSeparator(name);
+#endif
+
+      return CurrentDirectoryPath+name;
     }
 
     /// <summary>
@@ -140,8 +160,12 @@ namespace SyncTwoCo
     {
       get 
       {
+        string result;
+
         if(_directoryPathValid)
-          return _directoryPath.ToString();
+        {
+          result= _directoryPath.ToString();
+        }
         else
         {
           _directoryPath.Length=0;
@@ -152,8 +176,13 @@ namespace SyncTwoCo
             _directoryPath.Append(System.IO.Path.DirectorySeparatorChar);
           }
           _directoryPathValid=true;
-          return _directoryPath.ToString();
+          result =  _directoryPath.ToString();
         }
+
+#if DEBUG
+        PathUtil.Assert_Relpath(result);
+#endif
+        return result;
       }
     }
   }

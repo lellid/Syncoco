@@ -28,7 +28,7 @@
                     BaseAddress = "285212672"
                     CheckForOverflowUnderflow = "false"
                     ConfigurationOverrideFile = ""
-                    DefineConstants = "DEBUG;TRACE"
+                    DefineConstants = "DEBUG;TRACE;WRITEDATEASTICKS;READDATEASTICKS"
                     DocumentationFile = ""
                     DebugSymbols = "true"
                     FileAlignment = "4096"
@@ -104,11 +104,6 @@
                 />
                 <File
                     RelPath = "AssemblyInfo.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Collector.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -344,6 +339,31 @@
                 />
                 <File
                     RelPath = "Online\SimpleFileSystemRootList.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Traversing\DirectoryUpdater.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Traversing\FilesToSynchronizeCollector.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Traversing\FilesToTransferCollector.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Traversing\Md5HashTableCollector.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Traversing\MD5SumFileNodesHashTableCollector.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

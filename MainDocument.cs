@@ -3,6 +3,7 @@ using System.Collections;
 
 namespace SyncTwoCo
 {
+  using Traversing;
   /// <summary>
   /// Summary description for MainDocument.
   /// </summary>
@@ -363,14 +364,24 @@ namespace SyncTwoCo
 
     public static string MediumDirectoryNameFromFileName(string fileName)
     {
-      return System.IO.Path.Combine(System.IO.Path.GetDirectoryName(fileName) , System.IO.Path.GetFileNameWithoutExtension(fileName));
+      string result = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(fileName) , System.IO.Path.GetFileNameWithoutExtension(fileName));
+      result = PathUtil.NormalizeAbspath(result);
+#if DEBUG
+      PathUtil.Assert_Abspath(result);
+#endif
+
+      return result;
     }
 
     public string MediumDirectoryName
     {
       get 
       {
-        return MediumDirectoryNameFromFileName(this._FileName);
+        string result = MediumDirectoryNameFromFileName(this._FileName);
+#if DEBUG
+        PathUtil.Assert_Abspath(result);
+#endif
+        return result;
       }
     }
 
@@ -397,6 +408,8 @@ namespace SyncTwoCo
 
     public void AddRoot(string basename)
     {
+      PathUtil.Assert_Abspath(basename);
+
       this._allFilesHere=null;
 
       EnsureAlignment();
@@ -408,8 +421,9 @@ namespace SyncTwoCo
 
     public void SetBasePath(int item, string path)
     {
+      PathUtil.Assert_Abspath(path);
+      
       EnsureAlignment();
-
       ((RootPair)_rootPairs[item]).MyRoot.SetFilePath(path);
     }
 
@@ -430,6 +444,7 @@ namespace SyncTwoCo
       if(_FileName==null || _FileName==string.Empty || _IsDirty)
         throw new ApplicationException("The document was not saved yet");
     
+      PathUtil.Assert_Abspath(MediumDirectoryName);
       if(!System.IO.Directory.Exists(MediumDirectoryName))
         throw new ApplicationException(string.Format("The directory {0} does not exist!",MediumDirectoryName));
 
@@ -439,7 +454,9 @@ namespace SyncTwoCo
       for(int i=0;i<Count;i++)
       {
         if(MyRoot(i).IsValid)
+        {
           RootPair(i).ForeignRoot.FillMd5HashTable(md5HashTable);
+        }
       }
 
 
@@ -466,6 +483,7 @@ namespace SyncTwoCo
       if(!this.HasFileName)
         throw new ApplicationException("Must have a file name to know where the medium directory is");
 
+      PathUtil.Assert_Abspath(this.MediumDirectoryName);
       System.IO.DirectoryInfo dirinfo = new System.IO.DirectoryInfo(this.MediumDirectoryName);
       if(!dirinfo.Exists)
         return;
@@ -496,7 +514,7 @@ namespace SyncTwoCo
       this.CopyFilesToMedium();
     }
 
-    public Collector[] Collect()
+    public FilesToSynchronizeCollector[] Collect()
     {
       EnsureAlignment();
 
@@ -517,18 +535,30 @@ namespace SyncTwoCo
       // now that we have all the current files, the information can be used by the collectors to
       // decide if a file can be copied or not
 
-      Collector[] collectors = new Collector[Count];
+      FilesToSynchronizeCollector[] collectors = new FilesToSynchronizeCollector[Count];
       for(int i=0;i<Count;i++)
       {
-        collectors[i] = new Collector(this.MediumDirectoryName,MyRoot(i).FilePath,this._allFilesHere);
+        collectors[i] = new FilesToSynchronizeCollector(
+          this.MediumDirectoryName,
+          MyRoot(i).FilePath,
+          this._allFilesHere,
+          RootPair(i).MyRoot.DirectoryNode,
+          RootPair(i).ForeignRoot.DirectoryNode,
+          RootPair(i).PathFilter);
+        
         if(ForeignRoot(i).IsValid && MyRoot(i).IsValid)
-          RootPair(i).Collect(collectors[i]);
+          collectors[i].Traverse();
       }
       return collectors;
     }
 
     public void CopyWithDirectoryCreation(string sourceFileName, string destFileName, bool overwrite, FileNode foFileNode)
     {
+#if DEBUG
+      PathUtil.Assert_AbspathFilename(sourceFileName);
+      PathUtil.Assert_AbspathFilename(destFileName);
+#endif
+
       string dirname = System.IO.Path.GetDirectoryName(destFileName);
       if(!System.IO.Directory.Exists(dirname))
         System.IO.Directory.CreateDirectory(dirname);
@@ -571,6 +601,9 @@ namespace SyncTwoCo
         ArrayList arr = (ArrayList)o;
         foreach(PathAndFileNode pfn in arr) // use the first successfull possibility where to copy from
         {
+#if DEBUG
+          PathUtil.Assert_AbspathFilename(pfn.Path);
+#endif
           if(System.IO.File.Exists(pfn.Path) && foFileNode.HasSameHashThan(pfn.Path))
           {
             CopyWithDirectoryCreation(pfn.Path, destFileName, overwrite,foFileNode);
@@ -581,7 +614,7 @@ namespace SyncTwoCo
       }
     
 
-      string sourcefilename = System.IO.Path.Combine(this.MediumDirectoryName,foFileNode.MediumFileName);
+      string sourcefilename = PathUtil.Combine_Abspath_Filename(this.MediumDirectoryName,foFileNode.MediumFileName);
       if(foFileNode.HasSameHashThan(sourcefilename))
       {
         CopyWithDirectoryCreation(sourcefilename, destFileName, overwrite, foFileNode);
@@ -594,7 +627,20 @@ namespace SyncTwoCo
 
     public void PerformAction(SyncItemTag tag)
     {
-      string myfilename = System.IO.Path.Combine(MyRoot(tag.RootListIndex).FilePath,tag.FileName);
+      System.Diagnostics.Debug.Assert(tag!=null);
+
+      string relPathFileName = tag.FileName;
+      string absrootdir = MyRoot(tag.RootListIndex).FilePath;
+
+
+#if DEBUG
+      PathUtil.Assert_RelpathOrFilename(relPathFileName);
+      PathUtil.Assert_Abspath(absrootdir);
+#endif
+
+      
+      string myfilename = PathUtil.Combine_Abspath_RelpathOrFilename(absrootdir,relPathFileName);
+
       FileSystemRoot myRoot = MyRoot(tag.RootListIndex);
       FileSystemRoot foRoot = ForeignRoot(tag.RootListIndex);
       FileNode foFileNode;
@@ -605,13 +651,13 @@ namespace SyncTwoCo
       switch(tag.Action)
       {
         case SyncAction.Remove:
-          if(myfilename[myfilename.Length-1]==System.IO.Path.DirectorySeparatorChar) // delete subdir
+          if(PathUtil.IsDirectoryName(myfilename)) // delete subdir
           {
             try 
             {
               System.IO.Directory.Delete(myfilename); 
-              myRoot.DeleteSubDirectoryNode(tag.FileName);
-              foRoot.DeleteSubDirectoryNode(tag.FileName);
+              myRoot.DeleteSubDirectoryNode(relPathFileName);
+              foRoot.DeleteSubDirectoryNode(relPathFileName);
 
             }
             catch(System.IO.IOException )  { } // Don't care if subdir cannot be deleted, maybe files are still in there!
@@ -619,15 +665,15 @@ namespace SyncTwoCo
           else // Delete file
           {
             System.IO.File.Delete(myfilename);
-            myRoot.DeleteFileNode(tag.FileName);
-            foRoot.DeleteFileNode(tag.FileName);
+            myRoot.DeleteFileNode(relPathFileName);
+            foRoot.DeleteFileNode(relPathFileName);
           }
           break;
         case SyncAction.RemoveRollback:
-          foRoot.DeleteFileNode(tag.FileName);
+          foRoot.DeleteFileNode(relPathFileName);
           break;
         case SyncAction.Copy:
-          foFileNode = foRoot.GetFileNode(tag.FileName);
+          foFileNode = foRoot.GetFileNode(relPathFileName);
        
           if(CopyWithDirectoryCreation(foFileNode,myfilename,false))
           {
@@ -644,7 +690,7 @@ namespace SyncTwoCo
           break;
         case SyncAction.Overwrite:
         case SyncAction.ResolveManuallyOverwrite:
-          foFileNode = foRoot.GetFileNode(tag.FileName);
+          foFileNode = foRoot.GetFileNode(relPathFileName);
           if(CopyWithDirectoryCreation(foFileNode,myfilename,true))
           {
             // update the own FileNode (enforce (!) update the hash of this node also), only if the hash match, then set the own and the foreign
@@ -659,7 +705,7 @@ namespace SyncTwoCo
           }
           break;
         case SyncAction.ResolveManuallyRollback:
-          foFileNode = foRoot.GetFileNode(tag.FileName);
+          foFileNode = foRoot.GetFileNode(relPathFileName);
           foFileNode.SetToUnchanged();
           myfileinfo = new System.IO.FileInfo(myfilename);
           myfilenode = MyRoot(tag.RootListIndex).UpdateMyFile(myfileinfo,true);

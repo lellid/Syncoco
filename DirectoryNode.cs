@@ -5,6 +5,7 @@ using System.IO;
 namespace SyncTwoCo
 {
     using Filter;
+  using Traversing;
   /// <summary>
   /// Holds information about itself and about all files and subdirectories in this node.
   /// </summary>
@@ -57,10 +58,7 @@ namespace SyncTwoCo
       tr.ReadEndElement();
     }
 
-    public DirectoryNode(string name)
-    {
-      _name = name;
-    }
+    
 
     void Read(System.Xml.XmlTextReader tr)
     {
@@ -123,22 +121,12 @@ namespace SyncTwoCo
 
     #region Constructors
   
-
-  
-    /// <summary>
-    /// Creates a dir node. If pathFilter is set (not null), then the dir node is also updated.
-    /// The current directory in pathFilter has to match the directory given by dirinfo.
-    /// </summary>
-    /// <param name="dirinfo">Directory info for the dir node.</param>
-    /// <param name="pathFilter">The path filter.</param>
-    public DirectoryNode(System.IO.DirectoryInfo dirinfo, PathFilter pathFilter)
+    public DirectoryNode(string name)
     {
-      if(dirinfo!=null)
-        _name = dirinfo.Name;
-           
-      if(pathFilter!=null)
-        Update(dirinfo,pathFilter,true);
+      _name = name;
     }
+  
+   
 
     #endregion
 
@@ -227,7 +215,11 @@ namespace SyncTwoCo
     /// <summary>
     /// Indicates whether this directory no longer exists in the file system.
     /// </summary>
-    public bool IsRemoved { get { return _IsRemoved; }}
+    public bool IsRemoved 
+    {
+      get { return _IsRemoved; }
+      set { _IsRemoved = value; }
+    }
 
     /// <summary>
     /// This sets the directory node to the status 'removed'. This means, the directory no longer
@@ -250,19 +242,24 @@ namespace SyncTwoCo
 
     public FileNode GetFileNodeFullPath(string path)
     {
-      DirectoryNode dirnode = GetDirectoryNodeFullPath(path);
+      string relpath, filename;
+      PathUtil.SplitInto_Relpath_Filename(path, out relpath, out filename);
+
+      DirectoryNode dirnode = GetDirectoryNodeFullPath(relpath);
       if(dirnode!=null)
-        return dirnode.File(System.IO.Path.GetFileName(path));
+        return dirnode.File(filename);
       else
         return null;
     }
 
     public void DeleteFileNodeFullPath(string path)
     {
-      DirectoryNode dirnode = GetDirectoryNodeFullPath(path);
+      string relpath, filename;
+      PathUtil.SplitInto_Relpath_Filename(path, out relpath, out filename);
+
+      DirectoryNode dirnode = GetDirectoryNodeFullPath(relpath);
       if(dirnode!=null)
       {
-        string filename = System.IO.Path.GetFileName(path);
         if(dirnode.ContainsFile(filename))
           dirnode._files.Remove(filename);
       }
@@ -274,506 +271,50 @@ namespace SyncTwoCo
     /// <param name="pathname">The full path name (from the root dir) to the subdirectory including a trailing DirectorySeparatorChar.</param>
     public void DeleteSubDirectoryNodeFullPath(string path)
     {
-      System.Diagnostics.Debug.Assert(path[path.Length-1]==Path.DirectorySeparatorChar);
+#if DEBUG
+      PathUtil.Assert_Relpath(path);
+#endif 
 
-      int baseidx = path.LastIndexOf(Path.DirectorySeparatorChar,path.Length-2);
-      if(baseidx<0)
-        throw new Exception("This must be a programming error, the variable path was: " + path);
-      
-      DirectoryNode dirnode = GetDirectoryNodeFullPath(path.Substring(0,baseidx+1));
-      if(dirnode!=null)
+      DirectoryNode node = GetDirectoryNodeFullPath(path);
+
+      if(node!=null)
       {
-        string name = path.Substring(baseidx+1,path.Length-baseidx-2);
-        if(dirnode.ContainsDirectory(name))
-          dirnode._subDirectories.Remove(name);
+        DirectoryNode parent = (DirectoryNode)node._parent;
+        parent._subDirectories.Remove(node._name);
       }
     }
 
-    public DirectoryNode GetDirectoryNodeFullPath(string path)
+    /// <summary>
+    /// Gets a directory node.
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    public DirectoryNode GetDirectoryNodeFullPath(string relpath)
     {
-      string dirname = System.IO.Path.GetDirectoryName(path);
-      string filename = System.IO.Path.GetFileName(path);
-
-      if(dirname==null || dirname==string.Empty)
-      {
+#if DEBUG
+      PathUtil.Assert_Relpath(relpath);
+#endif
+      if(relpath.Length==1)
         return this;
-      }
+
+      int pos = relpath.IndexOf(System.IO.Path.DirectorySeparatorChar,1);
+      string dirnamehere = relpath.Substring(1,pos-1);
+#if DEBUG
+      PathUtil.Assert_Dirname(dirnamehere);
+#endif
+
+      if(this.ContainsDirectory(dirnamehere))
+        return this.Directory(dirnamehere).GetDirectoryNodeFullPath(relpath.Substring(pos));
       else
-      {
-        string[] roots = dirname.Split(new char[]{System.IO.Path.DirectorySeparatorChar},2);
-        if(this.ContainsDirectory(roots[0]))
-        {
-          if(roots.Length==2)
-            return this.Directory(roots[0]).GetDirectoryNodeFullPath(path.Substring(roots[0].Length+1));
-          else
-            return this.Directory(roots[0]);
-        }
-        else
-        {
-          return null;
-        }
-      }
+        return null;
+      
     }
 
     #endregion
 
-    #region Node updating
+ 
 
-    /// <summary>
-    /// This updates a file node for an existing (!) file. The intermediate subdirectory nodes that lie between dirinfo and fileinfo are created if neccessary.
-    /// </summary>
-    /// <param name="dirnode">Starting directory node.</param>
-    /// <param name="dirinfo">The directory info corresponding to the starting directory node.</param>
-    /// <param name="fileinfo">The file info of an existing file.</param>
-    /// <param name="forceUpdateHash">If true, the MD5 hash for the file is recalculated.</param>
-    public static FileNode UpdateFileNode(DirectoryNode dirnode, DirectoryInfo dirinfo, FileInfo fileinfo, bool forceUpdateHash)
-    {
-      System.Diagnostics.Debug.Assert(fileinfo.Exists,"This function is only intended for existing files after copy operations");
-      System.Diagnostics.Debug.Assert(dirinfo.Exists,"The root directory must exist");
-
-      string relativefullname;
-      bool isRooted = PathUtil.HasRootPath(dirinfo.FullName,fileinfo.FullName,out relativefullname);
-
-      string[] subdirs = PathUtil.GetDirectories(relativefullname);
-
-      for(int i=0;i<subdirs.Length;i++)
-      {
-        if(subdirs[i]==string.Empty)
-          continue; // if path accidentally contains more than one DirectorySeparatorChar consecutively
-        
-        dirinfo = new DirectoryInfo(Path.Combine(dirinfo.FullName,subdirs[i]));
-        if(!dirinfo.Exists)
-          throw new System.IO.IOException(string.Format("The directory {0} should exist, since it should be a root directory of the file {1}", dirinfo.FullName,fileinfo.FullName));
-
-        if(!dirnode.ContainsDirectory(subdirs[i]))
-          dirnode.AddSubDirectory(subdirs[i],new DirectoryNode(subdirs[i]));
-
-        dirnode = dirnode.Directory(subdirs[i]);
-      }
-
-      // now we have the final directory node to which the file belongs
-      dirnode.UpdateFile(fileinfo,forceUpdateHash);
-
-      return dirnode.File(fileinfo.Name);
-    }
-
-
-    /// <summary>
-    /// This updates the directory given by dirinfo including all files and all subdirectories in this
-    /// directory. The current path in pathFilter has to match the directory given by dirinfo.
-    /// </summary>
-    /// <param name="dirinfo">The directory that has to be updated.</param>
-    /// <param name="pathFilter">The path filter.</param>
-    public void Update(System.IO.DirectoryInfo dirinfo, PathFilter pathFilter, bool forceUpdateHash)
-    {
-      if(dirinfo!=null)
-        _name = dirinfo.Name;
-
-      UpdateFiles(dirinfo,pathFilter,forceUpdateHash);
-      UpdateDirectories(dirinfo,pathFilter,forceUpdateHash);
-    }
-
-    /// <summary>
-    /// Updates a file in this directory. Make sure that the file really belongs to this directory!
-    /// </summary>
-    /// <param name="fileinfo">The file info for this file.</param>
-    /// <param name="forceUpdateHash">If true, the hash is recalculated if the file exists.</param>
-    public void UpdateFile(System.IO.FileInfo fileinfo, bool forceUpdateHash)
-    {
-      if(this.ContainsFile(fileinfo.Name))
-      {
-        if(fileinfo.Exists)
-          File(fileinfo.Name).Update(fileinfo, forceUpdateHash);
-        else
-          File(fileinfo.Name).SetToRemoved();
-      }
-      else if(fileinfo.Exists)
-      {
-        AddFile(fileinfo.Name,new FileNode(fileinfo,this));
-      }
-    }
-
-    
-
-    /// <summary>
-    /// Updates all files and subdirectory nodes in an existing(!) directory of the own system. 
-    /// This function is recursively called for all files and subdirectories in the child nodes.
-    /// PathFilter decides, wheter or not a file or subdirectory is included or ignored.
-    /// </summary>
-    /// <param name="dirinfo">The directory info of the current directory node.</param>
-    /// <param name="pathFilter">The path filter.</param>
-    public void UpdateFiles(System.IO.DirectoryInfo dirinfo, PathFilter pathFilter, bool forceUpdateHash)
-    {
-      System.IO.FileInfo[] fileinfos = dirinfo.GetFiles();
-      // create a hash table of the actual
-      Hashtable actualFiles = new Hashtable();
-      foreach(System.IO.FileInfo inf in fileinfos)
-        actualFiles.Add(inf.Name,inf);
-
-      // first look for the removed files
-      System.Collections.Specialized.StringCollection filesToRemoveSilently = new System.Collections.Specialized.StringCollection();
-      foreach(FileNode file in _files)
-      {
-        if(pathFilter.IsFileIncluded(file.Name))
-        {
-          if(!actualFiles.ContainsKey(file.Name))
-            File(file.Name).SetToRemoved();
-        }
-        else // pathFilter (now) rejects this file
-        {
-          filesToRemoveSilently.Add(file.Name); // remove it silently from the list
-        }
-      }
-      foreach(string file in filesToRemoveSilently)
-        _files.Remove(file);
-      
-
-      // now look for the new or the changed files
-      foreach(string file in actualFiles.Keys)
-      {
-        if(!pathFilter.IsFileIncluded(file))
-          continue;
-
-        if(_files.Contains(file))
-        {
-          File(file).Update((System.IO.FileInfo)actualFiles[file],forceUpdateHash);
-          // this file was here before, we look if it was changed
-        }
-        else
-        {
-          // this is a new file, we create a new file node for this
-          AddFile(file,new FileNode((System.IO.FileInfo)actualFiles[file],this));
-        }
-      }
-
-      _files.TrimToSize();
-
-    }
-
-
-    /// <summary>
-    /// Updates all directories in the directory given by dirinfo. The current path in pathFilter must
-    /// match the directory given by dirinfo.
-    /// </summary>
-    /// <param name="dirinfo">The directory which is to be updated.</param>
-    /// <param name="pathFilter">The path filter.</param>
-    public void UpdateDirectories(System.IO.DirectoryInfo dirinfo, PathFilter pathFilter, bool forceUpdateHash)
-    {
-      System.IO.DirectoryInfo[] dirinfos = dirinfo.GetDirectories();
-      // create a hash table of the actual
-      Hashtable actualDirs = new Hashtable();
-      foreach(System.IO.DirectoryInfo inf in dirinfos)
-        actualDirs.Add(inf.Name,inf);
-
-      // first look for the removed dirs
-      System.Collections.Specialized.StringCollection subDirsToRemoveSilently = new System.Collections.Specialized.StringCollection();
-      foreach(DirectoryNode subdir in _subDirectories)
-      {
-        if(pathFilter.IsDirectoryIncluded(subdir.Name))
-        {
-          if(!actualDirs.ContainsKey(subdir.Name))
-            Directory(subdir.Name).SetToRemoved();
-          else
-            Directory(subdir.Name)._IsRemoved = false;
-        }
-        else  // pathFilter now rejects this directory, so remove it silently (but not set it to removed - this would cause the
-        {     // directory on the foreign system to be removed also)
-          subDirsToRemoveSilently.Add(subdir.Name);
-        }
-      }
-      foreach(string name in subDirsToRemoveSilently)
-        _subDirectories.Remove(name);
-
-
-      // now look for the new or the changed files
-      foreach(string name in actualDirs.Keys)
-      {
-        if(!pathFilter.IsDirectoryIncluded(name))
-          continue;
-
-        pathFilter.EnterSubDirectory(name);
-        if(_subDirectories.Contains(name))
-        {
-          Directory(name).Update((System.IO.DirectoryInfo)actualDirs[name],pathFilter,forceUpdateHash);
-          // this file was here before, we look if it was changed
-        }
-        else
-        {
-          // this is a new file, we create a new file node for this
-          AddSubDirectory(name,new DirectoryNode((System.IO.DirectoryInfo)actualDirs[name],pathFilter));
-        }
-        pathFilter.LeaveSubDirectory(name);
-      }
-
-      _subDirectories.TrimToSize();
-    }
-
-    #endregion
-
-    #region Own synchronization
-
-    /// <summary>
-    /// Collects the files that are supposed for synchronizing our own file system.
-    /// </summary>
-    /// <param name="myDir">Directory node of our own file system.</param>
-    /// <param name="foreignDir">Corresponding directory node of the foreign file system.</param>
-    /// <param name="pathFilter">The path filter used to filter files and directories.</param>
-    /// <param name="collector">Container that collectes the files that are supposed for synchronization.</param>
-    /// <param name="directorybase"></param>
-    public static void Collect(DirectoryNode myDir, DirectoryNode foreignDir, PathFilter pathFilter, Collector collector, string directorybase)
-    {
-      System.Collections.Specialized.StringCollection foreignFilesToRemove=null;
-      foreach(FileNode foreignFileNode in foreignDir._files)
-      {
-        string   foreignFileName = foreignFileNode.Name;
-
-        if(foreignFileNode.IsUnchanged)
-          continue;
-        if(!pathFilter.IsFileIncluded(foreignFileName))
-          continue;
-
-        if(myDir!=null)
-        {
-          System.IO.FileInfo fileinfo = new System.IO.FileInfo(System.IO.Path.Combine(collector.GetFullPath(directorybase),foreignFileName));
-          myDir.UpdateFile(fileinfo,false);
-        }
-
-        
-        // First handle the error, that both the nodes are unchanged, but nevertheless different from each other
-        if(myDir!=null && myDir.ContainsFile(foreignFileName) && foreignFileNode.IsUnchanged && myDir.File(foreignFileName).IsUnchanged && foreignFileNode.IsDifferent(myDir.File(foreignFileName)))
-        {
-          // set both nodes to changed then, since we don't know when this error occurs
-          foreignFileNode.SwitchFromUnchangedToChanged();
-          myDir.File(foreignFileName).SwitchFromUnchangedToChanged();
-        }
-
-        // File removed handling
-        if(foreignFileNode.IsRemoved)
-        {
-          if(myDir!=null && myDir.ContainsFile(foreignFileName) && !myDir.File(foreignFileName).IsRemoved)
-          {
-            bool isUnchanged = foreignFileNode.HasSameHashThan(myDir.File(foreignFileName));
-            collector.AddRemovedFile(directorybase,foreignFileName,isUnchanged);
-          }
-          else // is not in the list
-          {
-            if(null==foreignFilesToRemove) foreignFilesToRemove=new System.Collections.Specialized.StringCollection();
-            foreignFilesToRemove.Add(foreignFileName);  // foreignDir._files.Remove(foreignFileName);
-            if(myDir._files.Contains(foreignFileName))
-              myDir._files.Remove(foreignFileName);
-          }
-        }
-        else if(foreignFileNode.IsNew)
-        {
-          if(myDir!=null && myDir.ContainsFile(foreignFileName))
-          {
-            if(foreignFileNode.HasSameHashThan(myDir.File(foreignFileName)))
-            {
-              foreignFileNode.SetToUnchanged();
-              myDir.File(foreignFileName).SetToUnchanged();
-            }
-            else
-            {
-              if(collector.IsFileHereAnywhere(foreignFileNode))
-                collector.AddManuallyResolvedFile(directorybase,foreignFileName);
-             
-            }
-          }
-          else
-          {
-            if(collector.IsFileHereAnywhere(foreignFileNode))
-              collector.AddFileToCopy(directorybase,foreignFileName);
-          }
-        }
-        else if(foreignFileNode.IsChanged)
-        {
-          if(myDir!=null && myDir.ContainsFile(foreignFileName))
-          {
-            if(foreignFileNode.HasSameHashThan(myDir.File(foreignFileName)))
-            {
-              foreignFileNode.SetToUnchanged();
-              myDir.File(foreignFileName).SetToUnchanged();
-            }
-            else if(myDir.File(foreignFileName).IsUnchanged)
-            {
-              if(collector.IsFileHereAnywhere(foreignFileNode))
-                collector.AddFileToOverwrite(directorybase,foreignFileName);
-            }
-            else if(collector.IsFileHereAnywhere(foreignFileNode))
-            {
-              collector.AddManuallyResolvedFile(directorybase,foreignFileName);
-            }
-          }
-          else
-          {
-            if(collector.IsFileHereAnywhere(foreignFileNode))
-              collector.AddFileToCopy(directorybase,foreignFileName);
-          }
-        }
-      
-      } // foreach file
-      // now remove the foreign files that can not be removed during the enumeration
-      if(null!=foreignFilesToRemove)
-      {
-        foreach(string name in foreignFilesToRemove)
-          foreignDir._files.Remove(name);
-      }
-
-
-      // now the directories...
-      System.Collections.Specialized.StringCollection foreignSubDirsToRemove=null;
-      foreach(DirectoryNode foreignSubDirNode in foreignDir._subDirectories)
-      {
-        string foreignSubDirName = foreignSubDirNode.Name;
-        
-
-
-        // If the pathfilter rejects this, we can remove the nodes silently and continue with the next node
-        if(!pathFilter.IsDirectoryIncluded(foreignSubDirName))
-        {
-          if(null==foreignSubDirsToRemove) foreignSubDirsToRemove=new System.Collections.Specialized.StringCollection();
-          foreignSubDirsToRemove.Add(foreignSubDirName);  // foreignDir._files.Remove(foreignFileName);
-          if(myDir!=null && myDir.ContainsDirectory(foreignSubDirName))
-            myDir._subDirectories.Remove(foreignSubDirName);
-
-          continue;
-        }
-
-        string newdirectorybase = System.IO.Path.Combine(directorybase, foreignSubDirName + System.IO.Path.DirectorySeparatorChar);
   
-
-        // Test if the directory is removed now and set it to removed in this case
-        if(myDir!=null && myDir.ContainsDirectory(foreignSubDirName) && !System.IO.Directory.Exists(collector.GetFullPath(newdirectorybase)))
-        {
-          myDir.Directory(foreignSubDirName).SetToRemoved();
-        }
-        
-
-        if(foreignSubDirNode.IsRemoved)
-        {
-          if(myDir==null || !myDir.ContainsDirectory(foreignSubDirName) || myDir.Directory(foreignSubDirName).IsRemoved)
-          {
-            // if myDir also not exist, remove the nodes silently
-            if(null==foreignSubDirsToRemove) foreignSubDirsToRemove=new System.Collections.Specialized.StringCollection();
-            foreignSubDirsToRemove.Add(foreignSubDirName);  // foreignDir._files.Remove(foreignFileName);
-            if(myDir!=null && myDir.ContainsDirectory(foreignSubDirName))
-              myDir._subDirectories.Remove(foreignSubDirName);
-
-            continue;
-          }
-        }
-
-        if(myDir!=null && System.IO.Directory.Exists(collector.GetFullPath(newdirectorybase)))
-        {
-          if(!myDir.ContainsDirectory(foreignSubDirName))
-            myDir.AddSubDirectory(foreignSubDirName,new DirectoryNode(foreignSubDirName));
-          else
-            myDir.Directory(foreignSubDirName)._IsRemoved = false; // this is neccessary if it was renamed externally
-        }
-
-        pathFilter.EnterSubDirectory(foreignSubDirName);
-        Collect(
-          myDir!=null && myDir.ContainsDirectory(foreignSubDirName)? myDir.Directory(foreignSubDirName) : null,
-          foreignSubDirNode,
-          pathFilter,
-          collector,newdirectorybase);
-        pathFilter.LeaveSubDirectory(foreignSubDirName);
-
-
-        if(foreignSubDirNode.IsRemoved && myDir!=null && myDir.ContainsDirectory(foreignSubDirName))
-          collector.AddRemovedSubdirectory(directorybase,foreignSubDirName);          
-
-
-
-      }  // for each sub dir
-
-      // now remove the foreign files that can not be removed during the enumeration
-      if(null!=foreignSubDirsToRemove)
-      {
-        foreach(string name in foreignSubDirsToRemove)
-          foreignDir._subDirectories.Remove(name);
-      }
-    }
-
-    #endregion
-
-    #region Transfer to medium for foreign system
-
-    /// <summary>
-    /// Collects all files that should be copied to the transfermedium. We presume that the own file system was
-    /// updated before. That is why no PathFilter is neccessary here.
-    /// </summary>
-    /// <param name="myDir">Own directory node.</param>
-    /// <param name="foreignDir">Corresponding directory node of the foreign system.</param>
-    /// <param name="list">List in which the files are collected that should be copied to the transfer medium.</param>
-    /// <param name="nameroot"></param>
-    public static void GetNewOrChangedFiles(DirectoryNode myDir, DirectoryNode foreignDir, SortedList list, string nameroot)
-    {
-      foreach(FileNode myFileNode in myDir._files)
-      {
-        string   myFileName = myFileNode.Name;
-        
-        if(myFileNode.IsDataContentNewOrChanged)
-        {
-          // before adding them to the list, make sure that our node don't
-          // have the same content as the foreign node
-          if(foreignDir!=null && foreignDir.ContainsFile(myFileName) && myFileNode.HasSameHashThan(foreignDir.File(myFileName)))
-          {
-            // Do nothing here, don't change the nodes, since this is done during the sync stage
-          }
-          else
-          {
-            list.Add(nameroot+myFileNode.Name,myFileNode);
-          }
-        }
-      }
-
-      foreach(DirectoryNode mySubDirNode in myDir._subDirectories)
-      {
-        string mySubDirName = mySubDirNode.Name;
-
-        GetNewOrChangedFiles(
-          mySubDirNode,
-          foreignDir==null ? null : foreignDir.Directory(mySubDirName),
-          list,
-          System.IO.Path.Combine(nameroot,mySubDirName+System.IO.Path.DirectorySeparatorChar));
-      }
-    }
-
-    #endregion
-
-    #region MD5 Hash sum
-    public void FillMd5HashTable(MD5SumHashTable table, string currentPath)
-    {
-      foreach(FileNode fnode in this._files)
-      {        
-        fnode.FillMd5HashTable(table,currentPath+fnode.Name);
-      }
-      foreach(DirectoryNode dnode in this._subDirectories)
-      {
-        string subPath = currentPath + dnode.Name + System.IO.Path.DirectorySeparatorChar;
-        dnode.FillMd5HashTable(table,subPath);
-      }
-    }
-
-    public void FillMD5SumFileNodesHashTable(MD5SumFileNodesHashTable table, string currentPath)
-    {
-      System.Diagnostics.Debug.Assert(currentPath!=null);
-      System.Diagnostics.Debug.Assert(currentPath.Length>0); 
-      System.Diagnostics.Debug.Assert(currentPath[currentPath.Length-1]==System.IO.Path.DirectorySeparatorChar);
-
-      foreach(FileNode fnode in this._files)
-      {
-        fnode.FillMD5SumFileNodesHashTable(table,currentPath+fnode.Name);
-      }
-      foreach(DirectoryNode dnode in this._subDirectories)
-      {
-        string subPath = currentPath + dnode.Name + System.IO.Path.DirectorySeparatorChar;
-        dnode.FillMD5SumFileNodesHashTable(table,subPath);
-      }
-    }
-
-    #endregion
 
    
     #region IComparable Members
@@ -841,5 +382,15 @@ namespace SyncTwoCo
     }
 
     #endregion
+
+    /// <summary>
+    /// Does a compacting of the used memory of this dir and all subdirs (trims the arrays to size).
+    /// </summary>
+    public void Compact()
+    {
+      this._files.TrimToSize();
+      foreach(DirectoryNode fnode in _subDirectories)
+        fnode.Compact();
+    }
   }
 }

@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 namespace SyncTwoCo
 {
     using Filter;
+  using Traversing;
 
   
   /// <summary>
@@ -156,22 +157,17 @@ namespace SyncTwoCo
       MyRoot.Update(PathFilter, forceUpdateHash);
     }
 
-    public void Collect(Collector collector)
-    {
-      PathFilter.ResetCurrentDirectory();
-      DirectoryNode.Collect(MyRoot.DirectoryNode,ForeignRoot.DirectoryNode,PathFilter,collector,string.Empty);
-    }
+   
 
 
     public void CopyFilesToMedium(string directoryname, Hashtable copiedFiles, MD5SumHashTable md5Hashes)
     {
       FileSystemRoot myRoot = this.MyRoot;
       FileSystemRoot foreignRoot = this.ForeignRoot;
-
-      SortedList changedfiles = new SortedList();
-      DirectoryNode.GetNewOrChangedFiles(myRoot.DirectoryNode,foreignRoot.DirectoryNode, changedfiles,string.Empty);
-
-     
+ 
+      FilesToTransferCollector ftCollector = new FilesToTransferCollector(myRoot.DirectoryNode,foreignRoot.DirectoryNode);
+      ftCollector.Traverse();
+      SortedList changedfiles = ftCollector.Result;
 
       // Here code found to get the free space on the drive
       /*
@@ -201,8 +197,10 @@ namespace SyncTwoCo
             && (md5Hashes==null || !node.IsContainedIn(md5Hashes))
             )
           {
-            string sourcefilename = System.IO.Path.Combine(myRoot.FilePath,(string)entry.Key);
-            string destfilename = System.IO.Path.Combine(directoryname,node.MediumFileName);
+            
+
+            string sourcefilename = PathUtil.Combine_Abspath_RelpathFilename(myRoot.FilePath, (string)entry.Key);
+            string destfilename = PathUtil.Combine_Abspath_Filename(directoryname, node.MediumFileName);
 
             tryToCopy = true;
             copiedFiles.Add(node,null);

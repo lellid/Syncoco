@@ -39,12 +39,20 @@ namespace SyncTwoCo.Filter
 
     public override void EnterSubDirectory(string name)
     {
+#if DEBUG
+      PathUtil.Assert_Dirname(name);
+#endif
+
       base.EnterSubDirectory (name);
       this._activeListValid = false;
     }
 
     public override void LeaveSubDirectory(string name)
     {
+#if DEBUG
+      PathUtil.Assert_Dirname(name);
+#endif
+
       base.LeaveSubDirectory (name);
       this._activeListValid = false;
     }
@@ -145,12 +153,13 @@ namespace SyncTwoCo.Filter
 
 
     /// <summary>
-    /// Determines if a file should be included or not.
+    /// Determines if a name should be included or not.
     /// </summary>
     /// <param name="filename">Name of the file.</param>
     /// <returns>True if the file should be included.</returns>
-    public bool IsFileIncluded(string filename)
+    private bool IsNameIncluded(string name)
     {
+      
       if(!_activeListValid)
         UpdateActiveList();
 
@@ -163,7 +172,7 @@ namespace SyncTwoCo.Filter
         FilterListItem filterListItem = _filterList[_activeList[i]];
 
         // now create the relative file path (relative to the filter item)
-        fileWithPath = this.GetRelativeFileName(filterListItem.PathDepth,filename);
+        fileWithPath = this.GetBiasedpathFilename(filterListItem.PathDepth,name);
 
         action = filterListItem.Filter.Match(fileWithPath);
 
@@ -172,10 +181,23 @@ namespace SyncTwoCo.Filter
   
       }
 
-      fileWithPath = this.GetZeroLevelFileName(filename);
+      fileWithPath = this.GetZeroLevelFileName(name);
       action = this.DefaultList.Match(fileWithPath);
 
       return action!=FilterAction.Exclude; // per default, all files are included
+    }
+
+    /// <summary>
+    /// Determines if a file should be included or not.
+    /// </summary>
+    /// <param name="filename">Name of the file.</param>
+    /// <returns>True if the file should be included.</returns>
+    public bool IsFileIncluded(string filename)
+    {
+#if DEBUG
+      PathUtil.Assert_Filename(filename);
+#endif
+      return IsNameIncluded(filename);
     }
 
 
@@ -186,7 +208,10 @@ namespace SyncTwoCo.Filter
     /// <returns>True if the file should be included.</returns>
     public bool IsDirectoryIncluded(string directoryname)
     {
-      return IsFileIncluded(directoryname + System.IO.Path.DirectorySeparatorChar);
+#if DEBUG
+      PathUtil.Assert_Dirname(directoryname);
+#endif
+      return IsNameIncluded(directoryname + System.IO.Path.DirectorySeparatorChar);
     }
 
  

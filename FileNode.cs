@@ -27,9 +27,15 @@ namespace SyncTwoCo
 
       tw.WriteElementString("LE",System.Xml.XmlConvert.ToString(_fileLength));
       tw.WriteElementString("FA",System.Xml.XmlConvert.ToString((int)_attributes));
+#if WRITEDATEASTICKS
+       tw.WriteElementString("CT",System.Xml.XmlConvert.ToString(_creationTimeUtc.Ticks));
+      tw.WriteElementString("WT",System.Xml.XmlConvert.ToString(_lastWriteTimeUtc.Ticks));
+#else
       tw.WriteElementString("CT",System.Xml.XmlConvert.ToString(_creationTimeUtc));
       tw.WriteElementString("WT",System.Xml.XmlConvert.ToString(_lastWriteTimeUtc));
+#endif
       tw.WriteElementString("FH",_fileHash.BinHexRepresentation);
+
 
       if(_hint!=null)
       {
@@ -81,9 +87,13 @@ namespace SyncTwoCo
 
       _fileLength = System.Xml.XmlConvert.ToInt64(tr.ReadElementString("LE"));
       _attributes = (System.IO.FileAttributes)System.Xml.XmlConvert.ToInt32(tr.ReadElementString("FA"));
+#if READDATEASTICKS
+      _creationTimeUtc = new DateTime(System.Xml.XmlConvert.ToInt64(tr.ReadElementString("CT")));
+      _lastWriteTimeUtc = new DateTime(System.Xml.XmlConvert.ToInt64(tr.ReadElementString("WT")));
+#else
       _creationTimeUtc = System.Xml.XmlConvert.ToDateTime(tr.ReadElementString("CT"));
       _lastWriteTimeUtc = System.Xml.XmlConvert.ToDateTime(tr.ReadElementString("WT"));
-
+#endif
       if(tr.LocalName!="FH")
         throw new System.Xml.XmlException("The expected node <<FH>> was not found, instead we are at node: " + tr.LocalName);
 
@@ -257,12 +267,20 @@ namespace SyncTwoCo
 
     public void FillMd5HashTable(MD5SumHashTable table, string absoluteFileName)
     {
+#if DEBUG
+      PathUtil.Assert_AbspathFilename(absoluteFileName);
+#endif
+
       if(!this.IsRemoved)
         table.Add(this._fileHash, absoluteFileName, this);
     }
 
     public void FillMD5SumFileNodesHashTable (MD5SumFileNodesHashTable table, string absoluteFileName)
     {
+#if DEBUG
+      PathUtil.Assert_AbspathFilename(absoluteFileName);
+#endif
+
       if(!this.IsRemoved)
         table.Add(this._fileHash,absoluteFileName,this);
     }

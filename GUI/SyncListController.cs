@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 namespace SyncTwoCo
 {
+  using Traversing;
 
   public enum SyncAction 
   {
@@ -30,7 +31,7 @@ namespace SyncTwoCo
   /// </summary>
   public class SyncListController
   {
-    Collector[] _collectors;
+    FilesToSynchronizeCollector[] _collectors;
 
     SyncList _view;
 
@@ -44,7 +45,7 @@ namespace SyncTwoCo
       //      _view.InitializeListCaptions(_document.MyRootComputerName,_document.ForeignRootComputerName);
     }
 
-    public void SetCollectors(Collector[] collectors)
+    public void SetCollectors(FilesToSynchronizeCollector[] collectors)
     {
       _collectors = collectors;
 
@@ -65,18 +66,20 @@ namespace SyncTwoCo
     {
       foreach(string fullname in filenames)
       {
+#if DEBUG
+        PathUtil.Assert_RelpathFilename(fullname);
+#endif
+
         string filename, directoryname;
-        bool isDirectory = fullname[fullname.Length-1]==System.IO.Path.DirectorySeparatorChar;
+        bool isDirectory = PathUtil.IsDirectoryName(fullname);
         if(isDirectory)
         {
-          int split = fullname.LastIndexOf(System.IO.Path.DirectorySeparatorChar,fullname.Length-2);
-          filename = fullname.Substring(split+1);
-          directoryname = split<0 ? string.Empty : fullname.Substring(0,split);
+          PathUtil.SplitInto_Relpath_Dirname(fullname,out directoryname, out filename);
+          filename += System.IO.Path.DirectorySeparatorChar;
         }
         else
         {
-          filename = System.IO.Path.GetFileName(fullname);
-          directoryname = System.IO.Path.GetDirectoryName(fullname);
+          PathUtil.SplitInto_Relpath_Filename(fullname,out directoryname, out filename);
         }
 
         ListViewItem item = new ListViewItem(filename);
@@ -108,7 +111,7 @@ namespace SyncTwoCo
 
       for(int rootListIndex=0;rootListIndex<_collectors.Length;rootListIndex++)
       {
-        Collector coll = _collectors[rootListIndex];
+        FilesToSynchronizeCollector coll = _collectors[rootListIndex];
 
         AddListViewItems(list, rootListIndex, SyncAction.Copy,coll.ToCopy);
         AddListViewItems(list, rootListIndex, SyncAction.Overwrite,coll.ToOverwrite);
