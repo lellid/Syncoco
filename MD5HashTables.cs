@@ -29,8 +29,8 @@ namespace SyncTwoCo
         PathAndFileNode existingNode = this[arr];
         if(node.FileLength!=existingNode.Node.FileLength)
           throw new ApplicationException(
-string.Format("it should not happen, that two files with different length have the same hash, so rethink this" +
-              "The two nodes here are: {0}(length={1}) and {2}(length={3})",existingNode.Path,existingNode.Node.FileLength,
+            string.Format("it should not happen, that two files with different length have the same hash, so rethink this" +
+            "The two nodes here are: {0}(length={1}) and {2}(length={3})",existingNode.Path,existingNode.Node.FileLength,
             path,node.FileLength));
       }
       else
@@ -62,7 +62,7 @@ string.Format("it should not happen, that two files with different length have t
           System.Collections.ArrayList list = new System.Collections.ArrayList();
           list.Add(item);
           list.Add(pan);
-          base[arr] = arr;
+          base[arr] = list;
         }
         else
         {

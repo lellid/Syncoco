@@ -148,6 +148,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "FileNodeBase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "FileRemovedHint.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -204,11 +209,6 @@
                 />
                 <File
                     RelPath = "RootPair.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "SimpleFileNode.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -304,6 +304,36 @@
                 />
                 <File
                     RelPath = "GUI\SyncListController.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Online\SimpleDirectoryNode.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Online\SimpleDirectoryNodeList.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Online\SimpleFileNode.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Online\SimpleFileNodeList.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Online\SimpleFileSystemRoot.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Online\SimpleFileSystemRootList.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

@@ -45,6 +45,8 @@ namespace SyncTwoCo
       lvSyncList.Columns.Add("Action",50,System.Windows.Forms.HorizontalAlignment.Center);
       lvSyncList.Columns.Add("Path",50,System.Windows.Forms.HorizontalAlignment.Center);
 
+      lvSyncList.Columns.Add("Length",50,System.Windows.Forms.HorizontalAlignment.Center);
+      lvSyncList.Columns.Add("WrTime",50,System.Windows.Forms.HorizontalAlignment.Center);
 
       lvSyncList.Items.AddRange((ListViewItem[])list.ToArray(typeof(ListViewItem)));
     }

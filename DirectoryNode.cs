@@ -153,6 +153,15 @@ namespace SyncTwoCo
       return _files.Contains(name); 
     }
 
+
+    public IList Files
+    {
+      get 
+      {
+        return _files;
+      }
+    }
+
     /// <summary>
     /// Access to the file node by name.
     /// </summary>
@@ -179,6 +188,14 @@ namespace SyncTwoCo
     public bool ContainsDirectory(string name) 
     {
       return _subDirectories.Contains(name); 
+    }
+
+    public IList Directories
+    {
+      get 
+      {
+        return _subDirectories;
+      }
     }
 
     /// <summary>
@@ -653,7 +670,7 @@ namespace SyncTwoCo
             myDir.Directory(foreignSubDirName)._IsRemoved = false; // this is neccessary if it was renamed externally
         }
 
-            pathFilter.EnterSubDirectory(foreignSubDirName);
+        pathFilter.EnterSubDirectory(foreignSubDirName);
         Collect(
           myDir!=null && myDir.ContainsDirectory(foreignSubDirName)? myDir.Directory(foreignSubDirName) : null,
           foreignSubDirNode,
@@ -662,7 +679,7 @@ namespace SyncTwoCo
         pathFilter.LeaveSubDirectory(foreignSubDirName);
 
 
-       if(foreignSubDirNode.IsRemoved && myDir!=null && myDir.ContainsDirectory(foreignSubDirName))
+        if(foreignSubDirNode.IsRemoved && myDir!=null && myDir.ContainsDirectory(foreignSubDirName))
           collector.AddRemovedSubdirectory(directorybase,foreignSubDirName);          
 
 

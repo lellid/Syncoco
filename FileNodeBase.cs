@@ -9,7 +9,7 @@ namespace SyncTwoCo
   /// SimpleFileNode holds the information for a single file.
   /// </summary>
   [Serializable]
-  public class SimpleFileNode : IComparable
+  public class FileNodeBase : IComparable
   {
     /// <summary>Used to calculate the hash value.</summary>
     protected static System.Security.Cryptography.MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
@@ -34,15 +34,30 @@ namespace SyncTwoCo
     /// <summary>
     /// Only for deserialization purposes.
     /// </summary>
-    protected SimpleFileNode()
+    protected FileNodeBase()
     {
+    }
+
+    public FileNodeBase(FileNodeBase from)
+    {
+      CopyFrom(from);
+    }
+
+    public void CopyFrom(FileNodeBase from)
+    {
+      this._name = from._name;
+      this._lastWriteTimeUtc = from._lastWriteTimeUtc;
+      this._creationTimeUtc = from._creationTimeUtc;
+      this._fileLength = from._fileLength;
+      this._fileHash = from._fileHash;
+      this._attributes = from._attributes;
     }
   
     /// <summary>
     /// Constructor. Creates a SimpleFileNode out of a file info for that file.
     /// </summary>
     /// <param name="info"></param>
-    public SimpleFileNode(System.IO.FileInfo info)
+    public FileNodeBase(System.IO.FileInfo info)
     {
       Update(info,true);
     }
@@ -108,7 +123,7 @@ namespace SyncTwoCo
         || info.Length != _fileLength;
     }
 
-    public bool IsDifferent(SimpleFileNode from)
+    public bool IsDifferent(FileNodeBase from)
     {
       return this._fileLength != from._fileLength ||
         this._creationTimeUtc != from._creationTimeUtc ||
@@ -141,7 +156,7 @@ namespace SyncTwoCo
     }
 
 
-    public bool HasSameHashThan(SimpleFileNode other)
+    public bool HasSameHashThan(FileNodeBase other)
     {
       return HasSameHashThan(other._fileHash);
     }
@@ -161,14 +176,19 @@ namespace SyncTwoCo
         return string.Format("X{0}.XXX", _fileHash.BinHexRepresentation);
       }
     }
+
+    public DateTime CreationTimeUtc { get { return this._creationTimeUtc; }}
+    public DateTime LastWriteTimeUtc { get { return this._lastWriteTimeUtc; }}
+    public System.IO.FileAttributes Attributes { get { return this._attributes; }}
+ 
     #region IComparable Members
 
     public int CompareTo(object obj)
     {
       if(obj is string)
         return string.Compare(this._name,(string)obj,true);
-      else if(obj is SimpleFileNode)
-        return string.Compare(this._name,((SimpleFileNode)obj)._name,true);
+      else if(obj is FileNodeBase)
+        return string.Compare(this._name,((FileNodeBase)obj)._name,true);
       else
         throw new ArgumentException("Cannot compare a SimpleFileNode with a object of type " + obj.GetType().ToString());
     }

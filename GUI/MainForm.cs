@@ -336,7 +336,7 @@ namespace SyncTwoCo
 
     private void menuUpdateHash_Click(object sender, System.EventArgs e)
     {
-    Current.Document.Update(true);
+      Current.Document.Update(true);
     }
 
     private void menuEditCopyFiles_Click(object sender, System.EventArgs e)

@@ -2,11 +2,11 @@ using System;
 
 namespace SyncTwoCo
 {
-	/// <summary>
-	/// Summary description for IParentDirectory.
-	/// </summary>
-	public interface IParentDirectory
-	{
+  /// <summary>
+  /// Summary description for IParentDirectory.
+  /// </summary>
+  public interface IParentDirectory
+  {
     /// <summary>
     /// Returns true if this is a FileSystemRoot. 
     /// </summary>
@@ -22,5 +22,5 @@ namespace SyncTwoCo
     /// </summary>
     IParentDirectory ParentDirectory { get; }
 
-	}
+  }
 }

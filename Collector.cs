@@ -54,7 +54,7 @@ namespace SyncTwoCo
 
     public void AddRemovedSubdirectory(string dirbase,string subdirname)
     {
-        _ToRemove.Add(System.IO.Path.Combine(dirbase,subdirname+System.IO.Path.DirectorySeparatorChar));
+      _ToRemove.Add(System.IO.Path.Combine(dirbase,subdirname+System.IO.Path.DirectorySeparatorChar));
     }
 
     public void AddManuallyResolvedFile(string dirbase,string filename)

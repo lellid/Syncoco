@@ -59,7 +59,7 @@ namespace SyncTwoCo
 
       set 
       {
-       throw new NotImplementedException("This is a sorted array, you can not set values at arbitrary locations. Use Add(...) instead.");
+        throw new NotImplementedException("This is a sorted array, you can not set values at arbitrary locations. Use Add(...) instead.");
       }
     }
 
@@ -147,7 +147,7 @@ namespace SyncTwoCo
 
       _items = newData;
     }
-		
+    
     /// <summary>
     /// Shifts a section of the list.
     /// </summary>
@@ -165,14 +165,14 @@ namespace SyncTwoCo
         {
           int newLength;
           IComparable[] newData;
-					
+          
           newLength = (_items.Length > 0) ? _items.Length << 1 : 1;
 
           while (newLength < _size + count) 
           {
             newLength <<= 1;
           }
-					
+          
           newData = new IComparable[newLength];
 
           Array.Copy(_items, 0, newData, 0, index);
@@ -219,7 +219,7 @@ namespace SyncTwoCo
         Shift(index,1);
 
       _items[index] = (IComparable)value;
-			
+      
       _version++;
       _size++;
 
@@ -339,7 +339,7 @@ namespace SyncTwoCo
         IComparable[] newArray;
 
         newArray = new IComparable[_size];
-								
+                
         Array.Copy(_items, newArray, _size);
 
         _items = newArray;

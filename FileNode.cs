@@ -9,7 +9,7 @@ namespace SyncTwoCo
   /// FileNode holds the information for a single file.
   /// </summary>
   [Serializable]
-  public class FileNode : SimpleFileNode
+  public class FileNode : FileNodeBase
   {
     object _hint;
 
@@ -82,7 +82,7 @@ namespace SyncTwoCo
       if(tr.LocalName!="FH")
         throw new System.Xml.XmlException("The expected node <<FH>> was not found, instead we are at node: " + tr.LocalName);
 
-       _fileHash = FileHash.FromBinHexRepresentation(tr.ReadElementString("FH"));
+      _fileHash = FileHash.FromBinHexRepresentation(tr.ReadElementString("FH"));
       
       
 
@@ -173,7 +173,8 @@ namespace SyncTwoCo
 
     protected void Update(System.IO.FileInfo info, bool createHint, bool forceUpdateHash)
     {
-      
+      //if(info.Name=="IG004040.JPG")
+        //System.Diagnostics.Debug.WriteLine("Remove this line");
 
       _name = info.Name;
 
@@ -193,6 +194,11 @@ namespace SyncTwoCo
         _creationTimeUtc = info.CreationTimeUtc;
         _fileLength = info.Length;
         _fileHash = hashCalculatedBefore.Valid ? hashCalculatedBefore : CalculateHash(info);
+      }
+      else // it is not different
+      {
+        if(createHint && (_hint is FileRemovedHint))
+          _hint = null; // remove outstanding file remove hints if the file now exists
       }
 
       _attributes = info.Attributes;

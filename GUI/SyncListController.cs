@@ -66,7 +66,8 @@ namespace SyncTwoCo
       foreach(string fullname in filenames)
       {
         string filename, directoryname;
-        if(fullname[fullname.Length-1]==System.IO.Path.DirectorySeparatorChar)
+        bool isDirectory = fullname[fullname.Length-1]==System.IO.Path.DirectorySeparatorChar;
+        if(isDirectory)
         {
           int split = fullname.LastIndexOf(System.IO.Path.DirectorySeparatorChar,fullname.Length-2);
           filename = fullname.Substring(split+1);
@@ -77,10 +78,23 @@ namespace SyncTwoCo
           filename = System.IO.Path.GetFileName(fullname);
           directoryname = System.IO.Path.GetDirectoryName(fullname);
         }
+
         ListViewItem item = new ListViewItem(filename);
+        item.Tag = new SyncItemTag(rootListIndex,action,fullname);
         item.SubItems.Add(action.ToString());
         item.SubItems.Add(directoryname);
-        item.Tag = new SyncItemTag(rootListIndex,action,fullname);
+
+        if(!isDirectory)
+        {
+          FileNode myNode = Current.Document.RootPair(rootListIndex).MyRoot.DirectoryNode.GetFileNodeFullPath(fullname);
+          FileNode foNode = Current.Document.RootPair(rootListIndex).ForeignRoot.DirectoryNode.GetFileNodeFullPath(fullname);
+          
+
+          string dat = string.Format("{0} | {1}",myNode==null ? "?" : myNode.LastWriteTimeUtc.ToString(), foNode==null? "?":foNode.LastWriteTimeUtc.ToString());
+          string len = string.Format("{0} | {1}",myNode==null ? "?" : myNode.FileLength.ToString(), foNode==null? "?":foNode.FileLength.ToString());
+          item.SubItems.Add(len);
+          item.SubItems.Add(dat);
+        }
 
         if(action==SyncAction.Copy)
           item.BackColor = System.Drawing.Color.LightGray;

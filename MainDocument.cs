@@ -81,7 +81,7 @@ namespace SyncTwoCo
       }
 
       if(null!=exception)
-      throw exception;
+        throw exception;
 
     }
 
@@ -100,15 +100,15 @@ namespace SyncTwoCo
           tempfilename = System.IO.Path.GetTempFileName();
 
 
-      System.IO.FileStream stream = new System.IO.FileStream(null!=tempfilename ? tempfilename : filename,System.IO.FileMode.Create,System.IO.FileAccess.ReadWrite,System.IO.FileShare.None);
-      System.Xml.XmlTextWriter tw = new System.Xml.XmlTextWriter(stream,System.Text.Encoding.UTF8);
-      tw.WriteStartDocument();
-      tw.WriteStartElement("TwoPointSynchronizationByDataMedium");
-      SaveFilterOnly(tw);
-      tw.WriteEndElement();
-      tw.WriteEndDocument();
-      tw.Flush();
-      tw.Close();
+        System.IO.FileStream stream = new System.IO.FileStream(null!=tempfilename ? tempfilename : filename,System.IO.FileMode.Create,System.IO.FileAccess.ReadWrite,System.IO.FileShare.None);
+        System.Xml.XmlTextWriter tw = new System.Xml.XmlTextWriter(stream,System.Text.Encoding.UTF8);
+        tw.WriteStartDocument();
+        tw.WriteStartElement("TwoPointSynchronizationByDataMedium");
+        SaveFilterOnly(tw);
+        tw.WriteEndElement();
+        tw.WriteEndDocument();
+        tw.Flush();
+        tw.Close();
         
         if(null!=tempfilename)
           System.IO.File.Copy(tempfilename,filename,true);
@@ -388,7 +388,13 @@ namespace SyncTwoCo
       System.IO.FileInfo[] fileinfos = dirinfo.GetFiles("X*.XXX");
 
       foreach(System.IO.FileInfo fileinfo in fileinfos)
+      {
+        if(0!=(fileinfo.Attributes & System.IO.FileAttributes.ReadOnly))
+        {
+          fileinfo.Attributes &= ~System.IO.FileAttributes.ReadOnly;
+        }
         fileinfo.Delete();
+      }
     }
 
   
@@ -436,13 +442,23 @@ namespace SyncTwoCo
       return collectors;
     }
 
-    public void CopyWithDirectoryCreation(string sourceFileName, string destFileName, bool overwrite)
+    public void CopyWithDirectoryCreation(string sourceFileName, string destFileName, bool overwrite, FileNode foFileNode)
     {
       string dirname = System.IO.Path.GetDirectoryName(destFileName);
       if(!System.IO.Directory.Exists(dirname))
         System.IO.Directory.CreateDirectory(dirname);
 
       System.IO.File.Copy(sourceFileName,destFileName,overwrite);
+      System.IO.FileInfo info = new System.IO.FileInfo(destFileName);
+      if(info.Exists)
+      {
+        // first clear the readonly attribute
+        info.Attributes &= ~System.IO.FileAttributes.ReadOnly;
+       
+        info.CreationTimeUtc = foFileNode.CreationTimeUtc;
+        info.LastWriteTimeUtc = foFileNode.LastWriteTimeUtc;
+        info.Attributes = foFileNode.Attributes;
+      }
     }
 
     /// <summary>
@@ -461,33 +477,34 @@ namespace SyncTwoCo
         PathAndFileNode pfn = (PathAndFileNode)o;
         if(System.IO.File.Exists(pfn.Path) && foFileNode.HasSameHashThan(pfn.Path))
         {
-          CopyWithDirectoryCreation(pfn.Path, destFileName, overwrite);
+          CopyWithDirectoryCreation(pfn.Path, destFileName, overwrite, foFileNode);
           return true;
         }
       }
-      else if(o is ArrayList)
+      else if(o is ArrayList) // there is more than one possibility where to copy from
       {
         ArrayList arr = (ArrayList)o;
-        foreach(PathAndFileNode pfn in arr)
+        foreach(PathAndFileNode pfn in arr) // use the first successfull possibility where to copy from
         {
           if(System.IO.File.Exists(pfn.Path) && foFileNode.HasSameHashThan(pfn.Path))
           {
-            CopyWithDirectoryCreation(pfn.Path, destFileName, overwrite);
-            return true;
+            CopyWithDirectoryCreation(pfn.Path, destFileName, overwrite,foFileNode);
+            return true; // return true if the copy was successfull
           }
         }
+       
       }
     
 
       string sourcefilename = System.IO.Path.Combine(this.MediumDirectoryName,foFileNode.MediumFileName);
       if(foFileNode.HasSameHashThan(sourcefilename))
       {
-        CopyWithDirectoryCreation(sourcefilename, destFileName, overwrite);
+        CopyWithDirectoryCreation(sourcefilename, destFileName, overwrite, foFileNode);
         return true;
       }
       
       return false;
-      }
+    }
 
 
     public void PerformAction(SyncItemTag tag)
