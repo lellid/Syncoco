@@ -76,8 +76,8 @@ namespace SyncTwoCo.Filter
 
       for(int i=0;i<Count;i++)
       {
-        FilterAction action = this[i].Action;
-        if(FilterAction.Ignore!=this[i].Match(name))
+        FilterAction action = this[i].Match(name);
+        if(FilterAction.Ignore!=action)
         {
           return action;
         }

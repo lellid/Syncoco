@@ -123,9 +123,9 @@ namespace SyncTwoCo.Filter
       return true;
     }
 
-    private static bool StartMatchCondition(string name, out string startstring)
+    private static bool EndMatchCondition(string name, out string endstring)
     {
-      startstring = null;
+      endstring = null;
       int idx = name.LastIndexOf('*');
       if(idx<0)
         return false;
@@ -139,13 +139,13 @@ namespace SyncTwoCo.Filter
       if(name.IndexOf('?',idx+1)>=0)
         return false;
 
-      startstring = name.Substring(idx+1);
+      endstring = name.Substring(idx+1);
       return true;
     }
 
-    private static bool EndMatchCondition(string name, out string endstring)
+    private static bool StartMatchCondition(string name, out string startstring)
     {
-      endstring = null;
+      startstring = null;
       int idx = name.IndexOf('*');
       if(idx<0)
         return false;
@@ -159,7 +159,7 @@ namespace SyncTwoCo.Filter
       if(name.IndexOf('?',0,idx)>=0)
         return false;
 
-      endstring = name.Substring(0,idx);
+      startstring = name.Substring(0,idx);
       return true;
 
     }
@@ -185,7 +185,7 @@ namespace SyncTwoCo.Filter
       if(startstring.Length==0 || startstring.IndexOf('?')>=0)
         return false;
 
-      endstring = name.Substring(0,idxe);
+      endstring = name.Substring(idxe+1);
       if(endstring.Length==0 || endstring.IndexOf('?')>=0)
         return false;
 
