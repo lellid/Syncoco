@@ -46,15 +46,18 @@ namespace SyncTwoCo
       _pathFilter.Save(tw);
       tw.WriteEndElement();
 
-      tw.WriteStartElement("Root1");
-      tw.WriteElementString("Path",_root1.FilePath);
-      if(!saveFilterOnly)
+      if(_root1!=null && _root1.IsValid)
       {
-        tw.WriteStartElement("DirectoryNode");
-        _root1.DirectoryNode.Save(tw);
-        tw.WriteEndElement();
+        tw.WriteStartElement("Root1");
+        tw.WriteElementString("Path",_root1.FilePath);
+        if(!saveFilterOnly)
+        {
+          tw.WriteStartElement("DirectoryNode");
+          _root1.DirectoryNode.Save(tw);
+          tw.WriteEndElement();
+        }
+        tw.WriteEndElement(); // Root1
       }
-      tw.WriteEndElement(); // Root1
 
       if(_root2!=null && _root2.IsValid)
       {
@@ -79,21 +82,30 @@ namespace SyncTwoCo
       tr.ReadEndElement();
 
 
-      tr.ReadStartElement("Root1");
-      string path1 = tr.ReadElementString("Path");
-      if(tr.LocalName=="DirectoryNode")
+      string path1=null; 
+      DirectoryNode dirnode1=null;
+      if(tr.LocalName=="Root1")
       {
-        tr.ReadStartElement("DirectoryNode");
-        DirectoryNode dirnode1 = new DirectoryNode(tr);
-        tr.ReadEndElement();
-        _root1 = new FileSystemRoot(path1,dirnode1);
+        tr.ReadStartElement("Root1");
+
+        path1 = tr.ReadElementString("Path");
+        if(tr.LocalName=="DirectoryNode")
+        {
+          tr.ReadStartElement("DirectoryNode");
+          dirnode1 = new DirectoryNode(tr);
+          tr.ReadEndElement(); // DirectoryNode
+          _root1 = new FileSystemRoot(path1,dirnode1);
+        }
+        else
+        {
+          _root1 = new FileSystemRoot(path1);
+        }
+        tr.ReadEndElement(); // Root1
       }
       else
       {
-        _root1 = new FileSystemRoot(path1);
+        _root1 = new FileSystemRoot();
       }
-      tr.ReadEndElement(); // Root1
-      
       
       
       string path2=null; 

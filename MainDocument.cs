@@ -33,14 +33,99 @@ namespace SyncTwoCo
 
     }
 
+    public void Save(string filename)
+    {
+   
+      if(!System.IO.Path.HasExtension(filename))
+        filename += ".stc";
 
-    public void Save(System.Xml.XmlTextWriter tw)
-    {
-      Save(tw,false);
+      // first create a directory
+      string dirname = System.IO.Path.GetFileNameWithoutExtension(filename);
+      System.IO.Directory.CreateDirectory(dirname);
+
+      string tempfilename=null;
+      Exception exception=null;
+      System.IO.FileStream stream=null;
+      try
+      {
+
+        if(System.IO.File.Exists(filename))
+          tempfilename = System.IO.Path.GetTempFileName();
+
+
+        stream = new System.IO.FileStream(null!=tempfilename ? tempfilename : filename, System.IO.FileMode.Create,System.IO.FileAccess.ReadWrite,System.IO.FileShare.None);
+        System.Xml.XmlTextWriter tw = new System.Xml.XmlTextWriter(stream,System.Text.Encoding.UTF8);
+        tw.WriteStartDocument();
+        tw.WriteStartElement("TwoPointSynchronizationByDataMedium");
+        Save(tw);
+        tw.WriteEndElement();
+        tw.WriteEndDocument();
+        SetFileSavedFlag(filename);
+        tw.Flush();
+        tw.Close();
+
+        if(null!=tempfilename)
+          System.IO.File.Copy(tempfilename,filename,true);
+
+      }
+      catch(Exception ex)
+      {
+        exception = ex;
+      }
+      finally
+      {
+        if(null!=stream)
+          stream.Close();
+        if(null!=tempfilename)
+          System.IO.File.Delete(tempfilename);
+      }
+
+      if(null!=exception)
+      throw exception;
+
     }
-    public void SaveFilterOnly(System.Xml.XmlTextWriter tw)
+
+    public void SaveFilterOnly(string filename)
     {
-      Save(tw,true);
+   
+      if(!System.IO.Path.HasExtension(filename))
+        filename += ".flt";
+
+      string tempfilename=null;
+      Exception exception=null;
+      try
+      {
+
+        if(System.IO.File.Exists(filename))
+          tempfilename = System.IO.Path.GetTempFileName();
+
+
+      System.IO.FileStream stream = new System.IO.FileStream(null!=tempfilename ? tempfilename : filename,System.IO.FileMode.Create,System.IO.FileAccess.ReadWrite,System.IO.FileShare.None);
+      System.Xml.XmlTextWriter tw = new System.Xml.XmlTextWriter(stream,System.Text.Encoding.UTF8);
+      tw.WriteStartDocument();
+      tw.WriteStartElement("TwoPointSynchronizationByDataMedium");
+      SaveFilterOnly(tw);
+      tw.WriteEndElement();
+      tw.WriteEndDocument();
+      tw.Flush();
+      tw.Close();
+        
+        if(null!=tempfilename)
+          System.IO.File.Copy(tempfilename,filename,true);
+
+      }
+      catch(Exception ex)
+      {
+        exception = ex;
+      }
+      finally
+      {
+        if(null!=tempfilename)
+          System.IO.File.Delete(tempfilename);
+      }
+
+      if(null!=exception)
+        throw exception;
     }
 
     public void Save(System.Xml.XmlTextWriter tw, bool saveFilterOnly)
@@ -59,6 +144,24 @@ namespace SyncTwoCo
 
       tw.WriteEndElement(); // RootPairs
     }
+
+    public void Save(System.Xml.XmlTextWriter tw)
+    {
+      Save(tw,false);
+    }
+    public void SaveFilterOnly(System.Xml.XmlTextWriter tw)
+    {
+      Save(tw,true);
+    }
+    public void Save()
+    {
+      if(!HasFileName)
+        throw new ApplicationException("No file name for saving document (programming error)");
+
+      Save(_FileName);
+    }
+
+    
 
 
     public void Read(System.Xml.XmlTextReader tr)
@@ -103,44 +206,7 @@ namespace SyncTwoCo
       return doc;
     }
 
-    public void Save(string filename)
-    {
    
-      if(!System.IO.Path.HasExtension(filename))
-        filename += ".stc";
-
-      // first create a directory
-      string dirname = System.IO.Path.GetFileNameWithoutExtension(filename);
-      System.IO.Directory.CreateDirectory(dirname);
-      System.IO.FileStream stream = new System.IO.FileStream(filename,System.IO.FileMode.Create,System.IO.FileAccess.ReadWrite,System.IO.FileShare.None);
-      System.Xml.XmlTextWriter tw = new System.Xml.XmlTextWriter(stream,System.Text.Encoding.UTF8);
-      tw.WriteStartDocument();
-      tw.WriteStartElement("TwoPointSynchronizationByDataMedium");
-      Save(tw);
-      tw.WriteEndElement();
-      tw.WriteEndDocument();
-      SetFileSavedFlag(filename);
-      tw.Flush();
-      tw.Close();
-    }
-
-    public void SaveFilterOnly(string filename)
-    {
-   
-      if(!System.IO.Path.HasExtension(filename))
-        filename += ".flt";
-
-      System.IO.FileStream stream = new System.IO.FileStream(filename,System.IO.FileMode.Create,System.IO.FileAccess.ReadWrite,System.IO.FileShare.None);
-      System.Xml.XmlTextWriter tw = new System.Xml.XmlTextWriter(stream,System.Text.Encoding.UTF8);
-      tw.WriteStartDocument();
-      tw.WriteStartElement("TwoPointSynchronizationByDataMedium");
-      SaveFilterOnly(tw);
-      tw.WriteEndElement();
-      tw.WriteEndDocument();
-      tw.Flush();
-      tw.Close();
-    }
-
 
     public void SetFileSavedFlag(string filename)
     {
@@ -325,14 +391,7 @@ namespace SyncTwoCo
         fileinfo.Delete();
     }
 
-    public void Save()
-    {
-      if(!HasFileName)
-        throw new ApplicationException("No file name for saving document (programming error)");
-
-      Save(_FileName);
-    }
-
+  
    
 
     public void UpdateAndSaveAndCopyFilesToMedium()
