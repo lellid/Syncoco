@@ -72,15 +72,16 @@ namespace SyncTwoCo.Filter
     /// <returns></returns>
     public FilterAction Match(string name)
     {
+      name = name.ToLower();
+
       for(int i=0;i<Count;i++)
       {
         FilterAction action = this[i].Action;
-        if(action!=FilterAction.Ignore && Match(this[i].MatchString,0,name,0))
+        if(FilterAction.Ignore!=this[i].Match(name))
         {
           return action;
         }
       }
-    
 
       return DefaultAction;
     }

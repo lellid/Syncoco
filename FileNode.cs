@@ -176,11 +176,18 @@ namespace SyncTwoCo
       Update(info,true, forceUpdateHash);
     }
 
+    /// <summary>
+    /// This will update the node. In case an IO error occur, the node is not updated, and no error occurs.
+    /// </summary>
+    /// <param name="info"></param>
+    /// <param name="createHint"></param>
+    /// <param name="forceUpdateHash"></param>
     protected void Update(System.IO.FileInfo info, bool createHint, bool forceUpdateHash)
     {
       //if(info.Name=="IG004040.JPG")
         //System.Diagnostics.Debug.WriteLine("Remove this line");
 
+      
       _name = info.Name;
 
       FileHash hashCalculatedBefore;
@@ -192,13 +199,20 @@ namespace SyncTwoCo
 
       if(IsDifferent(info) || (hashCalculatedBefore.Valid && !this.HasSameHashThan(hashCalculatedBefore)))
       {
-        if(createHint && !(_hint is FileChangedHint))
-          _hint = new FileChangedHint(_creationTimeUtc,_lastWriteTimeUtc,_fileLength,_fileHash);
+        if(!hashCalculatedBefore.Valid)
+        hashCalculatedBefore = CalculateHash(info);
 
-        _lastWriteTimeUtc = info.LastWriteTimeUtc;
-        _creationTimeUtc = info.CreationTimeUtc;
-        _fileLength = info.Length;
-        _fileHash = hashCalculatedBefore.Valid ? hashCalculatedBefore : CalculateHash(info);
+        // only update the node when the hash is now valid
+        if(hashCalculatedBefore.Valid)
+        {
+          if(createHint && !(_hint is FileChangedHint))
+            _hint = new FileChangedHint(_creationTimeUtc,_lastWriteTimeUtc,_fileLength,_fileHash);
+
+          _lastWriteTimeUtc = info.LastWriteTimeUtc;
+          _creationTimeUtc = info.CreationTimeUtc;
+          _fileLength = info.Length;
+          _fileHash = hashCalculatedBefore;
+        }
       }
       else // it is not different
       {

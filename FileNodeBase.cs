@@ -134,12 +134,19 @@ namespace SyncTwoCo
 
     public static FileHash CalculateHash(System.IO.FileInfo fileinfo)
     {
-      byte[] result=null;
-      using(System.IO.FileStream stream = fileinfo.OpenRead())
+      try
       {
-        result = md5.ComputeHash(stream);
+        byte[] result=null;
+        using(System.IO.FileStream stream = fileinfo.OpenRead())
+        {
+          result = md5.ComputeHash(stream);
+        }
+        return new FileHash(result);
       }
-      return new FileHash(result);
+      catch(System.IO.IOException)
+      {
+        return new FileHash();
+      }
     }
 
     public FileHash FileHash 

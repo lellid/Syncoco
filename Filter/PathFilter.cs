@@ -116,7 +116,7 @@ namespace SyncTwoCo.Filter
 
       for(int i=0;i<filterListPath.Length;i++)
       {
-        if(filterListPath[i]!=currentSubDirectoryPath[i])
+        if(filterListPath[i].ToLower()!=currentSubDirectoryPath[i].ToLower())
           return false;
       }
 
@@ -156,6 +156,7 @@ namespace SyncTwoCo.Filter
 
       string fileWithPath;
       FilterAction action;
+      
       
       for(int i=0;i<_activeListCount;i++)
       {
