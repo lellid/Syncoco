@@ -4,38 +4,32 @@ using System.Security.Cryptography;
 
 namespace SyncTwoCo
 {
+  
   /// <summary>
   /// FileNode holds the information for a single file.
   /// </summary>
   [Serializable]
-  public class FileNode
+  public class FileNode : SimpleFileNode
   {
-    /// <summary>Used to calculate the hash value.</summary>
-    static System.Security.Cryptography.MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-
-    /// <summary>Time of last writing to the file.</summary>
-    DateTime _lastWriteTimeUtc;
-    /// <summary>Time of file creation.</summary>
-    DateTime _creationTimeUtc;
-    /// <summary>Length of the file.</summary>
-    long     _fileLength;
-    /// <summary>MD5 hash value.</summary>
-    byte[]   _fileHash;
-    /// <summary>File attributes.</summary>
-    System.IO.FileAttributes _attributes;
-    /// <summary>Actual state of the file.</summary>
     object _hint;
 
+    [NonSerialized]
+    DirectoryNode _parent;
 
     public void Save(System.Xml.XmlTextWriter tw)
     {
+      System.Diagnostics.Debug.Assert(_name!=null);
+      System.Diagnostics.Debug.Assert(_name!=string.Empty);
+
+      tw.WriteStartElement("File");
+      
+      tw.WriteAttributeString("Name",_name);
+
       tw.WriteElementString("LE",System.Xml.XmlConvert.ToString(_fileLength));
       tw.WriteElementString("FA",System.Xml.XmlConvert.ToString((int)_attributes));
       tw.WriteElementString("CT",System.Xml.XmlConvert.ToString(_creationTimeUtc));
       tw.WriteElementString("WT",System.Xml.XmlConvert.ToString(_lastWriteTimeUtc));
-      tw.WriteStartElement("FH");
-      tw.WriteBinHex(_fileHash,0,_fileHash.Length);
-      tw.WriteEndElement();
+      tw.WriteElementString("FH",_fileHash.BinHexRepresentation);
 
       if(_hint!=null)
       {
@@ -62,16 +56,24 @@ namespace SyncTwoCo
 
         tw.WriteEndElement(); // HI
       }
+
+      tw.WriteEndElement(); // File
     }
 
-    public FileNode(System.Xml.XmlTextReader tr)
+   
+    public FileNode(System.Xml.XmlTextReader tr, DirectoryNode parent)
     {
+      System.Diagnostics.Debug.Assert(null!=parent);
+      _parent = parent;
       Open(tr);
     }
 
-    static byte[] buffer = new byte[32];
-    public void Open(System.Xml.XmlTextReader tr)
+    
+    void Open(System.Xml.XmlTextReader tr)
     {
+      _name = tr.GetAttribute("Name");
+      tr.ReadStartElement("File");
+
       _fileLength = System.Xml.XmlConvert.ToInt64(tr.ReadElementString("LE"));
       _attributes = (System.IO.FileAttributes)System.Xml.XmlConvert.ToInt32(tr.ReadElementString("FA"));
       _creationTimeUtc = System.Xml.XmlConvert.ToDateTime(tr.ReadElementString("CT"));
@@ -80,12 +82,9 @@ namespace SyncTwoCo
       if(tr.LocalName!="FH")
         throw new System.Xml.XmlException("The expected node <<FH>> was not found, instead we are at node: " + tr.LocalName);
 
-      _fileHash = new byte[32];
-      int read = tr.ReadBinHex(buffer,0,32);
-      _fileHash = new byte[read];
-      Array.Copy(buffer,0,_fileHash,0,read);
-
-      // tr.ReadEndElement();
+       _fileHash = FileHash.FromBinHexRepresentation(tr.ReadElementString("FH"));
+      
+      
 
       if(tr.LocalName=="HI")
       {
@@ -114,25 +113,21 @@ namespace SyncTwoCo
         if(!isEmptyElement)
           tr.ReadEndElement();
       }
+
+      tr.ReadEndElement(); // File
      
     }
-    /// <summary>
-    /// Length of the file.
-    /// </summary>
-    public long FileLength 
-    {
-      get
-      {
-        return _fileLength; 
-      }
-    }
+
+   
 
     /// <summary>
     /// Constructor. Creates a FileNode out of a file info for that file.
     /// </summary>
     /// <param name="info"></param>
-    public FileNode(System.IO.FileInfo info)
+    public FileNode(System.IO.FileInfo info, DirectoryNode parent)
     {
+      System.Diagnostics.Debug.Assert(null!=parent);
+      _parent = parent;
       Update(info,false,true);
       _hint = new FileNewHint();
     }
@@ -171,18 +166,25 @@ namespace SyncTwoCo
         this._hint = new FileChangedHint(this._creationTimeUtc,this._lastWriteTimeUtc,this._fileLength,this._fileHash);
     }
 
-    public void Update(System.IO.FileInfo info, bool forceUpdateHash)
+    public new void Update(System.IO.FileInfo info, bool forceUpdateHash)
     {
       Update(info,true, forceUpdateHash);
     }
 
     protected void Update(System.IO.FileInfo info, bool createHint, bool forceUpdateHash)
     {
-      byte[] hashCalculatedBefore=null;
+      
+
+      _name = info.Name;
+
+      FileHash hashCalculatedBefore;
       if(forceUpdateHash && info.Exists)
         hashCalculatedBefore = CalculateHash(info);
+      else
+        hashCalculatedBefore = new FileHash();
+        
 
-      if(IsDifferent(info) || (null!=hashCalculatedBefore && !this.HasSameHashThan(hashCalculatedBefore)))
+      if(IsDifferent(info) || (hashCalculatedBefore.Valid && !this.HasSameHashThan(hashCalculatedBefore)))
       {
         if(createHint && !(_hint is FileChangedHint))
           _hint = new FileChangedHint(_creationTimeUtc,_lastWriteTimeUtc,_fileLength,_fileHash);
@@ -190,27 +192,17 @@ namespace SyncTwoCo
         _lastWriteTimeUtc = info.LastWriteTimeUtc;
         _creationTimeUtc = info.CreationTimeUtc;
         _fileLength = info.Length;
-        _fileHash = null!=hashCalculatedBefore ? hashCalculatedBefore : CalculateHash(info);
+        _fileHash = hashCalculatedBefore.Valid ? hashCalculatedBefore : CalculateHash(info);
       }
 
       _attributes = info.Attributes;
 
+     
     }
 
-    public bool IsDifferent(System.IO.FileInfo info)
-    {
-      return info.LastWriteTimeUtc!=_lastWriteTimeUtc
-        || info.CreationTimeUtc != _creationTimeUtc
-        || info.Length != _fileLength;
-    }
+  
 
-    public bool IsDifferent(FileNode from)
-    {
-      return this._fileLength != from._fileLength ||
-        this._creationTimeUtc != from._creationTimeUtc ||
-        this._lastWriteTimeUtc != from._lastWriteTimeUtc ||
-        (!this.HasSameHashThan(from._fileHash));
-    }
+  
 
     public bool IsDataContentNewOrChanged
     {
@@ -237,51 +229,6 @@ namespace SyncTwoCo
     }
 
 
-    public static byte[] CalculateHash(System.IO.FileInfo fileinfo)
-    {
-      byte[] result=null;
-      using(System.IO.FileStream stream = fileinfo.OpenRead())
-      {
-        result = md5.ComputeHash(stream);
-      }
-      return result;
-    }
-
-    public byte[] FileHash 
-    {
-      get 
-      { 
-        return _fileHash; 
-      }
-    }
-
-    public bool HasSameHashThan(byte[] otherfilehash)
-    {
-      if(this._fileHash.Length != otherfilehash.Length)
-        return false;
-      for(int i=0;i<_fileHash.Length;i++)
-        if(_fileHash[i]!=otherfilehash[i])
-          return false;
-      return true;
-    }
-
-
-    public bool HasSameHashThan(FileNode other)
-    {
-      return HasSameHashThan(other._fileHash);
-    }
-
-    public bool HasSameHashThan(string fullFileName)
-    {
-      System.IO.FileInfo fileinfo = new System.IO.FileInfo(fullFileName);
-      byte[] fileHash;
-      using(System.IO.FileStream stream = fileinfo.OpenRead())
-      {
-        fileHash = md5.ComputeHash(stream);
-      }
-      return HasSameHashThan(fileHash);
-      
-    }
 
     public void FillMd5HashTable(MD5SumHashTable table, string absoluteFileName)
     {
@@ -300,27 +247,7 @@ namespace SyncTwoCo
       return table.ContainsKey(this._fileHash);
     }
 
-    public string MediumFileName
-    {
-      get
-      {
-        //const byte nullByte = 0;
-
-        System.Text.StringBuilder stb = new System.Text.StringBuilder();
-        stb.Append('X');
-
-        //byte lenByte = (byte)_fileHash.Length;
-        //stb.AppendFormat("{0:X}",lenByte);
-
-        for(int i=0;i<_fileHash.Length;i++)
-          stb.AppendFormat("{0:X02}",_fileHash[i]);
-        //for(int i=_fileHash.Length;i<16;i++)
-        //stb.AppendFormat("{0:X02}",nullByte);
-
-        stb.Append(".XXX");
-
-        return stb.ToString();
-      }
-    }
+ 
+    
   }
 }

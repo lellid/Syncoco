@@ -32,6 +32,7 @@ namespace SyncTwoCo
     private System.Windows.Forms.MenuItem menuBeginSyncSelected;
     private System.Windows.Forms.MenuItem menuEndUpdateSaveCopy;
     private System.Windows.Forms.MenuItem menuItem3;
+    private System.Windows.Forms.MenuItem menuUpdateHash;
 
     /// <summary>
     /// Required designer variable.
@@ -79,6 +80,7 @@ namespace SyncTwoCo
       this.menuFileExit = new System.Windows.Forms.MenuItem();
       this.menuFileSave = new System.Windows.Forms.MenuItem();
       this.menuFileSaveAs = new System.Windows.Forms.MenuItem();
+      this.menuItem3 = new System.Windows.Forms.MenuItem();
       this.menuItem2 = new System.Windows.Forms.MenuItem();
       this.menuEditUpdate = new System.Windows.Forms.MenuItem();
       this.menuEditCopyFiles = new System.Windows.Forms.MenuItem();
@@ -89,7 +91,7 @@ namespace SyncTwoCo
       this.menuBeginSyncSelected = new System.Windows.Forms.MenuItem();
       this.menuEndWork = new System.Windows.Forms.MenuItem();
       this.menuEndUpdateSaveCopy = new System.Windows.Forms.MenuItem();
-      this.menuItem3 = new System.Windows.Forms.MenuItem();
+      this.menuUpdateHash = new System.Windows.Forms.MenuItem();
       // 
       // mainMenu1
       // 
@@ -140,6 +142,12 @@ namespace SyncTwoCo
       this.menuFileSaveAs.Text = "Save As..";
       this.menuFileSaveAs.Click += new System.EventHandler(this.menuFileSaveAs_Click);
       // 
+      // menuItem3
+      // 
+      this.menuItem3.Index = 5;
+      this.menuItem3.Text = "Save Filter Only As..";
+      this.menuItem3.Click += new System.EventHandler(this.menuFileSaveFilterOnly_Click);
+      // 
       // menuItem2
       // 
       this.menuItem2.Index = 1;
@@ -147,7 +155,8 @@ namespace SyncTwoCo
                                                                               this.menuEditUpdate,
                                                                               this.menuEditCopyFiles,
                                                                               this.menuEditCollect,
-                                                                              this.menuEditSyncronize});
+                                                                              this.menuEditSyncronize,
+                                                                              this.menuUpdateHash});
       this.menuItem2.Text = "Edit";
       // 
       // menuEditUpdate
@@ -207,11 +216,11 @@ namespace SyncTwoCo
       this.menuEndUpdateSaveCopy.Text = "UpdateSaveAndCopyFiles";
       this.menuEndUpdateSaveCopy.Click += new System.EventHandler(this.menuEndUpdateSaveCopy_Click);
       // 
-      // menuItem3
+      // menuUpdateHash
       // 
-      this.menuItem3.Index = 5;
-      this.menuItem3.Text = "Save Filter Only As..";
-      this.menuItem3.Click += new System.EventHandler(this.menuFileSaveFilterOnly_Click);
+      this.menuUpdateHash.Index = 4;
+      this.menuUpdateHash.Text = "UpdateHash";
+      this.menuUpdateHash.Click += new System.EventHandler(this.menuUpdateHash_Click);
       // 
       // SyncTwoCo
       // 
@@ -322,7 +331,12 @@ namespace SyncTwoCo
 
     private void menuEditUpdate_Click(object sender, System.EventArgs e)
     {
-      Current.Document.Update();
+      Current.Document.Update(false);
+    }
+
+    private void menuUpdateHash_Click(object sender, System.EventArgs e)
+    {
+    Current.Document.Update(true);
     }
 
     private void menuEditCopyFiles_Click(object sender, System.EventArgs e)
@@ -361,6 +375,8 @@ namespace SyncTwoCo
     {
       Current.Document.UpdateAndSaveAndCopyFilesToMedium();
     }
+
+    
 
    
  

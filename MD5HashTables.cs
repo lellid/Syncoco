@@ -2,47 +2,6 @@ using System;
 
 namespace SyncTwoCo
 {
-  /// <summary>
-  /// Designed especially for fast comparism and hash code creation of
-  /// MD5 hash sums (byte arrays of 16 elements). Do not use it for byte arrays longer than 24 elements.
-  /// </summary>
-  class MD5SumComparer 
-    : 
-    System.Collections.IHashCodeProvider,
-    System.Collections.IComparer
-  {
-    #region IHashCodeProvider Members
-
-    public int GetHashCode(object obj)
-    {
-      byte[] arr = (byte[])obj;
-      int result=0;
-      for(int i=0;i<arr.Length;i++)
-        result ^= ((int)arr[i])<<i;
-      return result;
-    }
-
-    #endregion
-
-    #region IComparer Members
-
-    public int Compare(object x, object y)
-    {
-      byte[] arrx = (byte[])x;
-      byte[] arry = (byte[])y;
-      
-      if(arrx.Length!=arry.Length)
-        return arrx.Length<arry.Length ? -1 : 1;
-
-      for(int i=0;i<arrx.Length;i++)
-        if(arrx[i]!=arry[i])
-          return arrx[i]<arry[i] ? -1 : 1;
-      
-      return 0;
-    }
-
-    #endregion
-  }
   
   public class PathAndFileNode
   {
@@ -63,13 +22,7 @@ namespace SyncTwoCo
 
   public class MD5SumHashTable : System.Collections.Hashtable
   {
-    static MD5SumComparer comp = new MD5SumComparer();
-    public MD5SumHashTable()
-      : base(comp,comp)
-    {
-    }
-
-    public void Add(byte[] arr, string path, FileNode node)
+    public void Add(FileHash arr, string path, FileNode node)
     {
       if(base.ContainsKey(arr))
       {
@@ -86,7 +39,7 @@ string.Format("it should not happen, that two files with different length have t
       }
     }
 
-    public PathAndFileNode this[byte[] arr]
+    public PathAndFileNode this[FileHash arr]
     {
       get { return (PathAndFileNode)base[arr]; }
     }
@@ -96,16 +49,9 @@ string.Format("it should not happen, that two files with different length have t
 
   public class MD5SumFileNodesHashTable : System.Collections.Hashtable
   {
-    static MD5SumComparer comp = new MD5SumComparer();
-
    
 
-    public MD5SumFileNodesHashTable()
-      : base(comp,comp)
-    {
-    }
-
-    public void Add(byte[] arr, string path , FileNode node )
+    public void Add(FileHash arr, string path , FileNode node )
     {
       PathAndFileNode pan = new PathAndFileNode(path,node);
       if(base.ContainsKey(arr))

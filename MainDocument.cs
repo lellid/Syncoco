@@ -328,14 +328,14 @@ namespace SyncTwoCo
       ((RootPair)_rootPairs[item]).MyRoot.SetFilePath(path);
     }
 
-    public void Update()
+    public void Update(bool forceUpdateHash)
     {
       this._allFilesHere=null;
 
       EnsureAlignment();
 
       for(int i=0;i<Count;i++)
-        RootPair(i).Update();
+        RootPair(i).Update(forceUpdateHash);
     }
 
     public void CopyFilesToMedium()
@@ -399,7 +399,7 @@ namespace SyncTwoCo
       if(!this.HasFileName)
         throw new ApplicationException("This operation is possible only if the document has a file name");
 
-      this.Update();
+      this.Update(false);
       this.ClearMediumDirectory();
       this.Save();
       this.CopyFilesToMedium();

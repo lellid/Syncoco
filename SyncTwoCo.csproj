@@ -133,6 +133,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "FileHash.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "FileNewHint.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -173,6 +178,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "IParentDirectory.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "MainDocument.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -194,6 +204,16 @@
                 />
                 <File
                     RelPath = "RootPair.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "SimpleFileNode.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "SortedArrayList.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

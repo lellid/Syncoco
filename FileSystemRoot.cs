@@ -10,7 +10,7 @@ namespace SyncTwoCo
   /// Summary description for FileSystemRoot.
   /// </summary>
   [Serializable]
-  public class FileSystemRoot
+  public class FileSystemRoot : IParentDirectory
   {
 
     string _FilePath;
@@ -36,19 +36,39 @@ namespace SyncTwoCo
       _DirectoryNode = dirnode;
     }
 
-
-    public void Save(System.Xml.XmlTextWriter tw)
+    public FileSystemRoot(System.Xml.XmlTextReader tr, string localName)
     {
-      tw.WriteAttributeString("Path",_FilePath);
-      _DirectoryNode.Save(tw);
+      tr.ReadStartElement(localName);
+      Read(tr);
+      tr.ReadEndElement();
+    }
+
+
+    public void Save(System.Xml.XmlTextWriter tw, string localName, bool saveFilterOnly)
+    {
+      tw.WriteStartElement(localName);
+      tw.WriteElementString("Path",this._FilePath);
+      if(!saveFilterOnly)
+      {
+        this._DirectoryNode.Save(tw,"DirectoryNode");
+      }
+      tw.WriteEndElement(); // Root1
     }
 
     public void Read(System.Xml.XmlTextReader tr)
     {
-      _FilePath = NormalizePath(tr.GetAttribute("Path"));
-      tr.ReadStartElement("Root");
-      _DirectoryNode = new DirectoryNode(tr);
-      tr.ReadEndElement();
+      _FilePath = tr.ReadElementString("Path");
+      _FilePath = NormalizePath(_FilePath);
+      if(tr.LocalName=="DirectoryNode")
+      {
+       
+        _DirectoryNode = new DirectoryNode(tr,this);
+        
+      }
+      else
+      {
+        SetFilePath(_FilePath);
+      }    
     }
 
     public bool IsValid
@@ -107,12 +127,12 @@ namespace SyncTwoCo
         _DirectoryNode.DeleteSubDirectoryNodeFullPath(path);
     }
 
-    public void Update(PathFilter pathFilter)
+    public void Update(PathFilter pathFilter, bool forceUpdateHash)
     {
       System.IO.DirectoryInfo dirinfo = new System.IO.DirectoryInfo(_FilePath);
 
       if(null!=_DirectoryNode)
-        _DirectoryNode.Update(dirinfo,pathFilter);
+        _DirectoryNode.Update(dirinfo,pathFilter, forceUpdateHash);
       else
         _DirectoryNode = new DirectoryNode(dirinfo,pathFilter);
     }
@@ -147,7 +167,32 @@ namespace SyncTwoCo
       else
         return path+System.IO.Path.DirectorySeparatorChar;
     }
+    #region IParentDirectory Members
 
- 
+    public bool IsFileSystemRoot
+    {
+      get
+      {
+        return true;
+      }
+    }
+
+    public string Name
+    {
+      get
+      {
+        return _FilePath;
+      }
+    }
+
+    public IParentDirectory ParentDirectory
+    {
+      get
+      {
+        return null;
+      }
+    }
+
+    #endregion
   }
 }

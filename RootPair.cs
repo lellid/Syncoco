@@ -48,28 +48,12 @@ namespace SyncTwoCo
 
       if(_root1!=null && _root1.IsValid)
       {
-        tw.WriteStartElement("Root1");
-        tw.WriteElementString("Path",_root1.FilePath);
-        if(!saveFilterOnly)
-        {
-          tw.WriteStartElement("DirectoryNode");
-          _root1.DirectoryNode.Save(tw);
-          tw.WriteEndElement();
-        }
-        tw.WriteEndElement(); // Root1
+        _root1.Save(tw,"Root1",saveFilterOnly);
       }
 
       if(_root2!=null && _root2.IsValid)
       {
-        tw.WriteStartElement("Root2");
-        tw.WriteElementString("Path",_root2.FilePath);
-        if(!saveFilterOnly)
-        {
-          tw.WriteStartElement("DirectoryNode");
-          _root2.DirectoryNode.Save(tw);
-          tw.WriteEndElement();
-        }
-        tw.WriteEndElement(); // Root2
+        _root2.Save(tw,"Root2",saveFilterOnly);
       }
 
     
@@ -82,25 +66,9 @@ namespace SyncTwoCo
       tr.ReadEndElement();
 
 
-      string path1=null; 
-      DirectoryNode dirnode1=null;
       if(tr.LocalName=="Root1")
       {
-        tr.ReadStartElement("Root1");
-
-        path1 = tr.ReadElementString("Path");
-        if(tr.LocalName=="DirectoryNode")
-        {
-          tr.ReadStartElement("DirectoryNode");
-          dirnode1 = new DirectoryNode(tr);
-          tr.ReadEndElement(); // DirectoryNode
-          _root1 = new FileSystemRoot(path1,dirnode1);
-        }
-        else
-        {
-          _root1 = new FileSystemRoot(path1);
-        }
-        tr.ReadEndElement(); // Root1
+        _root1 = new FileSystemRoot(tr,"Root1");
       }
       else
       {
@@ -108,25 +76,9 @@ namespace SyncTwoCo
       }
       
       
-      string path2=null; 
-      DirectoryNode dirnode2=null;
       if(tr.LocalName=="Root2")
       {
-        tr.ReadStartElement("Root2");
-
-        path2 = tr.ReadElementString("Path");
-        if(tr.LocalName=="DirectoryNode")
-        {
-          tr.ReadStartElement("DirectoryNode");
-          dirnode2 = new DirectoryNode(tr);
-          tr.ReadEndElement(); // DirectoryNode
-          _root2 = new FileSystemRoot(path2,dirnode2);
-        }
-        else
-        {
-          _root2 = new FileSystemRoot(path2);
-        }
-        tr.ReadEndElement(); // Root2
+        _root2 = new FileSystemRoot(tr,"Root2");
       }
       else
       {
@@ -183,10 +135,10 @@ namespace SyncTwoCo
     }
 
 
-    public void Update()
+    public void Update(bool forceUpdateHash)
     {
       PathFilter.ResetCurrentDirectory();
-      MyRoot.Update(PathFilter);
+      MyRoot.Update(PathFilter, forceUpdateHash);
     }
 
     public void Collect(Collector collector)

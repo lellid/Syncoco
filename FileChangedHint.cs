@@ -11,9 +11,9 @@ namespace SyncTwoCo
     DateTime _lastWriteTimeUtc;
     DateTime _creationTimeUtc;
     long     _fileLength;
-    byte[]   _fileHash;
+    FileHash   _fileHash;
 
-    public FileChangedHint(DateTime creationTimeUtc, DateTime lastWriteTimeUtc, long fileLength, byte[] fileHash)
+    public FileChangedHint(DateTime creationTimeUtc, DateTime lastWriteTimeUtc, long fileLength, FileHash fileHash)
     {
       _creationTimeUtc = creationTimeUtc;
       _lastWriteTimeUtc = lastWriteTimeUtc;
@@ -33,22 +33,17 @@ namespace SyncTwoCo
       tw.WriteElementString("LE",System.Xml.XmlConvert.ToString(_fileLength));
       tw.WriteElementString("CT",System.Xml.XmlConvert.ToString(_creationTimeUtc));
       tw.WriteElementString("WT",System.Xml.XmlConvert.ToString(_lastWriteTimeUtc));
-      tw.WriteStartElement("FH");
-      tw.WriteBinHex(_fileHash,0,_fileHash.Length);
-      tw.WriteEndElement();
+      tw.WriteElementString("FH",_fileHash.BinHexRepresentation);
     }
 
-    static byte[] buffer = new byte[32];
+    
     public void Open(System.Xml.XmlTextReader tr)
     {
       
       _fileLength = System.Xml.XmlConvert.ToInt64(tr.ReadElementString("LE"));
       _creationTimeUtc = System.Xml.XmlConvert.ToDateTime(tr.ReadElementString("CT"));
       _lastWriteTimeUtc = System.Xml.XmlConvert.ToDateTime(tr.ReadElementString("WT"));
-      _fileHash = new byte[32];
-      int read = tr.ReadBinHex(buffer,0,32);
-      _fileHash = new byte[read];
-      Array.Copy(buffer,0,_fileHash,0,read);
+      _fileHash = FileHash.FromBinHexRepresentation(tr.ReadElementString("FH"));
     }
     
   }

@@ -8,40 +8,62 @@ namespace SyncTwoCo
   /// Holds information about itself and about all files and subdirectories in this node.
   /// </summary>
   [Serializable]
-  public class DirectoryNode
+  public class DirectoryNode : IComparable, IParentDirectory
   {
     #region Member variables
+
+    // Directory name
+    string _name;
+
     /// <summary>
     /// Hashtable of subdirectory name as key and DirectoryNode as value. Note that the
     /// name is stored as it is, i.e. without directory separator char.
     /// </summary>
-    SortedList _subDirectories = new SortedList(new CaseInsensitiveComparer());
+    DirectoryNodeList _subDirectories = new DirectoryNodeList();
 
     /// <summary>
     /// Hashtable of file name as key and FileNode as value
     /// </summary>
-    SortedList _files = new SortedList(new CaseInsensitiveComparer());
+    FileNodeList _files = new FileNodeList();
 
     /// <summary>
     /// True if the directory now longer exists and should therefore be also removed on the foreign system.
     /// </summary>
     bool _IsRemoved;
 
+    [NonSerialized]
+    IParentDirectory _parent;
+
     #endregion
 
     #region Serialization
 
-    public DirectoryNode(System.Xml.XmlTextReader tr)
+    public DirectoryNode(System.Xml.XmlTextReader tr, DirectoryNode parent)
     {
+      _parent = parent;
+      _name = tr.GetAttribute("Name");
+      tr.ReadStartElement("Dir");
       Read(tr);
+      tr.ReadEndElement(); // Dir
     }
 
+    public DirectoryNode(System.Xml.XmlTextReader tr, FileSystemRoot parent)
+    {
+      _parent = parent;
+      _name = String.Empty;
+      tr.ReadStartElement("DirectoryNode");
+      Read(tr);
+      tr.ReadEndElement();
+    }
 
+    public DirectoryNode(string name)
+    {
+      _name = name;
+    }
 
-    public void Read(System.Xml.XmlTextReader tr)
+    void Read(System.Xml.XmlTextReader tr)
     {
       bool isEmptyElement;
-
       this._IsRemoved = System.Xml.XmlConvert.ToBoolean(tr.ReadElementString("IsRemoved"));
       
       isEmptyElement = tr.IsEmptyElement;
@@ -50,11 +72,8 @@ namespace SyncTwoCo
       {
         while(tr.LocalName=="File")
         {
-          string name = tr.GetAttribute("Name");
-          tr.ReadStartElement("File");
-          FileNode node = new FileNode(tr);
-          tr.ReadEndElement(); // File
-          AddFile(name,node);
+          FileNode node = new FileNode(tr,this);
+          AddFile(node.Name,node);
         }
         tr.ReadEndElement(); // Files
       }
@@ -65,56 +84,44 @@ namespace SyncTwoCo
       {
         while(tr.LocalName=="Dir")
         {
-          string name = tr.GetAttribute("Name");
-          tr.ReadStartElement("Dir");
-          DirectoryNode node = new DirectoryNode(tr);
-          tr.ReadEndElement(); // Dir
-          
-          AddSubDirectory(name,node);
-
-          
+          DirectoryNode node = new DirectoryNode(tr,this);
+          AddSubDirectory(node.Name,node);
         }
         tr.ReadEndElement(); // Dirs
       }
+
+     
     }
 
 
-    public void Save(System.Xml.XmlTextWriter tw)
+    public void Save(System.Xml.XmlTextWriter tw, string localName)
     {
+      tw.WriteStartElement(localName);
+      tw.WriteAttributeString("Name",_name);
+
       tw.WriteElementString("IsRemoved",System.Xml.XmlConvert.ToString(_IsRemoved));
       tw.WriteStartElement("Files");
-      foreach(DictionaryEntry entry in _files)
+      foreach(FileNode fnode in _files)
       {
-        tw.WriteStartElement("File");
-        tw.WriteAttributeString("Name",(string)entry.Key);
-        ((FileNode)entry.Value).Save(tw);
-        tw.WriteEndElement();
+        fnode.Save(tw);
       }
-      tw.WriteEndElement();
+      tw.WriteEndElement(); // Files
 
       tw.WriteStartElement("Dirs");
-      foreach(DictionaryEntry entry in _subDirectories)
+      foreach(DirectoryNode dnode in _subDirectories)
       {
-        tw.WriteStartElement("Dir");
-        tw.WriteAttributeString("Name",(string)entry.Key);
-        ((DirectoryNode)entry.Value).Save(tw);
-        tw.WriteEndElement();
+        dnode.Save(tw,"Dir");
       }
-      tw.WriteEndElement();
+      tw.WriteEndElement(); // Dirs
 
+      tw.WriteEndElement(); // localName
     }
 
   
     #endregion
 
     #region Constructors
-    /// <summary>
-    /// Creates an empty directory node.
-    /// </summary>
-    protected DirectoryNode()
-      : this(null,null)
-    {
-    }
+  
 
   
     /// <summary>
@@ -125,9 +132,11 @@ namespace SyncTwoCo
     /// <param name="pathFilter">The path filter.</param>
     public DirectoryNode(System.IO.DirectoryInfo dirinfo, PathFilter pathFilter)
     {
+      if(dirinfo!=null)
+        _name = dirinfo.Name;
            
       if(pathFilter!=null)
-        Update(dirinfo,pathFilter);
+        Update(dirinfo,pathFilter,true);
     }
 
     #endregion
@@ -141,7 +150,7 @@ namespace SyncTwoCo
     /// <returns>True if the directory node contains the file.</returns>
     public bool ContainsFile(string name) 
     {
-      return _files.ContainsKey(name); 
+      return _files.Contains(name); 
     }
 
     /// <summary>
@@ -159,7 +168,7 @@ namespace SyncTwoCo
       System.Diagnostics.Debug.Assert(name!=null,"File name must not be null!");
       System.Diagnostics.Debug.Assert(name.Length>0,"File name must not be empty!");
       System.Diagnostics.Debug.Assert(node!=null,"File node must not be null!");
-      this._files.Add(name,node);
+      this._files.Add(node);
     }
 
     /// <summary>
@@ -169,7 +178,7 @@ namespace SyncTwoCo
     /// <returns>True if the directory node contains the subdirectory.</returns>
     public bool ContainsDirectory(string name) 
     {
-      return _subDirectories.ContainsKey(name); 
+      return _subDirectories.Contains(name); 
     }
 
     /// <summary>
@@ -184,11 +193,11 @@ namespace SyncTwoCo
 
     public void AddSubDirectory(string name, DirectoryNode node)
     {
-      
-      System.Diagnostics.Debug.Assert(name!=null,"Directory name must not be null!");
-      System.Diagnostics.Debug.Assert(name.Length>0,"Directory name must not be empty!");
       System.Diagnostics.Debug.Assert(node!=null,"Directory node must not be null!");
-      this._subDirectories.Add(name,node);
+      System.Diagnostics.Debug.Assert(node.Name!=null,"Directory name must not be null!");
+      System.Diagnostics.Debug.Assert(node.Name.Length>0,"Directory name must not be empty!");
+   
+      this._subDirectories.Add(node);
      
     }
 
@@ -210,10 +219,10 @@ namespace SyncTwoCo
     {
       _IsRemoved = true;
 
-      foreach(FileNode node in _files.Values)
+      foreach(FileNode node in _files)
         node.SetToRemoved();
 
-      foreach(DirectoryNode node in _subDirectories.Values)
+      foreach(DirectoryNode node in _subDirectories)
         node.SetToRemoved();
     }
 
@@ -319,7 +328,7 @@ namespace SyncTwoCo
           throw new System.IO.IOException(string.Format("The directory {0} should exist, since it should be a root directory of the file {1}", dirinfo.FullName,fileinfo.FullName));
 
         if(!dirnode.ContainsDirectory(subdirs[i]))
-          dirnode.AddSubDirectory(subdirs[i],new DirectoryNode());
+          dirnode.AddSubDirectory(subdirs[i],new DirectoryNode(subdirs[i]));
 
         dirnode = dirnode.Directory(subdirs[i]);
       }
@@ -337,10 +346,13 @@ namespace SyncTwoCo
     /// </summary>
     /// <param name="dirinfo">The directory that has to be updated.</param>
     /// <param name="pathFilter">The path filter.</param>
-    public void Update(System.IO.DirectoryInfo dirinfo, PathFilter pathFilter)
+    public void Update(System.IO.DirectoryInfo dirinfo, PathFilter pathFilter, bool forceUpdateHash)
     {
-      UpdateFiles(dirinfo,pathFilter);
-      UpdateDirectories(dirinfo,pathFilter);
+      if(dirinfo!=null)
+        _name = dirinfo.Name;
+
+      UpdateFiles(dirinfo,pathFilter,forceUpdateHash);
+      UpdateDirectories(dirinfo,pathFilter,forceUpdateHash);
     }
 
     /// <summary>
@@ -359,7 +371,7 @@ namespace SyncTwoCo
       }
       else if(fileinfo.Exists)
       {
-        AddFile(fileinfo.Name,new FileNode(fileinfo));
+        AddFile(fileinfo.Name,new FileNode(fileinfo,this));
       }
     }
 
@@ -372,7 +384,7 @@ namespace SyncTwoCo
     /// </summary>
     /// <param name="dirinfo">The directory info of the current directory node.</param>
     /// <param name="pathFilter">The path filter.</param>
-    public void UpdateFiles(System.IO.DirectoryInfo dirinfo, PathFilter pathFilter)
+    public void UpdateFiles(System.IO.DirectoryInfo dirinfo, PathFilter pathFilter, bool forceUpdateHash)
     {
       System.IO.FileInfo[] fileinfos = dirinfo.GetFiles();
       // create a hash table of the actual
@@ -382,16 +394,16 @@ namespace SyncTwoCo
 
       // first look for the removed files
       System.Collections.Specialized.StringCollection filesToRemoveSilently = new System.Collections.Specialized.StringCollection();
-      foreach(string file in _files.Keys)
+      foreach(FileNode file in _files)
       {
-        if(pathFilter.IsFileIncluded(file))
+        if(pathFilter.IsFileIncluded(file.Name))
         {
-          if(!actualFiles.ContainsKey(file))
-            File(file).SetToRemoved();
+          if(!actualFiles.ContainsKey(file.Name))
+            File(file.Name).SetToRemoved();
         }
         else // pathFilter (now) rejects this file
         {
-          filesToRemoveSilently.Add(file); // remove it silently from the list
+          filesToRemoveSilently.Add(file.Name); // remove it silently from the list
         }
       }
       foreach(string file in filesToRemoveSilently)
@@ -404,17 +416,19 @@ namespace SyncTwoCo
         if(!pathFilter.IsFileIncluded(file))
           continue;
 
-        if(_files.ContainsKey(file))
+        if(_files.Contains(file))
         {
-          File(file).Update((System.IO.FileInfo)actualFiles[file],false);
+          File(file).Update((System.IO.FileInfo)actualFiles[file],forceUpdateHash);
           // this file was here before, we look if it was changed
         }
         else
         {
           // this is a new file, we create a new file node for this
-          AddFile(file,new FileNode((System.IO.FileInfo)actualFiles[file]));
+          AddFile(file,new FileNode((System.IO.FileInfo)actualFiles[file],this));
         }
       }
+
+      _files.TrimToSize();
 
     }
 
@@ -425,7 +439,7 @@ namespace SyncTwoCo
     /// </summary>
     /// <param name="dirinfo">The directory which is to be updated.</param>
     /// <param name="pathFilter">The path filter.</param>
-    public void UpdateDirectories(System.IO.DirectoryInfo dirinfo, PathFilter pathFilter)
+    public void UpdateDirectories(System.IO.DirectoryInfo dirinfo, PathFilter pathFilter, bool forceUpdateHash)
     {
       System.IO.DirectoryInfo[] dirinfos = dirinfo.GetDirectories();
       // create a hash table of the actual
@@ -435,18 +449,18 @@ namespace SyncTwoCo
 
       // first look for the removed dirs
       System.Collections.Specialized.StringCollection subDirsToRemoveSilently = new System.Collections.Specialized.StringCollection();
-      foreach(string name in _subDirectories.Keys)
+      foreach(DirectoryNode subdir in _subDirectories)
       {
-        if(pathFilter.IsDirectoryIncluded(name))
+        if(pathFilter.IsDirectoryIncluded(subdir.Name))
         {
-          if(!actualDirs.ContainsKey(name))
-            Directory(name).SetToRemoved();
+          if(!actualDirs.ContainsKey(subdir.Name))
+            Directory(subdir.Name).SetToRemoved();
           else
-            Directory(name)._IsRemoved = false;
+            Directory(subdir.Name)._IsRemoved = false;
         }
         else  // pathFilter now rejects this directory, so remove it silently (but not set it to removed - this would cause the
         {     // directory on the foreign system to be removed also)
-          subDirsToRemoveSilently.Add(name);
+          subDirsToRemoveSilently.Add(subdir.Name);
         }
       }
       foreach(string name in subDirsToRemoveSilently)
@@ -460,9 +474,9 @@ namespace SyncTwoCo
           continue;
 
         pathFilter.EnterSubDirectory(name);
-        if(_subDirectories.ContainsKey(name))
+        if(_subDirectories.Contains(name))
         {
-          Directory(name).Update((System.IO.DirectoryInfo)actualDirs[name],pathFilter);
+          Directory(name).Update((System.IO.DirectoryInfo)actualDirs[name],pathFilter,forceUpdateHash);
           // this file was here before, we look if it was changed
         }
         else
@@ -472,6 +486,8 @@ namespace SyncTwoCo
         }
         pathFilter.LeaveSubDirectory(name);
       }
+
+      _subDirectories.TrimToSize();
     }
 
     #endregion
@@ -489,10 +505,9 @@ namespace SyncTwoCo
     public static void Collect(DirectoryNode myDir, DirectoryNode foreignDir, PathFilter pathFilter, Collector collector, string directorybase)
     {
       System.Collections.Specialized.StringCollection foreignFilesToRemove=null;
-      foreach(DictionaryEntry entry in foreignDir._files)
+      foreach(FileNode foreignFileNode in foreignDir._files)
       {
-        string   foreignFileName = (string)entry.Key;
-        FileNode foreignFileNode = (FileNode)entry.Value;
+        string   foreignFileName = foreignFileNode.Name;
 
         if(foreignFileNode.IsUnchanged)
           continue;
@@ -526,7 +541,7 @@ namespace SyncTwoCo
           {
             if(null==foreignFilesToRemove) foreignFilesToRemove=new System.Collections.Specialized.StringCollection();
             foreignFilesToRemove.Add(foreignFileName);  // foreignDir._files.Remove(foreignFileName);
-            if(myDir._files.ContainsKey(foreignFileName))
+            if(myDir._files.Contains(foreignFileName))
               myDir._files.Remove(foreignFileName);
           }
         }
@@ -589,10 +604,9 @@ namespace SyncTwoCo
 
       // now the directories...
       System.Collections.Specialized.StringCollection foreignSubDirsToRemove=null;
-      foreach(DictionaryEntry entry in foreignDir._subDirectories)
+      foreach(DirectoryNode foreignSubDirNode in foreignDir._subDirectories)
       {
-        string foreignSubDirName = (string)entry.Key;
-        DirectoryNode foreignSubDirNode = (DirectoryNode)entry.Value;
+        string foreignSubDirName = foreignSubDirNode.Name;
         
 
 
@@ -634,7 +648,7 @@ namespace SyncTwoCo
         if(myDir!=null && System.IO.Directory.Exists(collector.GetFullPath(newdirectorybase)))
         {
           if(!myDir.ContainsDirectory(foreignSubDirName))
-            myDir.AddSubDirectory(foreignSubDirName,new DirectoryNode());
+            myDir.AddSubDirectory(foreignSubDirName,new DirectoryNode(foreignSubDirName));
           else
             myDir.Directory(foreignSubDirName)._IsRemoved = false; // this is neccessary if it was renamed externally
         }
@@ -677,11 +691,10 @@ namespace SyncTwoCo
     /// <param name="nameroot"></param>
     public static void GetNewOrChangedFiles(DirectoryNode myDir, DirectoryNode foreignDir, SortedList list, string nameroot)
     {
-      foreach(DictionaryEntry entry in myDir._files)
+      foreach(FileNode myFileNode in myDir._files)
       {
-        string   myFileName = (string)entry.Key;
-        FileNode myFileNode = (FileNode)entry.Value;
-
+        string   myFileName = myFileNode.Name;
+        
         if(myFileNode.IsDataContentNewOrChanged)
         {
           // before adding them to the list, make sure that our node don't
@@ -692,15 +705,14 @@ namespace SyncTwoCo
           }
           else
           {
-            list.Add(nameroot+(string)entry.Key,entry.Value);
+            list.Add(nameroot+myFileNode.Name,myFileNode);
           }
         }
       }
 
-      foreach(DictionaryEntry entry in myDir._subDirectories)
+      foreach(DirectoryNode mySubDirNode in myDir._subDirectories)
       {
-        string mySubDirName = (string)entry.Key;
-        DirectoryNode mySubDirNode = (DirectoryNode)entry.Value;
+        string mySubDirName = mySubDirNode.Name;
 
         GetNewOrChangedFiles(
           mySubDirNode,
@@ -715,15 +727,13 @@ namespace SyncTwoCo
     #region MD5 Hash sum
     public void FillMd5HashTable(MD5SumHashTable table, string currentPath)
     {
-      foreach(DictionaryEntry fentry in this._files)
-      {
-        FileNode fnode = (FileNode)fentry.Value;
-        fnode.FillMd5HashTable(table,currentPath+(string)fentry.Key);
+      foreach(FileNode fnode in this._files)
+      {        
+        fnode.FillMd5HashTable(table,currentPath+fnode.Name);
       }
-      foreach(DictionaryEntry dentry in this._subDirectories)
+      foreach(DirectoryNode dnode in this._subDirectories)
       {
-        DirectoryNode dnode = (DirectoryNode)dentry.Value;
-        string subPath = currentPath + (string)dentry.Key + System.IO.Path.DirectorySeparatorChar;
+        string subPath = currentPath + dnode.Name + System.IO.Path.DirectorySeparatorChar;
         dnode.FillMd5HashTable(table,subPath);
       }
     }
@@ -734,16 +744,13 @@ namespace SyncTwoCo
       System.Diagnostics.Debug.Assert(currentPath.Length>0); 
       System.Diagnostics.Debug.Assert(currentPath[currentPath.Length-1]==System.IO.Path.DirectorySeparatorChar);
 
-      foreach(DictionaryEntry fentry in this._files)
+      foreach(FileNode fnode in this._files)
       {
-        FileNode fnode = (FileNode)fentry.Value;
-        fnode.FillMD5SumFileNodesHashTable(table,currentPath+(string)fentry.Key);
+        fnode.FillMD5SumFileNodesHashTable(table,currentPath+fnode.Name);
       }
-      foreach(DictionaryEntry dentry in this._subDirectories)
+      foreach(DirectoryNode dnode in this._subDirectories)
       {
-        DirectoryNode dnode = (DirectoryNode)dentry.Value;
-      
-        string subPath = currentPath + (string)dentry.Key + System.IO.Path.DirectorySeparatorChar;
+        string subPath = currentPath + dnode.Name + System.IO.Path.DirectorySeparatorChar;
         dnode.FillMD5SumFileNodesHashTable(table,subPath);
       }
     }
@@ -751,5 +758,54 @@ namespace SyncTwoCo
     #endregion
 
    
+    #region IComparable Members
+
+    public int CompareTo(object obj)
+    {
+      if(obj is string)
+        return string.Compare(this._name,(string)obj,true);
+      else if(obj is DirectoryNode)
+        return string.Compare(this._name,((DirectoryNode)obj)._name,true);
+      else
+        throw new ArgumentException("Cannot compare a FileNode with a object of type " + obj.GetType().ToString());
+    }
+
+    #endregion
+
+    #region IParentDirectory Members
+
+    public bool IsFileSystemRoot
+    {
+      get
+      {
+        return false;
+      }
+    }
+
+    public IParentDirectory ParentDirectory
+    {
+      get
+      {
+        return _parent;
+      }
+    }
+
+    /// <summary>
+    /// File name.
+    /// </summary>
+    public string Name
+    {
+      get 
+      {
+        return _name;
+      }
+    }
+
+    public override string ToString()
+    {
+      return _name==null || _name==string.Empty ? base.ToString() : _name;
+    }
+
+    #endregion
   }
 }
