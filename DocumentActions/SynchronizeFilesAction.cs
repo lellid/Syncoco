@@ -81,7 +81,24 @@ namespace Syncoco.DocumentActions
         }
       }
 
-      try { System.IO.File.Copy(sourceFileName,destFileName,overwrite); }
+      
+
+      try 
+      {
+        // before we overwrite an existing file, make sure the read-only attribute of that file is not set
+        if(overwrite && System.IO.File.Exists(destFileName))
+        {
+          System.IO.FileInfo info = new System.IO.FileInfo(destFileName);
+          if(info.Exists)
+          {
+            // first clear the readonly attribute
+            info.Attributes &= ~(System.IO.FileAttributes.ReadOnly | System.IO.FileAttributes.System | System.IO.FileAttributes.Hidden);       
+          }
+        }
+
+        // now we can perform a copy
+        System.IO.File.Copy(sourceFileName,destFileName,overwrite); 
+      }
       catch(Exception ex)
       {
         _reporter.ReportError(string.Format("unable to copy from {0} to {1} : {2}",sourceFileName,destFileName,ex.Message));
@@ -167,7 +184,7 @@ namespace Syncoco.DocumentActions
         System.IO.File.Delete(path);
         return FunctionResult.Success;
       }
-      catch(System.IO.IOException)
+      catch(Exception)
       {
       }
 

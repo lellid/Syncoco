@@ -69,6 +69,7 @@ namespace Syncoco
 
     public void InitializeList(ArrayList list)
     {
+      lvSyncList.BeginUpdate();
       lvSyncList.Clear();
       lvSyncList.Columns.Add("Name",150,System.Windows.Forms.HorizontalAlignment.Center);
       lvSyncList.Columns.Add("Action",50,System.Windows.Forms.HorizontalAlignment.Center);
@@ -78,6 +79,7 @@ namespace Syncoco
       lvSyncList.Columns.Add("WrTime",50,System.Windows.Forms.HorizontalAlignment.Center);
 
       lvSyncList.Items.AddRange((ListViewItem[])list.ToArray(typeof(ListViewItem)));
+      lvSyncList.EndUpdate();
     }
 
     public int GetItemCount()

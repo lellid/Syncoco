@@ -30,7 +30,7 @@ namespace Syncoco
   public class HashCalculationException : System.ApplicationException
   {
     public HashCalculationException(string filename, string message)
-      : base(string.Format("unable to calculate hash for file {0} : {1}"))
+      : base(string.Format("unable to calculate hash for file {0} : {1}", filename, message))
     {
     }
 
