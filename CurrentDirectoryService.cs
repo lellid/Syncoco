@@ -1,6 +1,6 @@
 using System;
 
-namespace SyncTwoCo
+namespace Syncoco
 {
   /// <summary>
   /// Holds the current directory and provides easy methods to enter or leave subdirectories.

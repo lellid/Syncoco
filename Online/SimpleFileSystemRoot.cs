@@ -3,9 +3,9 @@ using System.Collections;
 //using System.Management;
 
 using System.IO;
-using SyncTwoCo.Filter;
+using Syncoco.Filter;
 
-namespace SyncTwoCo.Online
+namespace Syncoco.Online
 {
 
   /// <summary>

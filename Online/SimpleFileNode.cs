@@ -1,6 +1,6 @@
 using System;
 
-namespace SyncTwoCo.Online
+namespace Syncoco.Online
 {
   /// <summary>
   /// Summary description for SimpleFileNode.

@@ -2,10 +2,10 @@ using System;
 using System.Collections;
 using System.Runtime.InteropServices;
 
-using SyncTwoCo.Filter;
-using SyncTwoCo.Traversing;
+using Syncoco.Filter;
+using Syncoco.Traversing;
 
-namespace SyncTwoCo.DocumentActions
+namespace Syncoco.DocumentActions
 {
   /// <summary>
   /// Summary description for CopyFilesToMedium.

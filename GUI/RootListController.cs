@@ -1,6 +1,6 @@
 using System;
 
-namespace SyncTwoCo
+namespace Syncoco
 {
   /// <summary>
   /// Summary description for RootListController.

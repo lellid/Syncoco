@@ -2,7 +2,7 @@ using System;
 using System.Security.Cryptography;
 
 
-namespace SyncTwoCo
+namespace Syncoco
 {
   
   /// <summary>
@@ -28,7 +28,7 @@ namespace SyncTwoCo
       tw.WriteElementString("LE",System.Xml.XmlConvert.ToString(_fileLength));
       tw.WriteElementString("FA",System.Xml.XmlConvert.ToString((int)_attributes));
 #if WRITEDATEASTICKS
-       tw.WriteElementString("CT",System.Xml.XmlConvert.ToString(_creationTimeUtc.Ticks));
+      tw.WriteElementString("CT",System.Xml.XmlConvert.ToString(_creationTimeUtc.Ticks));
       tw.WriteElementString("WT",System.Xml.XmlConvert.ToString(_lastWriteTimeUtc.Ticks));
 #else
       tw.WriteElementString("CT",System.Xml.XmlConvert.ToString(_creationTimeUtc));
@@ -195,7 +195,7 @@ namespace SyncTwoCo
     protected void Update(System.IO.FileInfo info, bool createHint, bool forceUpdateHash)
     {
       //if(info.Name=="IG004040.JPG")
-        //System.Diagnostics.Debug.WriteLine("Remove this line");
+      //System.Diagnostics.Debug.WriteLine("Remove this line");
 
       
       _name = info.Name;
@@ -210,7 +210,7 @@ namespace SyncTwoCo
       if(IsDifferent(info) || (hashCalculatedBefore.Valid && !this.HasSameHashThan(hashCalculatedBefore)))
       {
         if(!hashCalculatedBefore.Valid)
-        hashCalculatedBefore = CalculateHash(info);
+          hashCalculatedBefore = CalculateHash(info);
 
         // only update the node when the hash is now valid
         if(hashCalculatedBefore.Valid)

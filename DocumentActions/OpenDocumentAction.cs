@@ -1,19 +1,19 @@
 using System;
 
-namespace SyncTwoCo.DocumentActions
+namespace Syncoco.DocumentActions
 {
-	/// <summary>
-	/// Summary description for OpenDocumentAction.
-	/// </summary>
-	public class OpenDocumentAction : AbstractDocumentAction
-	{
+  /// <summary>
+  /// Summary description for OpenDocumentAction.
+  /// </summary>
+  public class OpenDocumentAction : AbstractDocumentAction
+  {
     string _filename;
 
-		public OpenDocumentAction(string filename, IBackgroundMonitor monitor)
+    public OpenDocumentAction(string filename, IBackgroundMonitor monitor)
       : base(null,monitor)
-		{
+    {
       _filename = filename;
-		}
+    }
     public OpenDocumentAction(string filename)
       : this(filename,null)
     {
@@ -45,5 +45,5 @@ namespace SyncTwoCo.DocumentActions
       }
     }
 
-	}
+  }
 }

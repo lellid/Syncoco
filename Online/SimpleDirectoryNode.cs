@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using System.IO;
-using SyncTwoCo.Filter;
+using Syncoco.Filter;
 
-namespace SyncTwoCo.Online
+namespace Syncoco.Online
 {
   /// <summary>
   /// Holds information about itself and about all files and subdirectories in this node.

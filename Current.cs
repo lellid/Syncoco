@@ -1,6 +1,6 @@
 using System;
 
-namespace SyncTwoCo
+namespace Syncoco
 {
   /// <summary>
   /// Summary description for Current.
@@ -29,7 +29,7 @@ namespace SyncTwoCo
         }
       }
 
-      MainForm = new SyncTwoCo();
+      MainForm = new Syncoco();
       System.Windows.Forms.Application.Run(MainForm);
     }
   }

@@ -1,6 +1,6 @@
 using System;
 
-namespace SyncTwoCo.Online
+namespace Syncoco.Online
 {
   [Serializable]
   public class SimpleDirectoryNodeList : SortedArrayList

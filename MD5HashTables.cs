@@ -1,6 +1,6 @@
 using System;
 
-namespace SyncTwoCo
+namespace Syncoco
 {
   
   public class PathAndFileNode

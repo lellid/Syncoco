@@ -1,6 +1,6 @@
 using System;
 
-namespace SyncTwoCo.DocumentActions
+namespace Syncoco.DocumentActions
 {
   /// <summary>
   /// Summary description for OpenDocumentAction.
@@ -29,7 +29,7 @@ namespace SyncTwoCo.DocumentActions
     public override void DirectExecute()
     
     {
-     _doc.Save(_filename);
+      _doc.Save(_filename);
     }
 
   }

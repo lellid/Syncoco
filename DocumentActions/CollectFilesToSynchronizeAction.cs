@@ -2,27 +2,27 @@ using System;
 using System.Collections;
 using System.Runtime.InteropServices;
 
-using SyncTwoCo.Filter;
-using SyncTwoCo.Traversing;
+using Syncoco.Filter;
+using Syncoco.Traversing;
 
 
-namespace SyncTwoCo.DocumentActions
+namespace Syncoco.DocumentActions
 {
-	/// <summary>
-	/// Summary description for CollectFilesToSynchronizeAction.
-	/// </summary>
-	public class CollectFilesToSynchronizeAction : AbstractDocumentAction
-	{
+  /// <summary>
+  /// Summary description for CollectFilesToSynchronizeAction.
+  /// </summary>
+  public class CollectFilesToSynchronizeAction : AbstractDocumentAction
+  {
     FilesToSynchronizeCollector[] _collectedFiles;
 
     [NonSerialized]
     MD5SumFileNodesHashTable _allFilesHere;
 
 
-		public CollectFilesToSynchronizeAction(MainDocument doc, IBackgroundMonitor monitor)
+    public CollectFilesToSynchronizeAction(MainDocument doc, IBackgroundMonitor monitor)
       : base(doc,monitor)
-		{
-		}
+    {
+    }
     public CollectFilesToSynchronizeAction(MainDocument doc)
       : this(doc,null)
     {

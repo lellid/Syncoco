@@ -1,6 +1,6 @@
 using System;
 
-namespace SyncTwoCo
+namespace Syncoco
 {
   [Serializable]
   public struct FileHash : IComparable

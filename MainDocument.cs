@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace SyncTwoCo
+namespace Syncoco
 {
   using Traversing;
   /// <summary>
@@ -120,6 +120,15 @@ namespace SyncTwoCo
         System.Xml.XmlTextWriter tw = new System.Xml.XmlTextWriter(stream,System.Text.Encoding.UTF8);
         tw.WriteStartDocument();
         tw.WriteStartElement("TwoPointSynchronizationByDataMedium");
+
+#if WRITEDATEASTICKS
+        bool writeDateAsTicks=true;
+#else
+        bool writeDateAsTicks=false;
+#endif
+        tw.WriteAttributeString("FormatDateAsTicks",System.Xml.XmlConvert.ToString(writeDateAsTicks));
+        tw.WriteAttributeString("DirectorySeparatorChar",System.IO.Path.DirectorySeparatorChar.ToString());
+
         Save(tw);
         tw.WriteEndElement();
         tw.WriteEndDocument();
@@ -275,7 +284,7 @@ namespace SyncTwoCo
       doc.RestoreParentOfChildObjects();
       doc.SetFileSavedFlag(filename);
 
-    return doc;
+      return doc;
     }
 
   
@@ -406,7 +415,7 @@ namespace SyncTwoCo
 
     public void ClearCachedMyFiles()
     {
-       this._allFilesHere=null;
+      this._allFilesHere=null;
     }
 
     public MD5SumFileNodesHashTable CachedAllMyFiles

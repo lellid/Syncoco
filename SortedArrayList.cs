@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace SyncTwoCo
+namespace Syncoco
 {
   /// <summary>
   /// Summary description for SortedArrayList.

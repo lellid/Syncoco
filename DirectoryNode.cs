@@ -2,9 +2,9 @@ using System;
 using System.Collections;
 using System.IO;
 
-namespace SyncTwoCo
+namespace Syncoco
 {
-    using Filter;
+  using Filter;
   using Traversing;
   /// <summary>
   /// Holds information about itself and about all files and subdirectories in this node.

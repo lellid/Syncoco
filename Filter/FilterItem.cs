@@ -1,8 +1,8 @@
 using System;
 
-namespace SyncTwoCo.Filter
+namespace Syncoco.Filter
 {
-	
+  
   /// <summary>
   /// FilterItem holds a match string along with the information whether to include or to exclude the item.
   /// </summary>
@@ -28,17 +28,17 @@ namespace SyncTwoCo.Filter
     /// The action that is used if this filter item matches. If the action is set to ignore, this filter item
     /// will be ignored.
     /// </summary>
-      public FilterAction Action
+    public FilterAction Action
+    {
+      get
       {
-        get
-        {
-          return _action;
-        }
-        set
-        {
-          _action = value;
-        }
+        return _action;
       }
+      set
+      {
+        _action = value;
+      }
+    }
 
   
 

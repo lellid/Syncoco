@@ -1,13 +1,13 @@
 using System;
-using SyncTwoCo.Filter;
-using SyncTwoCo.Traversing;
-namespace SyncTwoCo.DocumentActions
+using Syncoco.Filter;
+using Syncoco.Traversing;
+namespace Syncoco.DocumentActions
 {
-	/// <summary>
-	/// Summary description for AbstractAction.
-	/// </summary>
-	public abstract class AbstractDocumentAction
-	{
+  /// <summary>
+  /// Summary description for AbstractAction.
+  /// </summary>
+  public abstract class AbstractDocumentAction
+  {
     protected IBackgroundMonitor _monitor=new DummyBackgroundMonitor();
     protected MainDocument _doc;
     protected System.Text.StringBuilder _errors = new System.Text.StringBuilder();
@@ -50,5 +50,5 @@ namespace SyncTwoCo.DocumentActions
    
     public abstract void DirectExecute();
 
-	}
+  }
 }

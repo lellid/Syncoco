@@ -2,7 +2,7 @@ using System;
 using System.Security.Cryptography;
 
 
-namespace SyncTwoCo
+namespace Syncoco
 {
   
   /// <summary>

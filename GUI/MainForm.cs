@@ -5,14 +5,14 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Data;
 
-using SyncTwoCo.DocumentActions;
+using Syncoco.DocumentActions;
 
-namespace SyncTwoCo
+namespace Syncoco
 {
   /// <summary>
   /// Summary description for Form1.
   /// </summary>
-  public class SyncTwoCo : System.Windows.Forms.Form
+  public class Syncoco : System.Windows.Forms.Form
   {
     private System.Windows.Forms.MainMenu mainMenu1;
     private System.Windows.Forms.MenuItem menuItem1;
@@ -42,7 +42,7 @@ namespace SyncTwoCo
     /// </summary>
     private System.ComponentModel.Container components = null;
 
-    public SyncTwoCo()
+    public Syncoco()
     {
       //
       // Required for Windows Form Designer support
@@ -236,14 +236,14 @@ namespace SyncTwoCo
       this._tabControl.Size = new System.Drawing.Size(520, 398);
       this._tabControl.TabIndex = 0;
       // 
-      // SyncTwoCo
+      // Syncoco
       // 
       this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
       this.ClientSize = new System.Drawing.Size(520, 398);
       this.Controls.Add(this._tabControl);
       this.Menu = this.mainMenu1;
-      this.Name = "SyncTwoCo";
-      this.Text = "SyncTwoCo";
+      this.Name = "Syncoco";
+      this.Text = "Syncoco";
       this.ResumeLayout(false);
 
     }

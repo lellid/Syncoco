@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Windows.Forms;
 
-namespace SyncTwoCo
+namespace Syncoco
 {
   using Traversing;
 
@@ -183,7 +183,7 @@ namespace SyncTwoCo
       for(int i=0;i<count;i++)
       {
         if(_view.IsItemSelected(i))
-          list.Add(_view.GetItem(i));
+          list.Add(_view.GetItem(i).Tag);
       }
 
       DocumentActions.SynchronizeFilesAction action = new DocumentActions.SynchronizeFilesAction(Current.Document,list);

@@ -22,7 +22,7 @@
 
 using System;
 
-namespace SyncTwoCo
+namespace Syncoco
 {
   #region Interfaces
 

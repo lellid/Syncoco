@@ -1,12 +1,12 @@
 using System;
 
-namespace SyncTwoCo
+namespace Syncoco
 {
-	/// <summary>
-	/// Summary description for IBackgroundMonitor.
-	/// </summary>
-	public interface IBackgroundMonitor
-	{
+  /// <summary>
+  /// Summary description for IBackgroundMonitor.
+  /// </summary>
+  public interface IBackgroundMonitor
+  {
     /// <summary>
     /// True when we should send a string what we do currently
     /// </summary>
@@ -22,8 +22,8 @@ namespace SyncTwoCo
     /// Returns true if the activity was cancelled by the user
     /// </summary>
     bool CancelledByUser { get; }
-		
-	}
+    
+  }
 
 
   public class DummyBackgroundMonitor : IBackgroundMonitor
@@ -34,7 +34,7 @@ namespace SyncTwoCo
     {
       get
       {
-       return false;
+        return false;
       }
     }
 
@@ -144,13 +144,13 @@ namespace SyncTwoCo
 
     public void Stop()
     {
-    _timer.Stop();
+      _timer.Stop();
     }
 
     public System.ComponentModel.ISynchronizeInvoke SynchronizingObject
     {
       get { return _timer.SynchronizingObject; }
-        set { _timer.SynchronizingObject = value; }
+      set { _timer.SynchronizingObject = value; }
     }
 
     #region IBackgroundMonitor Members

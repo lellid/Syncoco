@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace SyncTwoCo.Online
+namespace Syncoco.Online
 {
   /// <summary>
   /// Summary description for SimpleFileSystemRootList.

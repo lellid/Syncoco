@@ -1,22 +1,22 @@
 using System;
 using System.IO;
 using System.Collections;
-using SyncTwoCo.Filter;
+using Syncoco.Filter;
 
-namespace SyncTwoCo.Traversing
+namespace Syncoco.Traversing
 {
-	/// <summary>
-	/// Summary description for DirectoryUpdater.
-	/// </summary>
-	public class DirectoryUpdater
-	{
+  /// <summary>
+  /// Summary description for DirectoryUpdater.
+  /// </summary>
+  public class DirectoryUpdater
+  {
     PathFilter pathFilter;
     IBackgroundMonitor _monitor = new DummyBackgroundMonitor();
 
-		public DirectoryUpdater(PathFilter filt)
-		{
-			pathFilter = filt;
-		}
+    public DirectoryUpdater(PathFilter filt)
+    {
+      pathFilter = filt;
+    }
 
     public DirectoryUpdater(PathFilter filt, IBackgroundMonitor monitor)
     {
@@ -253,5 +253,5 @@ namespace SyncTwoCo.Traversing
       DirectoryNode dirNode = new DirectoryNode(dirinfo.Name);
       return dirNode;
     }
-	}
+  }
 }

@@ -1,6 +1,6 @@
 using System;
 
-namespace SyncTwoCo.Filter
+namespace Syncoco.Filter
 {
   /// <summary>
   /// Summary description for FilterListItemList.

@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace SyncTwoCo.Filter
+namespace Syncoco.Filter
 {
   /// <summary>
   /// Responsible for determination whether a file or path should be included 

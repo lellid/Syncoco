@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Data;
 using System.Windows.Forms;
 
-namespace SyncTwoCo
+namespace Syncoco
 {
   /// <summary>
   /// Summary description for RootList.

@@ -4,7 +4,7 @@ using System.Collections;
 
 using System.IO;
 
-namespace SyncTwoCo
+namespace Syncoco
 {
   using Filter;
   using Traversing;

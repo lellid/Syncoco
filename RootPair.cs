@@ -3,9 +3,9 @@ using System.Collections;
 using System.Runtime.InteropServices;
 
 
-namespace SyncTwoCo
+namespace Syncoco
 {
-    using Filter;
+  using Filter;
   using Traversing;
 
   
@@ -41,7 +41,7 @@ namespace SyncTwoCo
       _parent = parent;
 
       if(null!=_root1)
-      _root1.RestoreParentOfChildObjects();
+        _root1.RestoreParentOfChildObjects();
       if(null!=_root2)
         _root2.RestoreParentOfChildObjects();
     }

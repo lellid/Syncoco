@@ -1,23 +1,23 @@
 using System;
 using System.Collections;
-using SyncTwoCo;
-namespace SyncTwoCo.Traversing
+using Syncoco;
+namespace Syncoco.Traversing
 {
-	/// <summary>
-	/// Summary description for FilesToTransferCollector.
-	/// </summary>
-	public class FilesToTransferCollector
-	{
+  /// <summary>
+  /// Summary description for FilesToTransferCollector.
+  /// </summary>
+  public class FilesToTransferCollector
+  {
     DirectoryNode _myDirRoot;
     DirectoryNode _foreignDirRoot;
 
     SortedList list;
 
-		public FilesToTransferCollector(DirectoryNode myDir, DirectoryNode foreignDir)
-		{
-			_myDirRoot = myDir;
+    public FilesToTransferCollector(DirectoryNode myDir, DirectoryNode foreignDir)
+    {
+      _myDirRoot = myDir;
       _foreignDirRoot = foreignDir;
-		}
+    }
 
     public void Traverse()
     {
@@ -77,5 +77,5 @@ namespace SyncTwoCo.Traversing
           PathUtil.Combine_Relpath_Dirname(nameroot,mySubDirName));
       }
     }
-	}
+  }
 }

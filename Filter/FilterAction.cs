@@ -1,6 +1,6 @@
 using System;
 
-namespace SyncTwoCo.Filter
+namespace Syncoco.Filter
 {
   /// <summary>
   /// Enumerates the action for a filter item.

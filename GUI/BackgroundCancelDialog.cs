@@ -5,59 +5,59 @@ using System.ComponentModel;
 using System.Windows.Forms;
 
 
-namespace SyncTwoCo.GUI
+namespace Syncoco.GUI
 {
-	/// <summary>
-	/// Summary description for BackgroundCancelDialog.
-	/// </summary>
-	public class BackgroundCancelDialog : System.Windows.Forms.Form
-	{
+  /// <summary>
+  /// Summary description for BackgroundCancelDialog.
+  /// </summary>
+  public class BackgroundCancelDialog : System.Windows.Forms.Form
+  {
     private System.Windows.Forms.Label lblText;
     private System.Windows.Forms.Button btCancel;
     private System.Timers.Timer _timer;
     System.Threading.Thread _thread;
-		ExternalDrivenBackgroundMonitor _monitor;
+    ExternalDrivenBackgroundMonitor _monitor;
     /// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.Container components = null;
+    /// Required designer variable.
+    /// </summary>
+    private System.ComponentModel.Container components = null;
 
-		public BackgroundCancelDialog(  System.Threading.Thread thread, ExternalDrivenBackgroundMonitor monitor)
-		{
+    public BackgroundCancelDialog(  System.Threading.Thread thread, ExternalDrivenBackgroundMonitor monitor)
+    {
       _thread = thread;
       _monitor = monitor;
-			//
-			// Required for Windows Form Designer support
-			//
-			InitializeComponent();
+      //
+      // Required for Windows Form Designer support
+      //
+      InitializeComponent();
 
-			//
-			// TODO: Add any constructor code after InitializeComponent call
-			//
-		}
+      //
+      // TODO: Add any constructor code after InitializeComponent call
+      //
+    }
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
+    /// <summary>
+    /// Clean up any resources being used.
+    /// </summary>
+    protected override void Dispose( bool disposing )
+    {
+      if( disposing )
+      {
+        if(components != null)
+        {
+          components.Dispose();
+        }
+      }
+      base.Dispose( disposing );
+    }
 
-		#region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+    #region Windows Form Designer generated code
+    /// <summary>
+    /// Required method for Designer support - do not modify
+    /// the contents of this method with the code editor.
+    /// </summary>
+    private void InitializeComponent()
+    {
       this.lblText = new System.Windows.Forms.Label();
       this.btCancel = new System.Windows.Forms.Button();
       this._timer = new System.Timers.Timer();
@@ -102,7 +102,7 @@ namespace SyncTwoCo.GUI
       this.ResumeLayout(false);
 
     }
-		#endregion
+    #endregion
 
    
   
@@ -122,7 +122,7 @@ namespace SyncTwoCo.GUI
   
     private void btCancel_Click(object sender, System.EventArgs e)
     {
-    _monitor.CancelledByUser = true;
+      _monitor.CancelledByUser = true;
     }
 
     private void BackgroundCancelDialog_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -130,5 +130,5 @@ namespace SyncTwoCo.GUI
       if(_thread.IsAlive)
         e.Cancel = true;
     }
-	}
+  }
 }

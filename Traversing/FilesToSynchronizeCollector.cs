@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Specialized;
 
 
-using SyncTwoCo.Filter;
+using Syncoco.Filter;
 
-namespace SyncTwoCo.Traversing
+namespace Syncoco.Traversing
 {
   /// <summary>
   /// Summary description for Collector.

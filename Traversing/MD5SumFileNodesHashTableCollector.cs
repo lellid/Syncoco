@@ -1,19 +1,19 @@
 using System;
 
-namespace SyncTwoCo.Traversing
+namespace Syncoco.Traversing
 {
-	/// <summary>
-	/// Summary description for MD5SumFileNodesHashTableCollector.
-	/// </summary>
-	public class MD5SumFileNodesHashTableCollector
-	{
+  /// <summary>
+  /// Summary description for MD5SumFileNodesHashTableCollector.
+  /// </summary>
+  public class MD5SumFileNodesHashTableCollector
+  {
     MD5SumFileNodesHashTable _table;
     DirectoryNode _rootDir;
     string _pathRoot;
 
 
-		public MD5SumFileNodesHashTableCollector(DirectoryNode rootDir, string pathRoot, MD5SumFileNodesHashTable table)
-		{
+    public MD5SumFileNodesHashTableCollector(DirectoryNode rootDir, string pathRoot, MD5SumFileNodesHashTable table)
+    {
       System.Diagnostics.Debug.Assert(rootDir!=null);
       System.Diagnostics.Debug.Assert(table!=null);
       PathUtil.Assert_Abspath(pathRoot);
@@ -24,7 +24,7 @@ namespace SyncTwoCo.Traversing
       _pathRoot = pathRoot;
 
       
-		}
+    }
 
     public void Traverse()
     {
@@ -46,5 +46,5 @@ namespace SyncTwoCo.Traversing
         VisitDirectory(dnode,PathUtil.Combine_Abspath_Dirname(currentPath, dnode.Name));
       }
     }
-	}
+  }
 }
