@@ -3,9 +3,11 @@ using System.Collections;
 //using System.Management;
 
 using System.IO;
+using SyncTwoCo.Filter;
 
 namespace SyncTwoCo.Online
 {
+
   /// <summary>
   /// Summary description for FileSystemRoot.
   /// </summary>

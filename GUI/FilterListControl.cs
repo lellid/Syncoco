@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 namespace SyncTwoCo
 {
+  using Filter;
   /// <summary>
   /// Summary description for FilterListControl.
   /// </summary>

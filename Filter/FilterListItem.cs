@@ -1,10 +1,11 @@
 using System;
 
-namespace SyncTwoCo
+namespace SyncTwoCo.Filter
 {
   /// <summary>
   /// Summary description for FilterListItem.
   /// </summary>
+  [Serializable]
   public class FilterListItem
   {
     /// <summary>The relative path that this FilterListItem belongs to. The path must <b>not</b> contain wildcards.</summary>
@@ -12,6 +13,7 @@ namespace SyncTwoCo
     public FilterList Filter = new FilterList();
 
     /// <summary>Subdirectories that this path includes.</summary>
+    [NonSerialized]
     string[] _subDirs = new string[0];
     
 

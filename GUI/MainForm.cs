@@ -33,6 +33,7 @@ namespace SyncTwoCo
     private System.Windows.Forms.MenuItem menuEndUpdateSaveCopy;
     private System.Windows.Forms.MenuItem menuItem3;
     private System.Windows.Forms.MenuItem menuUpdateHash;
+    private System.Windows.Forms.TabControl _tabControl;
 
     /// <summary>
     /// Required designer variable.
@@ -86,12 +87,14 @@ namespace SyncTwoCo
       this.menuEditCopyFiles = new System.Windows.Forms.MenuItem();
       this.menuEditCollect = new System.Windows.Forms.MenuItem();
       this.menuEditSyncronize = new System.Windows.Forms.MenuItem();
+      this.menuUpdateHash = new System.Windows.Forms.MenuItem();
       this.menuBeginWork = new System.Windows.Forms.MenuItem();
       this.menuBeginShowSyncFiles = new System.Windows.Forms.MenuItem();
       this.menuBeginSyncSelected = new System.Windows.Forms.MenuItem();
       this.menuEndWork = new System.Windows.Forms.MenuItem();
       this.menuEndUpdateSaveCopy = new System.Windows.Forms.MenuItem();
-      this.menuUpdateHash = new System.Windows.Forms.MenuItem();
+      this._tabControl = new System.Windows.Forms.TabControl();
+      this.SuspendLayout();
       // 
       // mainMenu1
       // 
@@ -183,6 +186,12 @@ namespace SyncTwoCo
       this.menuEditSyncronize.Text = "Synchronize";
       this.menuEditSyncronize.Click += new System.EventHandler(this.menuEditSyncronize_Click);
       // 
+      // menuUpdateHash
+      // 
+      this.menuUpdateHash.Index = 4;
+      this.menuUpdateHash.Text = "UpdateHash";
+      this.menuUpdateHash.Click += new System.EventHandler(this.menuUpdateHash_Click);
+      // 
       // menuBeginWork
       // 
       this.menuBeginWork.Index = 2;
@@ -216,19 +225,24 @@ namespace SyncTwoCo
       this.menuEndUpdateSaveCopy.Text = "UpdateSaveAndCopyFiles";
       this.menuEndUpdateSaveCopy.Click += new System.EventHandler(this.menuEndUpdateSaveCopy_Click);
       // 
-      // menuUpdateHash
+      // _tabControl
       // 
-      this.menuUpdateHash.Index = 4;
-      this.menuUpdateHash.Text = "UpdateHash";
-      this.menuUpdateHash.Click += new System.EventHandler(this.menuUpdateHash_Click);
+      this._tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this._tabControl.Location = new System.Drawing.Point(0, 0);
+      this._tabControl.Name = "_tabControl";
+      this._tabControl.SelectedIndex = 0;
+      this._tabControl.Size = new System.Drawing.Size(520, 398);
+      this._tabControl.TabIndex = 0;
       // 
       // SyncTwoCo
       // 
       this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
       this.ClientSize = new System.Drawing.Size(520, 398);
+      this.Controls.Add(this._tabControl);
       this.Menu = this.mainMenu1;
       this.Name = "SyncTwoCo";
       this.Text = "SyncTwoCo";
+      this.ResumeLayout(false);
 
     }
     #endregion
@@ -237,27 +251,45 @@ namespace SyncTwoCo
     RootListController _rootList = new RootListController(Current.Document);
     SyncListController _syncList = new SyncListController();
 
-    public void ShowControl(UserControl ctrl)
+    public void ShowControl(string caption, UserControl ctrl)
     {
       if(this._control!=null)
         this.Controls.Remove(_control);
 
-      this._control = ctrl;
-      this._control.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.Controls.Add(ctrl);
 
+      // try to find appropriate tab page
+
+      TabPage tabpage =null;
+      for(int i=0;i<_tabControl.TabPages.Count;i++)
+      {
+        if(_tabControl.TabPages[i].Controls[0]==ctrl)
+        {
+          tabpage = _tabControl.TabPages[i];
+          break;
+        }
+      }
+
+      if(tabpage==null)
+      {
+        tabpage = new TabPage(caption);
+        tabpage.Controls.Add(ctrl);
+        ctrl.Dock = System.Windows.Forms.DockStyle.Fill;
+        _tabControl.TabPages.Add(tabpage);
+      }
+
+      _tabControl.SelectedTab = tabpage;
     }
 
     public void ShowSyncList()
     {
-      ShowControl(_syncList.View);
+      ShowControl("FilesToSync",_syncList.View);
     }
 
     private void menuFileNew_Click(object sender, System.EventArgs e)
     {
       if(_rootList==null)
         _rootList = new RootListController(Current.Document);
-      ShowControl(_rootList.View);
+      ShowControl("Roots",_rootList.View);
     }
 
     private void menuFileSave_Click(object sender, System.EventArgs e)
@@ -308,7 +340,7 @@ namespace SyncTwoCo
 
           Current.Document = doc;
           _rootList = new RootListController(Current.Document);
-          ShowControl(_rootList.View);
+          ShowControl("Root",_rootList.View);
         }
       }
     }
@@ -323,7 +355,7 @@ namespace SyncTwoCo
 
         Current.Document = (MainDocument)doc;
         _rootList = new RootListController(Current.Document);
-        ShowControl(_rootList.View);
+        ShowControl("Root",_rootList.View);
       }
     }
     

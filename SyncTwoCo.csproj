@@ -163,21 +163,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "FilterList.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "FilterListItem.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "FilterListItemList.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "IFileHint.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -198,11 +183,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "PathFilter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "PathUtil.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -214,6 +194,36 @@
                 />
                 <File
                     RelPath = "SortedArrayList.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Filter\FilterAction.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Filter\FilterItem.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Filter\FilterList.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Filter\FilterListItem.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Filter\FilterListItemList.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Filter\PathFilter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

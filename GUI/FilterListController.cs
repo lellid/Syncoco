@@ -2,6 +2,8 @@ using System;
 
 namespace SyncTwoCo
 {
+  using Filter;
+
   /// <summary>
   /// Summary description for FilterListController.
   /// </summary>

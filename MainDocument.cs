@@ -33,12 +33,74 @@ namespace SyncTwoCo
 
     }
 
+    public void RestoreParentOfChildObjects()
+    {
+      for(int i=0;i<_rootPairs.Count;i++)
+        this.RootPair(i).RestoreParentOfChildObjects(this);
+    }
+
     public void Save(string filename)
     {
-   
+      
       if(!System.IO.Path.HasExtension(filename))
         filename += ".stc";
 
+      if(System.IO.Path.GetExtension(filename).ToLower()==".stcbin")
+        SaveBinary(filename);
+      else
+        SaveXML(filename);
+    }
+
+
+    protected void SaveBinary(string filename)
+    {
+    
+
+      // first create a directory
+      string dirname = System.IO.Path.GetFileNameWithoutExtension(filename);
+      System.IO.Directory.CreateDirectory(dirname);
+
+      string tempfilename=null;
+      Exception exception=null;
+      System.IO.FileStream stream=null;
+      try
+      {
+
+        if(System.IO.File.Exists(filename))
+          tempfilename = System.IO.Path.GetTempFileName();
+
+
+        stream = new System.IO.FileStream(null!=tempfilename ? tempfilename : filename, System.IO.FileMode.Create,System.IO.FileAccess.ReadWrite,System.IO.FileShare.None);
+       
+        System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+
+        formatter.Serialize(stream,Current.Document);
+
+        stream.Close();
+
+        if(null!=tempfilename)
+          System.IO.File.Copy(tempfilename,filename,true);
+
+      }
+      catch(Exception ex)
+      {
+        exception = ex;
+      }
+      finally
+      {
+        if(null!=stream)
+          stream.Close();
+        if(null!=tempfilename)
+          System.IO.File.Delete(tempfilename);
+      }
+
+      if(null!=exception)
+        throw exception;
+
+    }
+
+    protected void SaveXML(string filename)
+    {
       // first create a directory
       string dirname = System.IO.Path.GetFileNameWithoutExtension(filename);
       System.IO.Directory.CreateDirectory(dirname);
@@ -199,11 +261,34 @@ namespace SyncTwoCo
       SetFileSavedFlag(filename);
     }
 
+
+    public static MainDocument OpenAsBinary(string filename)
+    {
+      System.IO.FileStream stream = new System.IO.FileStream(filename,System.IO.FileMode.Open,System.IO.FileAccess.Read,System.IO.FileShare.None);
+   
+      System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+      object o = formatter.Deserialize(stream);
+      MainDocument doc = (MainDocument)o;
+      stream.Close();
+
+      doc.RestoreParentOfChildObjects();
+      doc.SetFileSavedFlag(filename);
+
+    return doc;
+    }
+
     public static MainDocument Open(string filename)
     {
-      MainDocument doc = new MainDocument();
-      doc.OpenAsXML(filename);
-      return doc;
+      if(System.IO.Path.GetExtension(filename).ToLower()==".stcbin")
+      {
+        return OpenAsBinary(filename);
+      }
+      else
+      {
+        MainDocument doc = new MainDocument();
+        doc.OpenAsXML(filename);
+        return doc;
+      }
     }
 
    

@@ -1,12 +1,12 @@
 using System;
 
-namespace SyncTwoCo
+namespace SyncTwoCo.Filter
 {
   /// <summary>
   /// Summary description for FilterListItemList.
   /// </summary>
   
-
+  [Serializable]
   public class FilterListItemList : System.Collections.CollectionBase
   {
     public FilterListItem this[int i]

@@ -6,6 +6,8 @@ using System.IO;
 
 namespace SyncTwoCo
 {
+  using Filter;
+
   /// <summary>
   /// Summary description for FileSystemRoot.
   /// </summary>
@@ -191,6 +193,12 @@ namespace SyncTwoCo
       {
         return null;
       }
+    }
+
+    public void RestoreParentOfChildObjects()
+    {
+      if(_DirectoryNode!=null)
+        _DirectoryNode.RestoreParentOfChildObjects(this);
     }
 
     #endregion

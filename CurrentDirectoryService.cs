@@ -5,21 +5,26 @@ namespace SyncTwoCo
   /// <summary>
   /// Holds the current directory and provides easy methods to enter or leave subdirectories.
   /// </summary>
+  [Serializable]
   public class CurrentDirectoryService
   {
     #region Member variables
 
     /// <summary>Number of array items in <see>_subDirectory</see> that are valid.</summary>
+    [NonSerialized]
     protected int      _subDirectoryLevel = 0;
 
     /// <summary>Current directory stored as single subdirectory names. The number <see>_subDirectoryLevel</see> gives the number of
     /// array items that are valid.</summary>
+    [NonSerialized]
     protected string[] _subDirectory = new string[1024];
 
     /// <summary>Stores the current directory as a string. </summary>
+    [NonSerialized]
     protected System.Text.StringBuilder _directoryPath = new System.Text.StringBuilder();
 
     /// <summary>True if <see>_directoryPath</see> is valid. If false, it must be rebuild from the <see>_subDirectory</see> array.</summary>
+    [NonSerialized]
     protected bool _directoryPathValid = false;
     
 
@@ -27,10 +32,13 @@ namespace SyncTwoCo
     /// Provides the level, where building the relative subdirectory path starts. This is intended for filters or so,
     /// where base of the filter is not the root directory, but some subdirectory above.
     /// </summary>
+    [NonSerialized]
     int _relativeSubDirLevel=int.MinValue;
     /// <summary>True if the <see>_relativeSubDirPath</see> is valid.</summary>
+    [NonSerialized]
     bool _relativeSubDirPathValid=false;
     /// <summary>Path from base level subdirectory up to the current directory.</summary>
+    [NonSerialized]
     System.Text.StringBuilder _relativeSubDirPath = new System.Text.StringBuilder();
 
     #endregion

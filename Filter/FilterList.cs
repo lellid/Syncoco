@@ -1,80 +1,14 @@
 using System;
 
-namespace SyncTwoCo
+namespace SyncTwoCo.Filter
 {
-  /// <summary>
-  /// Enumerates the action for a filter item.
-  /// </summary>
-  public enum  FilterAction
-  {
-    /// <summary>
-    /// Include the item.
-    /// </summary>
-    Include=0,
-    /// <summary>
-    /// Exclude the item.
-    /// </summary>
-    Exclude=1,
-
-    /// <summary>Ignore the item or take no action</summary>
-    Ignore=2
-  }
-
-  /// <summary>
-  /// FilterItem holds a match string along with the information whether to include or to exclude the item.
-  /// </summary>
-  public class FilterItem
-  {
-    /// <summary>
-    /// The action that is used if this filter item matches. If the action is set to ignore, this filter item
-    /// will be ignored.
-    /// </summary>
-    public FilterAction Action;
-
-    /// <summary>
-    /// Match string to check the name against. Can contain wildcards.
-    /// </summary>
-    public string MatchString;
-
-    public FilterItem(FilterAction action, string matchString)
-    {
-      Action = action;
-      MatchString = matchString;
-    }
-
-    public FilterItem(FilterItem from)
-    {
-      CopyFrom(from);
-    }
-
-    public void CopyFrom(FilterItem from)
-    {
-      this.Action = from.Action;
-      this.MatchString = from.MatchString;
-    }
-
-    public void Save(System.Xml.XmlTextWriter tw)
-    {
-      tw.WriteElementString("Action", Action.ToString());
-      tw.WriteElementString("Match",MatchString);
-    }
-
-    public void Open(System.Xml.XmlTextReader tr)
-    {
-      Action = (FilterAction)System.Enum.Parse(typeof(FilterAction),tr.ReadElementString("Action"));
-      MatchString = tr.ReadElementString("Match");
-    }
-
-    public FilterItem(System.Xml.XmlTextReader tr)
-    {
-      Open(tr);
-    }
-  }
+  
 
 
   /// <summary>
   /// FilterList holds MatchStrings along with the information wheter to exlucde or to include the item.
   /// </summary>
+  [Serializable]
   public class FilterList : System.Collections.CollectionBase
   {
 

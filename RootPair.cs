@@ -5,15 +5,20 @@ using System.Runtime.InteropServices;
 
 namespace SyncTwoCo
 {
+    using Filter;
+
+  
   /// <summary>
   /// Summary description for RootPair.
   /// </summary>
+  [Serializable]
   public class RootPair
   {
     FileSystemRoot _root1;
     FileSystemRoot _root2;
     PathFilter _pathFilter;
 
+    [NonSerialized]
     MainDocument _parent;
 
     public RootPair(MainDocument parent)
@@ -28,6 +33,16 @@ namespace SyncTwoCo
     {
       _parent = parent;
       Open(tr);
+    }
+
+    public void RestoreParentOfChildObjects(MainDocument parent)
+    {
+      _parent = parent;
+
+      if(null!=_root1)
+      _root1.RestoreParentOfChildObjects();
+      if(null!=_root2)
+        _root2.RestoreParentOfChildObjects();
     }
 
     public void Save(System.Xml.XmlTextWriter tw)

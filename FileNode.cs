@@ -68,6 +68,11 @@ namespace SyncTwoCo
       Open(tr);
     }
 
+    public void RestoreParentOfChildObjects(DirectoryNode parent)
+    {
+      _parent = parent;
+    }
+
     
     void Open(System.Xml.XmlTextReader tr)
     {

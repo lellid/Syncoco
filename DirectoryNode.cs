@@ -4,6 +4,7 @@ using System.IO;
 
 namespace SyncTwoCo
 {
+    using Filter;
   /// <summary>
   /// Holds information about itself and about all files and subdirectories in this node.
   /// </summary>
@@ -821,6 +822,22 @@ namespace SyncTwoCo
     public override string ToString()
     {
       return _name==null || _name==string.Empty ? base.ToString() : _name;
+    }
+
+    public void SetParent(IParentDirectory parent)
+    {
+      _parent = parent;
+    }
+
+
+    public void RestoreParentOfChildObjects(IParentDirectory parent)
+    {
+      _parent = parent;
+
+      foreach(FileNode file in this._files)
+        file.RestoreParentOfChildObjects(this);
+      foreach(DirectoryNode dir in this._subDirectories)
+        dir.RestoreParentOfChildObjects(this);
     }
 
     #endregion

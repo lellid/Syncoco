@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
 
-namespace SyncTwoCo
+namespace SyncTwoCo.Filter
 {
   /// <summary>
   /// Responsible for determination whether a file or path should be included 
   /// or not.
   /// </summary>
+  [Serializable]
   public class PathFilter : CurrentDirectoryService
   {
     
@@ -19,10 +20,13 @@ namespace SyncTwoCo
     /// <summary>
     /// Cached index to this lists which are active.
     /// </summary>
+    [NonSerialized]
     int[] _activeList=new int[0];
+    [NonSerialized]
     int   _activeListCount;
     /// <summary>Indicates if the active list is valid. After a directory change, this list
     /// can become invalid.</summary>
+    [NonSerialized]
     bool  _activeListValid;
 
 
