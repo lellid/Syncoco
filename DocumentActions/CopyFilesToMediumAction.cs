@@ -12,13 +12,13 @@ namespace Syncoco.DocumentActions
   /// </summary>
   public class CopyFilesToMediumAction : AbstractDocumentAction
   {
-    public CopyFilesToMediumAction(MainDocument doc, IBackgroundMonitor monitor)
-      : base(doc,monitor)
+    public CopyFilesToMediumAction(MainDocument doc, IBackgroundMonitor monitor, IErrorReporter reporter)
+      : base(doc,monitor,reporter)
     {
     }
 
     public CopyFilesToMediumAction(MainDocument doc)
-      : this(doc,null)
+      : this(doc,null,null)
     {
     }
 
@@ -57,14 +57,14 @@ namespace Syncoco.DocumentActions
       for(int i=0;i<_doc.Count;i++)
       {
         if(_doc.MyRoot(i).IsValid)
-          CopyFilesToMedium(_doc.RootPair(i),_doc.MediumDirectoryName,copiedFiles,md5HashTable,_monitor);
+          CopyFilesToMedium(_doc.RootPair(i),_doc.MediumDirectoryName,copiedFiles,md5HashTable);
       }
 
       // and now copy all other files
       for(int i=0;i<_doc.Count;i++)
       {
         if(_doc.MyRoot(i).IsValid)
-          CopyFilesToMedium(_doc.RootPair(i),_doc.MediumDirectoryName,copiedFiles,null,_monitor);
+          CopyFilesToMedium(_doc.RootPair(i),_doc.MediumDirectoryName,copiedFiles,null);
       }
     }
 
@@ -81,13 +81,13 @@ namespace Syncoco.DocumentActions
     
 
 
-    public void CopyFilesToMedium(RootPair rootPair, string directoryname, Hashtable copiedFiles, MD5SumHashTable md5Hashes, IBackgroundMonitor monitor)
+    public void CopyFilesToMedium(RootPair rootPair, string directoryname, Hashtable copiedFiles, MD5SumHashTable md5Hashes)
     {
       FileSystemRoot myRoot = rootPair.MyRoot;
       FileSystemRoot foreignRoot = rootPair.ForeignRoot;
  
-      if(monitor.ShouldReport)
-        monitor.Report("Look for files to transfer in " + directoryname);
+      if(_monitor.ShouldReport)
+        _monitor.Report("Look for files to transfer in " + directoryname);
 
       FilesToTransferCollector ftCollector = new FilesToTransferCollector(myRoot.DirectoryNode,foreignRoot.DirectoryNode);
       ftCollector.Traverse();
@@ -131,8 +131,8 @@ namespace Syncoco.DocumentActions
 
             if(!System.IO.File.Exists(destfilename)) // copy only, if this file not already exists
             {
-              if(monitor.ShouldReport)
-                monitor.Report("Copy file " + sourcefilename);
+              if(_monitor.ShouldReport)
+                _monitor.Report("Copy file " + sourcefilename);
 
               try 
               {
@@ -140,7 +140,7 @@ namespace Syncoco.DocumentActions
               }
               catch(Exception ex)
               {
-                _errors.AppendFormat("Error copying file {0} : {1}\n",sourcefilename,ex.Message);
+                _reporter.ReportError(string.Format("copying file {0} : {1}\n",sourcefilename,ex.Message));
               }
               GetDiskFreeSpaceEx(directoryname, out freeBytesAvailable, out totalNumberOfBytes, out totalNumberOfFreeBytes);
               maxLength = (long)freeBytesAvailable;

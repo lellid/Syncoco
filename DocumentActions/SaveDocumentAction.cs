@@ -9,22 +9,18 @@ namespace Syncoco.DocumentActions
   {
     string _filename;
 
-    public SaveDocumentAction(MainDocument doc, IBackgroundMonitor monitor, string filename)
-      : base(doc,monitor)
+    public SaveDocumentAction(MainDocument doc, IBackgroundMonitor monitor, IErrorReporter reporter, string filename)
+      : base(doc,monitor,reporter)
     {
       _filename = filename;
+      _monitor = new ExternalDrivenTimeReportMonitor();
     }
     public SaveDocumentAction(MainDocument doc,string filename)
-      : this(doc,null,filename)
+      : this(doc,null,null,filename)
     {
     }
   
-    public override void BackgroundExecute()
-    {
-      _monitor = new ExternalDrivenTimeReportMonitor();
-      base.BackgroundExecute ();
-    }
-
+   
     
     public override void DirectExecute()
     

@@ -12,16 +12,18 @@ namespace Syncoco.Traversing
   {
     PathFilter pathFilter;
     IBackgroundMonitor _monitor = new DummyBackgroundMonitor();
+    IErrorReporter _reporter = new DefaultErrorReporter();
 
     public DirectoryUpdater(PathFilter filt)
     {
       pathFilter = filt;
     }
 
-    public DirectoryUpdater(PathFilter filt, IBackgroundMonitor monitor)
+    public DirectoryUpdater(PathFilter filt, IBackgroundMonitor monitor, IErrorReporter reporter)
     {
       pathFilter = filt;
       _monitor = monitor;
+      _reporter = reporter;
     }
 
    
@@ -33,7 +35,7 @@ namespace Syncoco.Traversing
     /// <param name="dirinfo">The directory info corresponding to the starting directory node.</param>
     /// <param name="fileinfo">The file info of an existing file.</param>
     /// <param name="forceUpdateHash">If true, the MD5 hash for the file is recalculated.</param>
-    public static FileNode UpdateFileNode(DirectoryNode dirnode, DirectoryInfo dirinfo, FileInfo fileinfo, bool forceUpdateHash)
+    public static FileNode UpdateFileNode(DirectoryNode dirnode, DirectoryInfo dirinfo, FileInfo fileinfo, bool forceUpdateHash, IErrorReporter reporter)
     {
       System.Diagnostics.Debug.Assert(fileinfo.Exists,"This function is only intended for existing files after copy operations");
       System.Diagnostics.Debug.Assert(dirinfo.Exists,"The root directory must exist");
@@ -59,7 +61,7 @@ namespace Syncoco.Traversing
       }
 
       // now we have the final directory node to which the file belongs
-      UpdateFile(dirnode,fileinfo,forceUpdateHash);
+      UpdateFile(dirnode,fileinfo,forceUpdateHash,reporter);
 
       return dirnode.File(fileinfo.Name);
     }
@@ -69,18 +71,27 @@ namespace Syncoco.Traversing
     /// </summary>
     /// <param name="fileinfo">The file info for this file.</param>
     /// <param name="forceUpdateHash">If true, the hash is recalculated if the file exists.</param>
-    public static void UpdateFile(DirectoryNode dirNode, System.IO.FileInfo fileinfo, bool forceUpdateHash)
+    public static void UpdateFile(DirectoryNode dirNode, System.IO.FileInfo fileinfo, bool forceUpdateHash, IErrorReporter reporter)
     {
-      if(dirNode.ContainsFile(fileinfo.Name))
+      try
       {
-        if(fileinfo.Exists)
-          dirNode.File(fileinfo.Name).Update(fileinfo, forceUpdateHash);
-        else
-          dirNode.File(fileinfo.Name).SetToRemoved();
+        if(dirNode.ContainsFile(fileinfo.Name))
+        {
+          if(fileinfo.Exists)
+            dirNode.File(fileinfo.Name).Update(fileinfo, forceUpdateHash);
+          else
+            dirNode.File(fileinfo.Name).SetToRemoved();
+        }
+        else if(fileinfo.Exists) // if file was not in the database yet
+        {
+          dirNode.AddFile(fileinfo.Name,new FileNode(fileinfo,dirNode));
+        }
+
       }
-      else if(fileinfo.Exists)
+      catch(HashCalculationException ex)
       {
-        dirNode.AddFile(fileinfo.Name,new FileNode(fileinfo,dirNode));
+        reporter.ReportError(ex.Message);
+        return;
       }
     }
 

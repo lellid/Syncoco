@@ -143,9 +143,9 @@ namespace Syncoco
         }
         return new FileHash(result);
       }
-      catch(System.IO.IOException)
+      catch(System.IO.IOException ex)
       {
-        return new FileHash();
+        throw new HashCalculationException(fileinfo.FullName,ex.Message);
       }
     }
 

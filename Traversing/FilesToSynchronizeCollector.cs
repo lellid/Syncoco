@@ -19,6 +19,7 @@ namespace Syncoco.Traversing
     DirectoryNode _foreignDirRoot;
     PathFilter _pathFilter;
     IBackgroundMonitor _monitor = new DummyBackgroundMonitor();
+    IErrorReporter _reporter = new DefaultErrorReporter();
     
     StringCollection _ToRemove = new StringCollection();
     StringCollection _ToRemoveButChanged = new StringCollection();
@@ -43,7 +44,8 @@ namespace Syncoco.Traversing
       DirectoryNode myDirRoot,
       DirectoryNode foreignDirRoot,
       PathFilter pathFilter,
-      IBackgroundMonitor monitor)
+      IBackgroundMonitor monitor,
+      IErrorReporter reporter)
     {
 #if DEBUG
       PathUtil.Assert_Abspath(mediumdirectory);
@@ -57,6 +59,7 @@ namespace Syncoco.Traversing
       _foreignDirRoot = foreignDirRoot;
       _pathFilter = pathFilter;
       _monitor = monitor;
+      _reporter = reporter;
     }
 
     public string GetFullPath(string relativdir)
@@ -174,7 +177,7 @@ namespace Syncoco.Traversing
         if(myDir!=null)
         {
           System.IO.FileInfo fileinfo = new System.IO.FileInfo(PathUtil.Combine_Abspath_Filename(GetFullPath(reldirectorybase),foreignFileName));
-          DirectoryUpdater.UpdateFile(myDir,fileinfo,false);
+          DirectoryUpdater.UpdateFile(myDir,fileinfo,false,_reporter);
         }
 
         

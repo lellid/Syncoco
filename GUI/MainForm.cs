@@ -36,6 +36,7 @@ namespace Syncoco
     private System.Windows.Forms.MenuItem menuItem3;
     private System.Windows.Forms.MenuItem menuUpdateHash;
     private System.Windows.Forms.TabControl _tabControl;
+    private System.Windows.Forms.MenuItem menuItem4;
 
     /// <summary>
     /// Required designer variable.
@@ -49,9 +50,9 @@ namespace Syncoco
       //
       InitializeComponent();
 
-      //
-      // TODO: Add any constructor code after InitializeComponent call
-      //
+      Current.Document.DirtyChanged += new EventHandler(EhDocumentDirtyChanged);
+      Current.Document.FileNameChanged += new EventHandler(EhDocumentFileNameChanged);
+
     }
 
     /// <summary>
@@ -96,6 +97,7 @@ namespace Syncoco
       this.menuEndWork = new System.Windows.Forms.MenuItem();
       this.menuEndUpdateSaveCopy = new System.Windows.Forms.MenuItem();
       this._tabControl = new System.Windows.Forms.TabControl();
+      this.menuItem4 = new System.Windows.Forms.MenuItem();
       this.SuspendLayout();
       // 
       // mainMenu1
@@ -112,10 +114,11 @@ namespace Syncoco
       this.menuItem1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
                                                                               this.menuFileNew,
                                                                               this.menuFileOpen,
-                                                                              this.menuFileExit,
                                                                               this.menuFileSave,
                                                                               this.menuFileSaveAs,
-                                                                              this.menuItem3});
+                                                                              this.menuItem3,
+                                                                              this.menuItem4,
+                                                                              this.menuFileExit});
       this.menuItem1.Text = "File";
       // 
       // menuFileNew
@@ -132,24 +135,25 @@ namespace Syncoco
       // 
       // menuFileExit
       // 
-      this.menuFileExit.Index = 2;
+      this.menuFileExit.Index = 6;
       this.menuFileExit.Text = "Exit";
+      this.menuFileExit.Click += new System.EventHandler(this.menuFileExit_Click);
       // 
       // menuFileSave
       // 
-      this.menuFileSave.Index = 3;
+      this.menuFileSave.Index = 2;
       this.menuFileSave.Text = "Save";
       this.menuFileSave.Click += new System.EventHandler(this.menuFileSave_Click);
       // 
       // menuFileSaveAs
       // 
-      this.menuFileSaveAs.Index = 4;
+      this.menuFileSaveAs.Index = 3;
       this.menuFileSaveAs.Text = "Save As..";
       this.menuFileSaveAs.Click += new System.EventHandler(this.menuFileSaveAs_Click);
       // 
       // menuItem3
       // 
-      this.menuItem3.Index = 5;
+      this.menuItem3.Index = 4;
       this.menuItem3.Text = "Save Filter Only As..";
       this.menuItem3.Click += new System.EventHandler(this.menuFileSaveFilterOnly_Click);
       // 
@@ -236,6 +240,11 @@ namespace Syncoco
       this._tabControl.Size = new System.Drawing.Size(520, 398);
       this._tabControl.TabIndex = 0;
       // 
+      // menuItem4
+      // 
+      this.menuItem4.Index = 5;
+      this.menuItem4.Text = "-";
+      // 
       // Syncoco
       // 
       this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -244,6 +253,7 @@ namespace Syncoco
       this.Menu = this.mainMenu1;
       this.Name = "Syncoco";
       this.Text = "Syncoco";
+      this.Closing += new System.ComponentModel.CancelEventHandler(this.EhFormClosing);
       this.ResumeLayout(false);
 
     }
@@ -252,6 +262,14 @@ namespace Syncoco
   
     RootListController _rootList = new RootListController(Current.Document);
     SyncListController _syncList = new SyncListController();
+    ReportListController _reportList = new ReportListController();
+
+
+    public IErrorReporter ErrorReporter
+    {
+      get { return _reportList; }
+    }
+
 
     public void ShowControl(string caption, UserControl ctrl)
     {
@@ -287,11 +305,25 @@ namespace Syncoco
       ShowControl("FilesToSync",_syncList.View);
     }
 
+    public void ShowReportList()
+    {
+      ShowControl("Report",_reportList.View);
+    }
+
+    void UpdateTitle()
+    {
+      string filename = Current.Document.HasFileName? Current.Document.FileName : "Unnamed";
+      string dirty = Current.Document.IsDirty?  "*" : string.Empty;
+      this.Text = string.Format("{1}{2} - Syncoco@{0}",Current.ComputerName, filename, dirty);
+    }
+
+
     private void menuFileNew_Click(object sender, System.EventArgs e)
     {
       if(_rootList==null)
         _rootList = new RootListController(Current.Document);
       ShowControl("Roots",_rootList.View);
+      UpdateTitle();
     }
 
     private void menuFileSave_Click(object sender, System.EventArgs e)
@@ -300,11 +332,13 @@ namespace Syncoco
       {
         DocumentActions.SaveDocumentAction action = new SaveDocumentAction(Current.Document,Current.Document.FileName);
         action.BackgroundExecute();
+        UpdateTitle();
       }
       else
       {
         menuFileSaveAs_Click(sender,e);
       }
+      
     
     }
 
@@ -315,6 +349,7 @@ namespace Syncoco
       {
         DocumentActions.SaveDocumentAction action = new SaveDocumentAction(Current.Document,dlg.FileName);
         action.BackgroundExecute();
+        UpdateTitle();
       }
     }
 
@@ -343,7 +378,12 @@ namespace Syncoco
             this._control=null;
           }
 
+          Current.Document.DirtyChanged -= new EventHandler(EhDocumentDirtyChanged);
+          Current.Document.FileNameChanged -= new EventHandler(EhDocumentFileNameChanged);
           Current.Document = action.Doc;
+          Current.Document.DirtyChanged += new EventHandler(EhDocumentDirtyChanged);
+          Current.Document.FileNameChanged += new EventHandler(EhDocumentFileNameChanged);
+
           _rootList = new RootListController(Current.Document);
           ShowControl("Root",_rootList.View);
         }
@@ -358,7 +398,12 @@ namespace Syncoco
         MainDocument doc = new MainDocument();
         doc.OpenAsXML(dlg.FileName);
 
+        Current.Document.DirtyChanged -= new EventHandler(EhDocumentDirtyChanged);
+        Current.Document.FileNameChanged -= new EventHandler(EhDocumentFileNameChanged);
         Current.Document = (MainDocument)doc;
+        Current.Document.DirtyChanged += new EventHandler(EhDocumentDirtyChanged);
+        Current.Document.FileNameChanged += new EventHandler(EhDocumentFileNameChanged);
+
         _rootList = new RootListController(Current.Document);
         ShowControl("Root",_rootList.View);
       }
@@ -417,9 +462,46 @@ namespace Syncoco
 
     }
 
+    private void EhFormClosing(object sender, System.ComponentModel.CancelEventArgs e)
+    {
+      while(Current.Document.IsDirty)
+      {
+        DialogResult boxresult = MessageBox.Show(this,"Your document is not saved yet. Do you want to save it now?","Document not saved",
+          MessageBoxButtons.YesNoCancel,
+          MessageBoxIcon.Question,
+          MessageBoxDefaultButton.Button1);
+
+        if(boxresult==DialogResult.Cancel)
+        {
+          e.Cancel=true;
+          return; 
+        }
+        else if(boxresult==DialogResult.No)
+        {
+          return;
+        }
+        else
+        {
+          this.menuFileSave_Click(this,EventArgs.Empty);
+        }
+      }
+    }
+
+    private void menuFileExit_Click(object sender, System.EventArgs e)
+    {
+      this.Close();
+    }
+
     
 
-   
+    private void EhDocumentDirtyChanged(object sender, System.EventArgs e)
+    {
+      UpdateTitle();
+    }
+    private void EhDocumentFileNameChanged(object sender, System.EventArgs e)
+    {
+      UpdateTitle();
+    }
  
    
 

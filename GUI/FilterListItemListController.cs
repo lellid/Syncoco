@@ -84,7 +84,7 @@ namespace Syncoco
         this._folderBrowserPath = dlg.SelectedPath;
 
         string subpath = dlg.SelectedPath.Substring(_myRootPath.Length);
-        this._tempdoc.FilterList.Add(new FilterListItem(subpath));
+        this._tempdoc.FilterList.Add(new FilterListItem(PathUtil.NormalizeRelpath(subpath)));
         
         this.UpdateList();
       }

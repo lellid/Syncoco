@@ -67,7 +67,8 @@ namespace Syncoco.DocumentActions
           _doc.RootPair(i).MyRoot.DirectoryNode,
           _doc.RootPair(i).ForeignRoot.DirectoryNode,
           _doc.RootPair(i).PathFilter,
-          _monitor);
+          _monitor,
+          _reporter);
         
         if(_doc.ForeignRoot(i).IsValid && _doc.MyRoot(i).IsValid)
           _collectedFiles[i].Traverse();

@@ -21,6 +21,7 @@ namespace Syncoco
     /// </summary>
     private System.ComponentModel.Container components = null;
     private System.Windows.Forms.Button btEditFilterList;
+    private System.Windows.Forms.ContextMenu listContextMenu;
     public RootListController _controller;
 
     public RootList()
@@ -82,14 +83,15 @@ namespace Syncoco
       this.chComputer2 = new System.Windows.Forms.ColumnHeader();
       this.btAddPath = new System.Windows.Forms.Button();
       this.btEditFilterList = new System.Windows.Forms.Button();
+      this.listContextMenu = new System.Windows.Forms.ContextMenu();
       this.SuspendLayout();
       // 
       // lvRootList
       // 
-      this.lvRootList.CheckBoxes = true;
       this.lvRootList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
                                                                                  this.chComputer1,
                                                                                  this.chComputer2});
+      this.lvRootList.ContextMenu = this.listContextMenu;
       this.lvRootList.LabelEdit = true;
       this.lvRootList.Location = new System.Drawing.Point(8, 56);
       this.lvRootList.Name = "lvRootList";
@@ -128,6 +130,10 @@ namespace Syncoco
       this.btEditFilterList.TabIndex = 2;
       this.btEditFilterList.Text = "Edit FilterList";
       this.btEditFilterList.Click += new System.EventHandler(this.btEditFilterList_Click);
+      // 
+      // listContextMenu
+      // 
+      this.listContextMenu.Popup += new System.EventHandler(this.listContextMenu_Popup);
       // 
       // RootList
       // 
@@ -183,6 +189,37 @@ namespace Syncoco
           _controller.EhView_EditFilterList(this.lvRootList.SelectedIndices[0]);
         }
       }
+    }
+
+    private void btDeletePath_Click(object sender, System.EventArgs e)
+    {
+      if(null!=_controller)
+      {
+        if(this.lvRootList.SelectedIndices.Count==1)
+        {
+          _controller.EhView_DeletePath(this.lvRootList.SelectedIndices[0]);
+        }
+      }
+    }
+    private void listContextMenu_Popup(object sender, System.EventArgs e)
+    {
+      listContextMenu.MenuItems.Clear();
+
+      if(this.lvRootList.SelectedIndices.Count==0)
+      {
+        listContextMenu.MenuItems.Add(new MenuItem("Add new Path", new EventHandler(btAddPath_Click)));
+      }
+        if(this.lvRootList.SelectedIndices.Count==1)
+        {
+          listContextMenu.MenuItems.Add(new MenuItem("Edit filter", new EventHandler(btEditFilterList_Click)));
+          listContextMenu.MenuItems.Add(new MenuItem("-"));
+          listContextMenu.MenuItems.Add(new MenuItem("Delete path", new EventHandler(btDeletePath_Click)));
+        }
+
+      if(this.lvRootList.SelectedIndices.Count>=1)
+      {
+      }
+    
     }
 
    

@@ -101,8 +101,9 @@ namespace Syncoco
 
     public void SetFilePath(string path)
     {
-      PathUtil.Assert_Abspath(_FilePath);
+      this._FilePath = path;
 
+      PathUtil.Assert_Abspath(_FilePath);
       System.IO.DirectoryInfo dirinfo = new System.IO.DirectoryInfo(_FilePath);
       if(dirinfo.Exists)
         _DirectoryNode = DirectoryUpdater.NewEmptyDirectoryNode(dirinfo);

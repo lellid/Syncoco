@@ -78,7 +78,7 @@ namespace Syncoco
       System.Windows.Forms.FolderBrowserDialog dlg = new System.Windows.Forms.FolderBrowserDialog();
       if(System.Windows.Forms.DialogResult.OK==dlg.ShowDialog(Current.MainForm))
       {
-        _document.AddRoot(dlg.SelectedPath);
+        _document.AddRoot(PathUtil.NormalizeAbspath(dlg.SelectedPath));
         UpdateList();
       }
     }
@@ -94,6 +94,12 @@ namespace Syncoco
       DialogShellController dlgctrl = new DialogShellController(new DialogShellView(control),controller);
       dlgctrl.ShowDialog(this.View.ParentForm);
 
+    }
+
+    public void EhView_DeletePath(int item)
+    {
+      _document.DeleteRoot(item);
+      UpdateList();
     }
    
   }

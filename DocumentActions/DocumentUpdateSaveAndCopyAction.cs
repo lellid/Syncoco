@@ -31,16 +31,16 @@ namespace Syncoco.DocumentActions
         throw new ApplicationException("This operation is possible only if the document has a file name");
 
       _monitor.Report("Updating file system ...");
-      new DocumentUpdateAction(_doc,false,_monitor).DirectExecute();
+      new DocumentUpdateAction(_doc,false,_monitor,_reporter).DirectExecute();
 
       _monitor.Report("Cleaning transfer medium ...");
-      new ClearMediumDirectoryAction(_doc,_monitor).DirectExecute();
+      new ClearMediumDirectoryAction(_doc,_monitor,_reporter).DirectExecute();
 
       _monitor.Report("Saving document ...");
-      _doc.Save();
+      new SaveDocumentAction(_doc,_monitor,_reporter,_doc.FileName).DirectExecute();
 
       _monitor.Report("Copy files to medium ...");
-      new CopyFilesToMediumAction(_doc,_monitor).DirectExecute();
+      new CopyFilesToMediumAction(_doc,_monitor,_reporter).DirectExecute();
     }
   }
 }

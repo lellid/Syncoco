@@ -298,5 +298,21 @@ namespace Syncoco
 #endif
       return result;
     }
+
+    /// <summary>
+    /// Returns a path with is forced to start and end with a DirectorySeparatorChar
+    /// </summary>
+    /// <param name="path">The path to normalize.</param>
+    /// <returns>The normalized path.</returns>
+    public static string NormalizeRelpath(string path)
+    {
+      string result = path[0]==System.IO.Path.DirectorySeparatorChar ? path : System.IO.Path.DirectorySeparatorChar.ToString()+path;
+      if(path[path.Length-1]!=System.IO.Path.DirectorySeparatorChar)
+        result += System.IO.Path.DirectorySeparatorChar;
+#if DEBUG
+      Assert_Relpath(result);
+#endif
+      return result;
+    }
   }
 }

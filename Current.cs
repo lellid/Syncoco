@@ -11,6 +11,12 @@ namespace Syncoco
     public static System.Windows.Forms.Form MainForm;
     public static string ComputerName = System.Environment.MachineName;
 
+    public static IErrorReporter ErrorReporter
+    {
+      get { return ((Syncoco)MainForm).ErrorReporter; }
+    }
+
+
     /// <summary>
     /// The main entry point for the application.
     /// </summary>

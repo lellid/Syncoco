@@ -16,6 +16,9 @@ namespace Syncoco
     bool   _IsDirty;
     [NonSerialized]
     MD5SumFileNodesHashTable _allFilesHere;
+
+    public event EventHandler DirtyChanged;
+    public event EventHandler FileNameChanged;
     
 
     //ArrayList _root1, _root2;
@@ -82,6 +85,8 @@ namespace Syncoco
         if(null!=tempfilename)
           System.IO.File.Copy(tempfilename,filename,true);
 
+        this.SetFileSavedFlag(filename);
+
       }
       catch(Exception ex)
       {
@@ -132,13 +137,14 @@ namespace Syncoco
         Save(tw);
         tw.WriteEndElement();
         tw.WriteEndDocument();
-        SetFileSavedFlag(filename);
+       
         tw.Flush();
         tw.Close();
 
         if(null!=tempfilename)
           System.IO.File.Copy(tempfilename,filename,true);
 
+         SetFileSavedFlag(filename);
       }
       catch(Exception ex)
       {
@@ -288,12 +294,41 @@ namespace Syncoco
     }
 
   
-   
+    protected void OnFileNameChanged()
+    {
+      if(FileNameChanged!=null)
+        FileNameChanged(this,EventArgs.Empty);
+    }
+
+    protected void OnDirtyChanged()
+    {
+      if(DirtyChanged!=null)
+        DirtyChanged(this,EventArgs.Empty);
+    }
+
 
     public void SetFileSavedFlag(string filename)
     {
+      bool oldDirty = _IsDirty;
+      string oldFileName = _FileName;
+
       _FileName = filename;
       _IsDirty = false;
+
+      if(_FileName!=oldFileName)
+        OnFileNameChanged();
+      if(oldDirty!=_IsDirty)
+        OnDirtyChanged();
+    }
+
+    public void SetDirty()
+    {
+      bool oldDirty = _IsDirty;
+      _IsDirty = true;
+
+      if(oldDirty!=_IsDirty)
+        OnDirtyChanged();
+
     }
 
 
@@ -426,7 +461,10 @@ namespace Syncoco
 
     public void AddRoot(string basename)
     {
+    
       PathUtil.Assert_Abspath(basename);
+
+      SetDirty();
 
       ClearCachedMyFiles();
 
@@ -437,8 +475,23 @@ namespace Syncoco
       added.MyRoot.SetFilePath(basename);
     }
 
+
+    public void DeleteRoot(int index)
+    {
+
+      SetDirty();
+
+      ClearCachedMyFiles();
+
+      EnsureAlignment();
+
+      _rootPairs.RemoveAt(index);
+    }
+
     public void SetBasePath(int item, string path)
     {
+      SetDirty();
+
       PathUtil.Assert_Abspath(path);
       
       EnsureAlignment();

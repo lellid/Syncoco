@@ -13,6 +13,7 @@ namespace Syncoco.DocumentActions
       : base(null,monitor)
     {
       _filename = filename;
+      _monitor = new ExternalDrivenTimeReportMonitor();
     }
     public OpenDocumentAction(string filename)
       : this(filename,null)
@@ -23,18 +24,11 @@ namespace Syncoco.DocumentActions
     {
       get { return _doc; }
     }
-
-    public override void BackgroundExecute()
-    {
-      _monitor = new ExternalDrivenTimeReportMonitor();
-      base.BackgroundExecute ();
-    }
-
     
     public override void DirectExecute()
     
     {
-      if(System.IO.Path.GetExtension(_filename).ToLower()==".stcbin")
+      if(System.IO.Path.GetExtension(_filename).ToLower()==".sccbin")
       {
         _doc = MainDocument.OpenAsBinary(_filename);
       }

@@ -13,12 +13,12 @@ namespace Syncoco.DocumentActions
     
 
     public DocumentUpdateAction(MainDocument doc, bool forceUpdateHash)
-      : this(doc,forceUpdateHash,null)
+      : this(doc,forceUpdateHash,null,null)
     {
     }
 
-    public DocumentUpdateAction(MainDocument doc, bool forceUpdateHash, IBackgroundMonitor monitor)
-      : base(doc,monitor)
+    public DocumentUpdateAction(MainDocument doc, bool forceUpdateHash, IBackgroundMonitor monitor,IErrorReporter reporter)
+      : base(doc,monitor,reporter)
     {
       _forceUpdateHash = forceUpdateHash;
       
@@ -35,6 +35,8 @@ namespace Syncoco.DocumentActions
    
     public override void DirectExecute()
     {
+      _doc.SetDirty();
+
       _doc.ClearCachedMyFiles();
 
       _doc.EnsureAlignment();
@@ -56,9 +58,9 @@ namespace Syncoco.DocumentActions
       System.IO.DirectoryInfo dirinfo = new System.IO.DirectoryInfo(fileSystemRoot.FilePath);
 
       if(null!=fileSystemRoot.DirectoryNode)
-        new DirectoryUpdater(pathFilter,_monitor).Update(fileSystemRoot.DirectoryNode, dirinfo, _forceUpdateHash);
+        new DirectoryUpdater(pathFilter,_monitor,_reporter).Update(fileSystemRoot.DirectoryNode, dirinfo, _forceUpdateHash);
       else
-        fileSystemRoot.DirectoryNode = new DirectoryUpdater(pathFilter,_monitor).NewDirectoryNode(dirinfo);
+        fileSystemRoot.DirectoryNode = new DirectoryUpdater(pathFilter,_monitor,_reporter).NewDirectoryNode(dirinfo);
     }
   }
 }

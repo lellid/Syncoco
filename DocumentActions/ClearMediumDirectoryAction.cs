@@ -15,12 +15,12 @@ namespace Syncoco.DocumentActions
   {
    
 
-    public ClearMediumDirectoryAction(MainDocument doc, IBackgroundMonitor monitor)
-      : base(doc,monitor)
+    public ClearMediumDirectoryAction(MainDocument doc, IBackgroundMonitor monitor, IErrorReporter reporter)
+      : base(doc,monitor,reporter)
     {
     }
     public ClearMediumDirectoryAction(MainDocument doc)
-      : this(doc,null)
+      : this(doc,null,null)
     {
     }
 
@@ -57,12 +57,15 @@ namespace Syncoco.DocumentActions
         {
           fileinfo.Attributes &= ~(System.IO.FileAttributes.ReadOnly | System.IO.FileAttributes.Hidden | System.IO.FileAttributes.System);
         }
-        fileinfo.Delete();
+        try 
+        {
+          fileinfo.Delete();
+        }
+        catch(Exception ex)
+        {
+          _reporter.ReportError(string.Format("deleting file {0} : {1}",fileinfo.FullName,ex.Message));
+        }
       }
     }
-
-      
-
-    
   }
 }
