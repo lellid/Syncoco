@@ -711,6 +711,21 @@ namespace SyncTwoCo
 
     #endregion
 
+    #region MD5 Hash sum
+    public void FillMd5HashTable(MD5SumHashTable table)
+    {
+      foreach(FileNode fnode in this._files)
+      {
+        fnode.FillMd5HashTable(table);
+      }
+      foreach(DirectoryNode dnode in this._subDirectories)
+      {
+        dnode.FillMd5HashTable(table);
+      }
+    }
+
+    #endregion
+
    
   }
 }

@@ -124,6 +124,11 @@ namespace SyncTwoCo
       return DirectoryNode.UpdateFileNode(_DirectoryNode,dirinfo,fileinfo,forceUpdateHash);
     }
 
+    public void FillMd5HashTable(MD5SumHashTable table)
+    {
+      this._DirectoryNode.FillMd5HashTable(table);
+    }
+
    
     /// <summary>
     /// Returns a path with is forced to end with a DirectorySeparatorChar

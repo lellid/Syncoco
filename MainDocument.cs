@@ -277,6 +277,17 @@ namespace SyncTwoCo
       if(!System.IO.Directory.Exists(MediumDirectoryName))
         throw new ApplicationException(string.Format("The directory {0} does not exist!",MediumDirectoryName));
 
+
+      // create a table with all md5 hash sums of the foreign(!) file system
+      MD5SumHashTable md5HashTable = new MD5SumHashTable();
+      for(int i=0;i<Count;i++)
+      {
+        if(MyRoot(i).IsValid)
+          RootPair(i).ForeignRoot.FillMd5HashTable();
+      }
+
+
+      // now copy first with exclusion of the already existing files 
       for(int i=0;i<Count;i++)
       {
         if(MyRoot(i).IsValid)

@@ -275,6 +275,11 @@ namespace SyncTwoCo
       
     }
 
+    public void FillMd5HashTable(MD5SumHashTable table)
+    {
+      table.Add(this._fileHash,this._fileLength);
+    }
+
     public string MediumFileName
     {
       get
