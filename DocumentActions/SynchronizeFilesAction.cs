@@ -266,7 +266,7 @@ namespace Syncoco.DocumentActions
             // file node to unchanged
             myfileinfo = new System.IO.FileInfo(myfilename);
             myfilenode = UpdateMyFile(_doc.MyRoot(tag.RootListIndex),myfileinfo,true);
-            if(foFileNode.HasSameHashThan(myfilenode))
+            if(foFileNode.HasSameContentThan(myfilenode))
             {
               foFileNode.SetToUnchanged();
               myfilenode.SetToUnchanged();
@@ -282,7 +282,7 @@ namespace Syncoco.DocumentActions
             // file node to unchanged
             myfileinfo = new System.IO.FileInfo(myfilename);
             myfilenode = UpdateMyFile(_doc.MyRoot(tag.RootListIndex),myfileinfo,true);
-            if(foFileNode.HasSameHashThan(myfilenode))
+            if(foFileNode.HasSameContentThan(myfilenode))
             {
               foFileNode.SetToUnchanged();
               myfilenode.SetToUnchanged();

@@ -204,8 +204,12 @@ namespace Syncoco.Traversing
         }
 
         
-        // First handle the error, that both the nodes are unchanged, but nevertheless different from each other
-        if(myDir!=null && myDir.ContainsFile(foreignFileName) && foreignFileNode.IsUnchanged && myDir.File(foreignFileName).IsUnchanged && foreignFileNode.IsDifferent(myDir.File(foreignFileName)))
+        // First handle the error, that both the nodes are unchanged, but nevertheless different in content
+        if( myDir!=null &&
+          myDir.ContainsFile(foreignFileName) && 
+          foreignFileNode.IsUnchanged && 
+          myDir.File(foreignFileName).IsUnchanged && 
+          !foreignFileNode.HasSameContentThan(myDir.File(foreignFileName)))
         {
           // set both nodes to changed then, since we don't know when this error occurs
           foreignFileNode.SwitchFromUnchangedToChanged();
@@ -232,7 +236,7 @@ namespace Syncoco.Traversing
         {
           if(myDir!=null && myDir.ContainsFile(foreignFileName))
           {
-            if(foreignFileNode.HasSameHashThan(myDir.File(foreignFileName)))
+            if(foreignFileNode.HasSameContentThan(myDir.File(foreignFileName)))
             {
               foreignFileNode.SetToUnchanged();
               myDir.File(foreignFileName).SetToUnchanged();
@@ -254,7 +258,7 @@ namespace Syncoco.Traversing
         {
           if(myDir!=null && myDir.ContainsFile(foreignFileName))
           {
-            if(foreignFileNode.HasSameHashThan(myDir.File(foreignFileName)))
+            if(foreignFileNode.HasSameContentThan(myDir.File(foreignFileName)))
             {
               foreignFileNode.SetToUnchanged();
               myDir.File(foreignFileName).SetToUnchanged();

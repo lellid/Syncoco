@@ -153,6 +153,19 @@ namespace Syncoco
         (!this.HasSameHashThan(from._fileHash));
     }
 
+    /// <summary>
+    /// Only tests the two nodes if they have the same content,
+    /// i.e. have same length and file hash.
+    /// This is needed if we synchronize different file systems, when
+    /// we can't rely on the file times.
+    /// </summary>
+    /// <param name="from">Another file node.</param>
+    /// <returns>True if both files are equal in in file length and  in file hash.</returns>
+    public bool HasSameContentThan(FileNodeBase from)
+    {
+      return this._fileLength == from._fileLength &&
+        this.HasSameHashThan(from._fileHash);
+    }
 
     public static FileHash CalculateHash(System.IO.FileInfo fileinfo)
     {

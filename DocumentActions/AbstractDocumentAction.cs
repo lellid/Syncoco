@@ -68,7 +68,7 @@ namespace Syncoco.DocumentActions
       int oldWarnings = _reporter.NumberOfWarnings;
       _reporter.ReportBeginNewParagraph();
 
-      System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(this.DirectExecute));
+      System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(this.CatchedDirectExecute));
       thread.Name = this.GetType().Name;
       thread.IsBackground = true;
       thread.Start();
@@ -83,19 +83,34 @@ namespace Syncoco.DocumentActions
       int nWarnings = _reporter.NumberOfWarnings - oldWarnings;
 
       if(nErrors!=0 || nWarnings!=0)
-      {
-        System.Windows.Forms.MessageBox.Show(Current.MainForm,
-          string.Format("Task {0} finished, {1} error(s), {2} warning(s). Please refer to the report for details!",this.GetType().Name,nErrors,nWarnings),
-          "Errors & Warnings",
-          System.Windows.Forms.MessageBoxButtons.OK,
-          System.Windows.Forms.MessageBoxIcon.Exclamation);
-
-        ((Syncoco)Current.MainForm).ShowReportList();
-      }
-
-      
+        ShowErrorsAndWarnings(nErrors,nWarnings);
+    
     }
 
+
+    protected virtual void ShowErrorsAndWarnings(int nErrors, int nWarnings)
+    {
+  
+      System.Windows.Forms.MessageBox.Show(Current.MainForm,
+        string.Format("Task {0} finished, {1} error(s), {2} warning(s). Please refer to the report for details!",this.GetType().Name,nErrors,nWarnings),
+        "Errors & Warnings",
+        System.Windows.Forms.MessageBoxButtons.OK,
+        System.Windows.Forms.MessageBoxIcon.Exclamation);
+
+      ((Syncoco)Current.MainForm).ShowReportList();
+    }
+
+    protected virtual void CatchedDirectExecute()
+    {
+      try
+      {
+        DirectExecute();
+      }
+      catch(Exception ex)
+      {
+        _reporter.ReportError(string.Format("Unexpeced exception occured during action {0}: {1}",this.GetType().ToString(),ex.ToString()));
+      }
+    }
    
     public abstract void DirectExecute();
 

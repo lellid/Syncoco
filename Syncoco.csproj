@@ -168,6 +168,10 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Help.ico"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "IBackgroundMonitor.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -211,18 +215,6 @@
                     RelPath = "SortedArrayList.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "SyncocoHelp.chm"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "SyncocoHelp.hhc"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "SyncocoHelp.hhk"
-                    BuildAction = "Content"
                 />
                 <File
                     RelPath = "DocumentActions\AbstractDocumentAction.cs"

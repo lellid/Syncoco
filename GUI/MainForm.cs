@@ -133,10 +133,10 @@ namespace Syncoco
       this.menuItem1 = new System.Windows.Forms.MenuItem();
       this.menuUpdateHash = new System.Windows.Forms.MenuItem();
       this.menuHelp = new System.Windows.Forms.MenuItem();
-      this.menuHelpAbout = new System.Windows.Forms.MenuItem();
-      this._tabControl = new System.Windows.Forms.TabControl();
       this.menuHelpSyncoco = new System.Windows.Forms.MenuItem();
       this.menuItem5 = new System.Windows.Forms.MenuItem();
+      this.menuHelpAbout = new System.Windows.Forms.MenuItem();
+      this._tabControl = new System.Windows.Forms.TabControl();
       this.SuspendLayout();
       // 
       // mainMenu1
@@ -315,6 +315,17 @@ namespace Syncoco
                                                                              this.menuHelpAbout});
       this.menuHelp.Text = "Help";
       // 
+      // menuHelpSyncoco
+      // 
+      this.menuHelpSyncoco.Index = 0;
+      this.menuHelpSyncoco.Text = "Index..";
+      this.menuHelpSyncoco.Click += new System.EventHandler(this.menuHelpSyncoco_Click);
+      // 
+      // menuItem5
+      // 
+      this.menuItem5.Index = 1;
+      this.menuItem5.Text = "-";
+      // 
       // menuHelpAbout
       // 
       this.menuHelpAbout.Index = 2;
@@ -329,17 +340,6 @@ namespace Syncoco
       this._tabControl.SelectedIndex = 0;
       this._tabControl.Size = new System.Drawing.Size(520, 398);
       this._tabControl.TabIndex = 0;
-      // 
-      // menuHelpSyncoco
-      // 
-      this.menuHelpSyncoco.Index = 0;
-      this.menuHelpSyncoco.Text = "Index..";
-      this.menuHelpSyncoco.Click += new System.EventHandler(this.menuHelpSyncoco_Click);
-      // 
-      // menuItem5
-      // 
-      this.menuItem5.Index = 1;
-      this.menuItem5.Text = "-";
       // 
       // Syncoco
       // 
@@ -426,7 +426,10 @@ namespace Syncoco
       Current.Document.FileNameChanged += new EventHandler(EhDocumentFileNameChanged);
       this.UpdateTitle();
       _rootList = new RootListController(Current.Document);
-      ShowControl("Root",_rootList.View);
+      ShowControl("RootPairs",_rootList.View);
+
+      if(this._reportList.ErrorText.Length>0)
+        this.ShowReportList();
     }
 
     

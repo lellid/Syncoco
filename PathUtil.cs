@@ -269,16 +269,30 @@ namespace Syncoco
     public static void Assert_Abspath(string name)
     {
       System.Diagnostics.Debug.Assert(name!=null);
-      System.Diagnostics.Debug.Assert(name.Length>=3);
-      System.Diagnostics.Debug.Assert((name[1]==':'  && name[2]==System.IO.Path.DirectorySeparatorChar) || (name[0]==System.IO.Path.DirectorySeparatorChar && name[1]==System.IO.Path.DirectorySeparatorChar));
+      if('\\'==System.IO.Path.DirectorySeparatorChar) // WINDOWS
+      {
+        System.Diagnostics.Debug.Assert(name.Length>=3);
+        System.Diagnostics.Debug.Assert((name[1]==':'  && name[2]==System.IO.Path.DirectorySeparatorChar) || (name[0]==System.IO.Path.DirectorySeparatorChar && name[1]==System.IO.Path.DirectorySeparatorChar));
+      }
+      else // UNIX
+      {
+        System.Diagnostics.Debug.Assert(name.Length>=1);
+      }
       System.Diagnostics.Debug.Assert(name[name.Length-1]==System.IO.Path.DirectorySeparatorChar);
     }
 
     public static void Assert_AbspathFilename(string name)
     {
       System.Diagnostics.Debug.Assert(name!=null);
-      System.Diagnostics.Debug.Assert(name.Length>=4);
-      System.Diagnostics.Debug.Assert((name[1]==':' && name[2]==System.IO.Path.DirectorySeparatorChar) || (name[0]==System.IO.Path.DirectorySeparatorChar && name[1]==System.IO.Path.DirectorySeparatorChar));
+      if('\\'==System.IO.Path.DirectorySeparatorChar) // WINDOWS
+      {
+        System.Diagnostics.Debug.Assert(name.Length>=4);
+        System.Diagnostics.Debug.Assert((name[1]==':' && name[2]==System.IO.Path.DirectorySeparatorChar) || (name[0]==System.IO.Path.DirectorySeparatorChar && name[1]==System.IO.Path.DirectorySeparatorChar));
+      }
+      else // UNIX
+      {
+        System.Diagnostics.Debug.Assert(name.Length>=2);
+      }
     }
 
     public static void SplitInto_Relpath_Filename(string relpathfilename, out string relpath, out string filename)

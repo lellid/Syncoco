@@ -15,13 +15,31 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_0D9AAADDAC824140B537B93871F5011B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_335FEFD3AF3B47409B859967CA29C32F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_B4D13CA8C307499A814C1B3B56D6A423"
+        "MsmKey" = "8:_749C7360F9014F7C959EDA23F93DDD40"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E3F7C8D462C049EC821A2697CA7DE7FA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F108AA565C4542939B24EE950B431A28"
         "OwnerKey" = "8:_335FEFD3AF3B47409B859967CA29C32F"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -90,6 +108,66 @@
         }
         "File"
         {
+            "{A582A373-4685-4296-BEFE-614B80A702C3}:_0D9AAADDAC824140B537B93871F5011B"
+            {
+            "SourcePath" = "8:..\\..\\Help\\Syncoco.chm"
+            "TargetName" = "8:Syncoco.chm"
+            "Tag" = "8:"
+            "Folder" = "8:_06B00E4841844C86A4977437A25ACEA0"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{A582A373-4685-4296-BEFE-614B80A702C3}:_749C7360F9014F7C959EDA23F93DDD40"
+            {
+            "SourcePath" = "8:..\\..\\Help\\Syncoco.hhc"
+            "TargetName" = "8:Syncoco.hhc"
+            "Tag" = "8:"
+            "Folder" = "8:_06B00E4841844C86A4977437A25ACEA0"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{A582A373-4685-4296-BEFE-614B80A702C3}:_E3F7C8D462C049EC821A2697CA7DE7FA"
+            {
+            "SourcePath" = "8:..\\..\\Help\\Syncoco.hhk"
+            "TargetName" = "8:Syncoco.hhk"
+            "Tag" = "8:"
+            "Folder" = "8:_06B00E4841844C86A4977437A25ACEA0"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
@@ -140,6 +218,17 @@
             "Property" = "8:ProgramMenuFolder"
                 "Folders"
                 {
+                    "{F27BD5C5-A65D-4608-96D4-7C5DA1F76302}:_96095AF1A246497C9112B7460A783470"
+                    {
+                    "Name" = "8:Syncoco"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_5A8163B97A3146478443056CE770A838"
+                        "Folders"
+                        {
+                        }
+                    }
                 }
             }
             "{78BAF5CE-F2E5-45BE-83BC-DB6AF387E941}:_EF53607C57A84D0E90FDE65F3AC85BC0"
@@ -169,7 +258,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Syncoco"
         "ProductCode" = "8:{F2A15CFD-EC62-4E77-8993-FD5BB7478425}"
-        "PackageCode" = "8:{92DEB749-F16F-4A7F-9148-3599CE2FAEB5}"
+        "PackageCode" = "8:{C766248E-62EB-4C0B-917D-8521A29CE300}"
         "UpgradeCode" = "8:{9EBF5349-0878-4D13-B8F2-D76DE70FD7EC}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
@@ -283,6 +372,48 @@
         }
         "Shortcut"
         {
+            "{478F747B-8505-45D1-9AAE-8C3B645C26E3}:_001E7A64A06D4D2FBEF784A8BB55A214"
+            {
+            "Name" = "8:Syncoco"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:32512"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_335FEFD3AF3B47409B859967CA29C32F"
+            "Folder" = "8:_EF53607C57A84D0E90FDE65F3AC85BC0"
+            "WorkingFolder" = "8:_06B00E4841844C86A4977437A25ACEA0"
+            "Icon" = "8:_335FEFD3AF3B47409B859967CA29C32F"
+            "Feature" = "8:"
+            }
+            "{478F747B-8505-45D1-9AAE-8C3B645C26E3}:_136CC1A0BAAB47079A0923B22FEDB82F"
+            {
+            "Name" = "8:Syncoco help"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:32512"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_0D9AAADDAC824140B537B93871F5011B"
+            "Folder" = "8:_96095AF1A246497C9112B7460A783470"
+            "WorkingFolder" = "8:_06B00E4841844C86A4977437A25ACEA0"
+            "Icon" = "8:"
+            "Feature" = "8:"
+            }
+            "{478F747B-8505-45D1-9AAE-8C3B645C26E3}:_5E0F01D33D6A4AE4BA4D8F63589F34AD"
+            {
+            "Name" = "8:Syncoco"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:32512"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_335FEFD3AF3B47409B859967CA29C32F"
+            "Folder" = "8:_96095AF1A246497C9112B7460A783470"
+            "WorkingFolder" = "8:_06B00E4841844C86A4977437A25ACEA0"
+            "Icon" = "8:_335FEFD3AF3B47409B859967CA29C32F"
+            "Feature" = "8:"
+            }
         }
         "UserInterface"
         {
@@ -666,7 +797,7 @@
         }
         "MergeModule"
         {
-            "{35A69C6E-5BA4-440D-803D-762B59A45393}:_B4D13CA8C307499A814C1B3B56D6A423"
+            "{35A69C6E-5BA4-440D-803D-762B59A45393}:_F108AA565C4542939B24EE950B431A28"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
@@ -733,34 +864,6 @@
             "ProjectOutputGroupRegister" = "3:1"
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{5D826F2B-835F-455B-B9A2-BDD72F697A85}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
-            "{8062640A-2EEE-46E9-AB67-688E9A886E9F}:_AEA1CC2134F84CDE8AE522B5A70648A8"
-            {
-            "SourcePath" = "8:"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_06B00E4841844C86A4977437A25ACEA0"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:ContentFiles"
             "OutputProjectGuid" = "8:{5D826F2B-835F-455B-B9A2-BDD72F697A85}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"

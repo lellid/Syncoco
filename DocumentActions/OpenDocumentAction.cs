@@ -46,7 +46,24 @@ namespace Syncoco.DocumentActions
     {
       get { return _doc; }
     }
+
     
+    protected override void CatchedDirectExecute()
+    {
+      try
+      {
+        DirectExecute();
+      }
+      catch(System.IO.FileNotFoundException fnfex)
+      {
+        _reporter.ReportError(string.Format("during file open: {0}", fnfex.Message));
+      }
+      catch(Exception ex)
+      {
+        _reporter.ReportError(string.Format("Unexpeced exception occured during action {0}: {1}",this.GetType().ToString(),ex.ToString()));
+      }
+    }
+
     public override void DirectExecute()
     
     {
