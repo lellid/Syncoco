@@ -423,7 +423,7 @@ namespace SyncTwoCo
       string sourcefilename = System.IO.Path.Combine(this.MediumDirectoryName,foFileNode.MediumFileName);
       if(foFileNode.HasSameHashThan(sourcefilename))
       {
-        CopyWithDirectoryCreation(sourcefilename, destFileName, false);
+        CopyWithDirectoryCreation(sourcefilename, destFileName, overwrite);
         return true;
       }
       
