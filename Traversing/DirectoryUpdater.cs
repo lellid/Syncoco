@@ -189,15 +189,16 @@ namespace Syncoco.Traversing
         if(_monitor.ShouldReport)
           _monitor.Report("Updating file " + fileinfo.FullName);
 
-        if(dirNode.ContainsFile(file))
+        try
         {
-          dirNode.File(file).Update(fileinfo,forceUpdateHash);
-          // this file was here before, we look if it was changed
-        }
-        else
+          if(dirNode.ContainsFile(file))
+            dirNode.File(file).Update(fileinfo,forceUpdateHash);  // this file was here before, we look if it was changed
+          else
+            dirNode.AddFile(file,new FileNode(fileinfo,dirNode));           // this is a new file, we create a new file node for this
+        }        
+        catch(HashCalculationException hce)
         {
-          // this is a new file, we create a new file node for this
-          dirNode.AddFile(file,new FileNode(fileinfo,dirNode));
+          _reporter.ReportWarning(string.Format("file {0} could not be updated: {1}",file,hce.Message));
         }
       }
     }

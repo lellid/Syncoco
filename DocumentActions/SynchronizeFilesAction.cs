@@ -225,6 +225,73 @@ namespace Syncoco.DocumentActions
     }
 
 
+    public FunctionResult DeleteDirectory(string name, bool deleteForced)
+    {
+      DirectoryInfo dirInfo = new DirectoryInfo(name);
+      if(!dirInfo.Exists)
+        return FunctionResult.Success;
+
+      try 
+      {
+        dirInfo.Delete(deleteForced); 
+        return FunctionResult.Success;
+      }
+      catch(System.IO.IOException exa ) 
+      {
+        if(!deleteForced)
+          _reporter.ReportWarning(string.Format("directory {0} could not be removed: {1}",dirInfo.FullName, exa.Message));
+      }
+      catch(System.UnauthorizedAccessException exb)
+      {
+        if(!deleteForced)
+        _reporter.ReportWarning(string.Format("directory {0} could not be removed: {1}",dirInfo.FullName, exb.Message));
+
+      }
+
+      if(!deleteForced)
+        return FunctionResult.Failure;
+
+      // if forced then try to reset all attributes
+      try 
+      {
+        ResetAttributes(dirInfo);
+        dirInfo.Delete(deleteForced); 
+        return FunctionResult.Success;
+      }
+      catch(System.IO.IOException exa) 
+      {
+        _reporter.ReportWarning(string.Format("directory {0} could not be removed: {1}",dirInfo.FullName, exa.Message));
+      }
+      catch(System.UnauthorizedAccessException exb)
+      {
+        _reporter.ReportWarning(string.Format("directory {0} could not be removed: {1}",dirInfo.FullName, exb.Message));
+
+      }
+
+      return FunctionResult.Failure;
+
+    
+    }
+
+
+    void ResetAttributes(DirectoryInfo dirInfo)
+    {
+      dirInfo.Attributes &= ~(FileAttributes.ReadOnly | FileAttributes.System | FileAttributes.Hidden);
+
+      FileInfo[] files = dirInfo.GetFiles();
+      foreach(FileInfo file in files)
+      {
+        file.Attributes &= ~(FileAttributes.ReadOnly | FileAttributes.System | FileAttributes.Hidden);
+      }
+
+      DirectoryInfo[] dirs = dirInfo.GetDirectories();
+      foreach(DirectoryInfo dir in dirs)
+      {
+        ResetAttributes(dir);
+      }
+
+    }
+
     public override void DirectExecute()
     {
       _doc.SetDirty();
@@ -265,19 +332,14 @@ namespace Syncoco.DocumentActions
       switch(tag.Action)
       {
         case SyncAction.Remove:
+        case SyncAction.ForcedRemove:
           if(PathUtil.IsDirectoryName(myfilename)) // delete subdir
           {
-            try 
+            if(FunctionResult.Success==DeleteDirectory(myfilename,SyncAction.ForcedRemove==tag.Action)) 
             {
-              System.IO.Directory.Delete(myfilename); 
               myRoot.DeleteSubDirectoryNode(relPathFileName);
               foRoot.DeleteSubDirectoryNode(relPathFileName);
-
             }
-            catch(System.IO.IOException ) 
-            {
-              _reporter.ReportWarning(string.Format("can't delete directory {0}, maybe it still contains files",myfilename));
-            } // Don't care if subdir cannot be deleted, maybe files are still in there!
           }
           else // Delete file
           {

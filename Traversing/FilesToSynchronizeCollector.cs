@@ -349,7 +349,7 @@ namespace Syncoco.Traversing
           {
             if(System.IO.Directory.Exists(GetFullPath(newdirectorybase)))
               myDir.AddSubDirectory(foreignSubDirName,new DirectoryNode(foreignSubDirName));
-            else if(!myDir.Directory(foreignSubDirName).IsRemoved) // directory here do not exist, but create it
+            else if(!foreignSubDirNode.IsRemoved) // directory here do not exist, but create it
               this.AddDirToCreate(reldirectorybase,foreignSubDirName);
           }
           else if(myDir.Directory(foreignSubDirName).IsRemoved)
@@ -360,7 +360,7 @@ namespace Syncoco.Traversing
         }
         else // myDir is null
         {
-          if(!myDir.Directory(foreignSubDirName).IsRemoved)
+          if(!foreignSubDirNode.IsRemoved)
             this.AddDirToCreate(reldirectorybase,foreignSubDirName);
         }
 

@@ -30,7 +30,7 @@ namespace Syncoco
 
   public enum SyncAction 
   {
-    Remove, RemoveRollback, 
+    Remove, RemoveRollback, ForcedRemove, 
     RemoveManually, RemoveManuallyRollback, 
     Copy,
     Overwrite, OverwriteRollback, 
@@ -192,6 +192,11 @@ namespace Syncoco
           item.SubItems[1].Text = tag.Action.ToString();
         }
       }
+    }
+
+    public void EhView_Remove_ForcedRemove()
+    {
+      ChangeActionOnSelected(SyncAction.Remove,SyncAction.ForcedRemove);
     }
 
     public void EhView_RemoveManually_Remove()
