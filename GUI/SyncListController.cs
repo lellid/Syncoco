@@ -67,7 +67,7 @@ namespace SyncTwoCo
       foreach(string fullname in filenames)
       {
 #if DEBUG
-        PathUtil.Assert_RelpathFilename(fullname);
+        PathUtil.Assert_RelpathOrFilename(fullname);
 #endif
 
         string filename, directoryname;

@@ -273,9 +273,9 @@ namespace SyncTwoCo
 
     public static void SplitInto_Relpath_Dirname(string relpathfilename, out string relpath, out string dirname)
     {
-      int pos = relpathfilename.LastIndexOf(System.IO.Path.DirectorySeparatorChar,2);
+      int pos = relpathfilename.LastIndexOf(System.IO.Path.DirectorySeparatorChar,relpathfilename.Length-2);
       relpath = relpathfilename.Substring(0,pos+1);
-      dirname = relpathfilename.Substring(pos+1,relpathfilename.Length-pos-1);
+      dirname = relpathfilename.Substring(pos+1,relpathfilename.Length-pos-2);
 
 #if DEBUG
       Assert_Relpath(relpath);
