@@ -13,7 +13,8 @@ namespace SyncTwoCo
     string _FileName;
     [NonSerialized]
     bool   _IsDirty;
-
+    [NonSerialized]
+    MD5SumFileNodesHashTable _allFilesHere;
     
 
     //ArrayList _root1, _root2;
@@ -245,6 +246,8 @@ namespace SyncTwoCo
 
     public void AddRoot(string basename)
     {
+      this._allFilesHere=null;
+
       EnsureAlignment();
 
       RootPair added = new RootPair(this);
@@ -261,6 +264,8 @@ namespace SyncTwoCo
 
     public void Update()
     {
+      this._allFilesHere=null;
+
       EnsureAlignment();
 
       for(int i=0;i<Count;i++)
@@ -302,11 +307,7 @@ namespace SyncTwoCo
         if(MyRoot(i).IsValid)
           RootPair(i).CopyFilesToMedium(MediumDirectoryName,copiedFiles,null);
       }
-
-
     }
-
-   
 
 
     public void ClearMediumDirectory()
@@ -352,10 +353,24 @@ namespace SyncTwoCo
       if(_FileName==null || _FileName==string.Empty)
         throw new ApplicationException("The document was not saved yet");
 
+
+      // before we collect, we save the md5 hashes of all files (not current, but from the XML file)
+      // into one hashtable
+
+      this._allFilesHere = new MD5SumFileNodesHashTable();
+      for(int i=0;i<Count;i++)
+      {
+        if(MyRoot(i).IsValid)
+          RootPair(i).MyRoot.FillMD5SumFileNodesHashTable(this._allFilesHere);
+      }
+
+      // now that we have all the current files, the information can be used by the collectors to
+      // decide if a file can be copied or not
+
       Collector[] collectors = new Collector[Count];
       for(int i=0;i<Count;i++)
       {
-        collectors[i] = new Collector(this.MediumDirectoryName,MyRoot(i).FilePath);
+        collectors[i] = new Collector(this.MediumDirectoryName,MyRoot(i).FilePath,this._allFilesHere);
         if(ForeignRoot(i).IsValid && MyRoot(i).IsValid)
           RootPair(i).Collect(collectors[i]);
       }
@@ -371,13 +386,58 @@ namespace SyncTwoCo
       System.IO.File.Copy(sourceFileName,destFileName,overwrite);
     }
 
+    /// <summary>
+    /// This functions looks from where to copy the foFileNode from. First we have a look in our own file system.
+    /// Then we look at the files on the medium.
+    /// </summary>
+    /// <param name="foFileNode">This is the file in the foreign file system that should be copied here to destFileName.</param>
+    /// <param name="destFileName">The destination file name where to copy to.</param>
+    /// <param name="overwrite">True if the destination file can be overwritten. False if not.</param>
+    /// <returns>True if the copy was successfull, false otherwise.</returns>
+    public bool CopyWithDirectoryCreation(FileNode foFileNode, string destFileName, bool overwrite)
+    {
+      object o = this._allFilesHere[foFileNode.FileHash];
+      if(o is PathAndFileNode)
+      {
+        PathAndFileNode pfn = (PathAndFileNode)o;
+        if(System.IO.File.Exists(pfn.Path) && foFileNode.HasSameHashThan(pfn.Path))
+        {
+          CopyWithDirectoryCreation(pfn.Path, destFileName, overwrite);
+          return true;
+        }
+      }
+      else if(o is ArrayList)
+      {
+        ArrayList arr = (ArrayList)o;
+        foreach(PathAndFileNode pfn in arr)
+        {
+          if(System.IO.File.Exists(pfn.Path) && foFileNode.HasSameHashThan(pfn.Path))
+          {
+            CopyWithDirectoryCreation(pfn.Path, destFileName, overwrite);
+            return true;
+          }
+        }
+      }
+    
+
+      string sourcefilename = System.IO.Path.Combine(this.MediumDirectoryName,foFileNode.MediumFileName);
+      if(foFileNode.HasSameHashThan(sourcefilename))
+      {
+        CopyWithDirectoryCreation(sourcefilename, destFileName, false);
+        return true;
+      }
+      
+      return false;
+      }
+
+
     public void PerformAction(SyncItemTag tag)
     {
       string myfilename = System.IO.Path.Combine(MyRoot(tag.RootListIndex).FilePath,tag.FileName);
       FileSystemRoot myRoot = MyRoot(tag.RootListIndex);
       FileSystemRoot foRoot = ForeignRoot(tag.RootListIndex);
       FileNode foFileNode;
-      string sourcefilename;
+     
       System.IO.FileInfo myfileinfo;
       FileNode myfilenode;
 
@@ -407,10 +467,9 @@ namespace SyncTwoCo
           break;
         case SyncAction.Copy:
           foFileNode = foRoot.GetFileNode(tag.FileName);
-          sourcefilename = System.IO.Path.Combine(this.MediumDirectoryName,foFileNode.MediumFileName);
-          if(foFileNode.HasSameHashThan(sourcefilename))
+       
+          if(CopyWithDirectoryCreation(foFileNode,myfilename,false))
           {
-            CopyWithDirectoryCreation(sourcefilename,myfilename,false);
             // update the own FileNode (enforce (!) update the hash of this node also), only if the hash match, then set the own and the foreign
             // file node to unchanged
             myfileinfo = new System.IO.FileInfo(myfilename);
@@ -420,19 +479,13 @@ namespace SyncTwoCo
               foFileNode.SetToUnchanged();
               myfilenode.SetToUnchanged();
             }
-          }
-          else
-          {
-            throw new System.IO.IOException(string.Format("Hash of file {0} on medium is not as expected, the file is maybe corrupted (the destination file name is {1})",sourcefilename,myfilename));
           }
           break;
         case SyncAction.Overwrite:
         case SyncAction.ResolveManuallyOverwrite:
           foFileNode = foRoot.GetFileNode(tag.FileName);
-          sourcefilename = System.IO.Path.Combine(this.MediumDirectoryName,foFileNode.MediumFileName);
-          if(foFileNode.HasSameHashThan(sourcefilename))
+          if(CopyWithDirectoryCreation(foFileNode,myfilename,true))
           {
-            CopyWithDirectoryCreation(sourcefilename,myfilename,true);
             // update the own FileNode (enforce (!) update the hash of this node also), only if the hash match, then set the own and the foreign
             // file node to unchanged
             myfileinfo = new System.IO.FileInfo(myfilename);
@@ -442,10 +495,6 @@ namespace SyncTwoCo
               foFileNode.SetToUnchanged();
               myfilenode.SetToUnchanged();
             }
-          }
-          else
-          {
-            throw new System.IO.IOException(string.Format("Hash of file {0} on medium is not as expected, the file is maybe corrupted (target file name: {1}", sourcefilename, myfilename));
           }
           break;
         case SyncAction.ResolveManuallyRollback:

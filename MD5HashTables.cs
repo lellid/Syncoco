@@ -83,7 +83,7 @@ namespace SyncTwoCo
   
   }
 
-  class MD5SumFileNodesHashTable : System.Collections.Hashtable
+  public class MD5SumFileNodesHashTable : System.Collections.Hashtable
   {
     static MD5SumComparer comp = new MD5SumComparer();
 

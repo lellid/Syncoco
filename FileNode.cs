@@ -247,6 +247,14 @@ namespace SyncTwoCo
       return result;
     }
 
+    public byte[] FileHash 
+    {
+      get 
+      { 
+        return _fileHash; 
+      }
+    }
+
     public bool HasSameHashThan(byte[] otherfilehash)
     {
       if(this._fileHash.Length != otherfilehash.Length)
@@ -279,6 +287,12 @@ namespace SyncTwoCo
     {
       if(!this.IsRemoved)
         table.Add(this._fileHash,this._fileLength);
+    }
+
+    public void FillMD5SumFileNodesHashTable (MD5SumFileNodesHashTable table, string absoluteFileName)
+    {
+      if(!this.IsRemoved)
+        table.Add(this._fileHash,absoluteFileName,this);
     }
 
     public bool IsContainedIn(MD5SumHashTable table)

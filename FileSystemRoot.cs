@@ -129,6 +129,10 @@ namespace SyncTwoCo
       this._DirectoryNode.FillMd5HashTable(table);
     }
 
+    public void FillMD5SumFileNodesHashTable(MD5SumFileNodesHashTable table)
+    {
+      this._DirectoryNode.FillMD5SumFileNodesHashTable(table,this.FilePath);
+    }
    
     /// <summary>
     /// Returns a path with is forced to end with a DirectorySeparatorChar

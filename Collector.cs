@@ -13,6 +13,7 @@ namespace SyncTwoCo
   {
     string _MediumDirectory;
     string _BaseDirectory;
+    MD5SumFileNodesHashTable _allFilesHereOnDisk;
     
     StringCollection _ToRemove = new StringCollection();
     StringCollection _ToRemoveButChanged = new StringCollection();
@@ -30,10 +31,11 @@ namespace SyncTwoCo
 
 
 
-    public Collector(string mediumdirectory, string basedirectory)
+    public Collector(string mediumdirectory, string basedirectory, MD5SumFileNodesHashTable  allFilesHereOnDisk)
     {
       _MediumDirectory = mediumdirectory;
       _BaseDirectory = basedirectory;
+      _allFilesHereOnDisk = allFilesHereOnDisk;
     }
 
     public string GetFullPath(string relativdir)
@@ -69,9 +71,49 @@ namespace SyncTwoCo
       _ToOverwrite.Add(System.IO.Path.Combine(dirbase,filename));
     }
 
-    public bool IsFileOnMedium(string filename)
+    protected bool IsFileOnMedium(string filename)
     {
       return System.IO.File.Exists(System.IO.Path.Combine(_MediumDirectory,filename));
+    }
+
+    public bool IsFileHereAnywhere(FileNode node)
+    {
+      return IsFileHereOnDisk(node) || IsFileOnMedium(node);
+    }
+
+
+    protected bool IsFileHereOnDisk(PathAndFileNode node)
+    {
+      return System.IO.File.Exists(node.Path);
+    }
+
+    protected bool IsFileHereOnDisk(FileNode node)
+    {
+      object o = _allFilesHereOnDisk[node.FileHash];
+      if(o==null)
+        return false;
+      else if(o is PathAndFileNode)
+      {
+        PathAndFileNode pfn = (PathAndFileNode)o;
+        return IsFileHereOnDisk(pfn);
+      }
+      else if( o is System.Collections.ArrayList)
+      {
+        System.Collections.ArrayList arr = (System.Collections.ArrayList)o;
+        foreach(PathAndFileNode pfn in arr)
+        {
+          if(IsFileHereOnDisk(pfn))
+            return true;
+        }
+      }
+      else
+        throw new ApplicationException("Unexpected object in hashtable: " + o.ToString());
+
+      return false;
+    }
+    protected bool IsFileOnMedium(FileNode node)
+    {
+      return System.IO.File.Exists(System.IO.Path.Combine(_MediumDirectory,node.MediumFileName));
     }
   }
 }

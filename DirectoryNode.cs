@@ -541,13 +541,14 @@ namespace SyncTwoCo
             }
             else
             {
-              if(collector.IsFileOnMedium(foreignFileNode.MediumFileName))
+              if(collector.IsFileHereAnywhere(foreignFileNode))
                 collector.AddManuallyResolvedFile(directorybase,foreignFileName);
+             
             }
           }
           else
           {
-            if(collector.IsFileOnMedium(foreignFileNode.MediumFileName))
+            if(collector.IsFileHereAnywhere(foreignFileNode))
               collector.AddFileToCopy(directorybase,foreignFileName);
           }
         }
@@ -562,17 +563,17 @@ namespace SyncTwoCo
             }
             else if(myDir.File(foreignFileName).IsUnchanged)
             {
-              if(collector.IsFileOnMedium(foreignFileNode.MediumFileName))
+              if(collector.IsFileHereAnywhere(foreignFileNode))
                 collector.AddFileToOverwrite(directorybase,foreignFileName);
             }
-            else if(collector.IsFileOnMedium(foreignFileNode.MediumFileName))
+            else if(collector.IsFileHereAnywhere(foreignFileNode))
             {
               collector.AddManuallyResolvedFile(directorybase,foreignFileName);
             }
           }
           else
           {
-            if(collector.IsFileOnMedium(foreignFileNode.MediumFileName))
+            if(collector.IsFileHereAnywhere(foreignFileNode))
               collector.AddFileToCopy(directorybase,foreignFileName);
           }
         }
@@ -714,13 +715,35 @@ namespace SyncTwoCo
     #region MD5 Hash sum
     public void FillMd5HashTable(MD5SumHashTable table)
     {
-      foreach(FileNode fnode in this._files)
+      foreach(DictionaryEntry fentry in this._files)
       {
+        FileNode fnode = (FileNode)fentry.Value;
         fnode.FillMd5HashTable(table);
       }
-      foreach(DirectoryNode dnode in this._subDirectories)
+      foreach(DictionaryEntry dentry in this._subDirectories)
       {
+        DirectoryNode dnode = (DirectoryNode)dentry.Value;
         dnode.FillMd5HashTable(table);
+      }
+    }
+
+    public void FillMD5SumFileNodesHashTable(MD5SumFileNodesHashTable table, string currentPath)
+    {
+      System.Diagnostics.Debug.Assert(currentPath!=null);
+      System.Diagnostics.Debug.Assert(currentPath.Length>0); 
+      System.Diagnostics.Debug.Assert(currentPath[currentPath.Length-1]==System.IO.Path.DirectorySeparatorChar);
+
+      foreach(DictionaryEntry fentry in this._files)
+      {
+        FileNode fnode = (FileNode)fentry.Value;
+        fnode.FillMD5SumFileNodesHashTable(table,currentPath+(string)fentry.Key);
+      }
+      foreach(DictionaryEntry dentry in this._subDirectories)
+      {
+        DirectoryNode dnode = (DirectoryNode)dentry.Value;
+      
+        string subPath = currentPath + (string)dentry.Key + System.IO.Path.DirectorySeparatorChar;
+        dnode.FillMD5SumFileNodesHashTable(table,subPath);
       }
     }
 
