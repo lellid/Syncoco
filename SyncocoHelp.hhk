@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<!-- Sitemap 1.0 -->
+</HEAD>
+<BODY>
+<OBJECT type="text/site properties">
+</OBJECT>
+<UL>
+    <LI><OBJECT type="text/sitemap">
+            <param name="Name" value="Modifying unwanted synchronization actions">
+            <param name="Name" value="Modifying unwanted synchronization actions">
+            <param name="Local" value="0002-ChangeSyncActions.htm">
+         </OBJECT>
+    <LI><OBJECT type="text/sitemap">
+            <param name="Name" value="Setting file and directory filters">
+            <param name="Name" value="Setting file and directory filters">
+            <param name="Local" value="0003-SettingFileFilters.htm">
+         </OBJECT>
+    <LI><OBJECT type="text/sitemap">
+            <param name="Name" value="Syncoco qickstart manual">
+            <param name="Name" value="Syncoco qickstart manual">
+            <param name="Local" value="0001-Quickstart.htm">
+         </OBJECT>
+    <LI><OBJECT type="text/sitemap">
+            <param name="Name" value="Welcome to Syncoco!">
+            <param name="Name" value="Welcome to Syncoco!">
+            <param name="Local" value="0000-index.htm">
+         </OBJECT>
+</UL>
+</BODY>
+</HTML>

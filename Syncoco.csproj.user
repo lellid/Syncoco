@@ -11,7 +11,7 @@
                     RemoteDebugEnabled = "false"
                     RemoteDebugMachine = ""
                     StartAction = "Project"
-                    StartArguments = "-n DYSON"
+                    StartArguments = "-m C-BOB c:\temp\synctest.syncox"
                     StartPage = ""
                     StartProgram = ""
                     StartURL = ""

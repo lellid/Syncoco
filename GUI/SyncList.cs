@@ -1,3 +1,25 @@
+#region Copyright
+/////////////////////////////////////////////////////////////////////////////
+//    Syncoco:  synchronizing two computers with a data medium
+//    Copyright (C) 2004-2005 Dr. Dirk Lellinger
+//
+//    This program is free software; you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation; either version 2 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program; if not, write to the Free Software
+//    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+/////////////////////////////////////////////////////////////////////////////
+#endregion
+
 using System;
 using System.Collections;
 using System.ComponentModel;
@@ -27,11 +49,18 @@ namespace Syncoco
 
       // TODO: Add any initialization after the InitializeComponent call
       ContextMenu contextMenu = new ContextMenu();
-      contextMenu.MenuItems.Add("Set to remove",new EventHandler(this.EhSetToRemove));
-      contextMenu.MenuItems.Add("Set to rollback remove",new EventHandler(this.EhSetToRollbackRemove));
+      contextMenu.MenuItems.Add("Set remove manually to remove",new EventHandler(this.EhSetRemoveManuallyToRemove));
+      contextMenu.MenuItems.Add("Set remove manually to rollback remove",new EventHandler(this.EhSetRemoveManuallyToRollback));
+      contextMenu.MenuItems.Add("-");
+      
       contextMenu.MenuItems.Add("Set resolve manually to overwrite",new EventHandler(this.EhSetResolveManuallyToOverwrite));
       contextMenu.MenuItems.Add("Set resolve manually to ignore",new EventHandler(this.EhSetResolveManuallyToIgnore));
       contextMenu.MenuItems.Add("Set resolve manually to rollback",new EventHandler(this.EhSetResolveManuallyToRollback));
+
+      contextMenu.MenuItems.Add("-");
+      contextMenu.MenuItems.Add("Set remove to rollback remove",new EventHandler(this.EhSetRemoveToRollbackRemove));
+      contextMenu.MenuItems.Add("Set overwrite to rollback overwrite",new EventHandler(this.EhSetOverwriteToRollbackOverwrite));
+
       this.ContextMenu = contextMenu;
 
     }
@@ -71,15 +100,22 @@ namespace Syncoco
       return lvSyncList.Items[idx];
     }
 
-    public void EhSetToRemove(object sender, EventArgs e)
+    public void EhSetRemoveManuallyToRemove(object sender, EventArgs e)
     {
-      _controller.EhView_SetToRemove();
+      _controller.EhView_RemoveManually_Remove();
     }
 
-    public void EhSetToRollbackRemove(object sender, EventArgs e)
+    public void EhSetRemoveToRollbackRemove(object sender, EventArgs e)
     {
-      _controller.EhView_SetToRollbackRemove();
+      _controller.EhView_Remove_Rollback();
     }
+
+    public void EhSetRemoveManuallyToRollback(object sender, EventArgs e)
+    {
+      _controller.EhView_RemoveManually_Rollback();
+    }
+
+
     public void EhSetResolveManuallyToOverwrite(object sender, EventArgs e)
     {
       _controller.EhView_ResolveManually_Overwrite();
@@ -91,6 +127,11 @@ namespace Syncoco
     public void EhSetResolveManuallyToRollback(object sender, EventArgs e)
     {
       _controller.EhView_ResolveManually_Rollback();
+    }
+
+    public void EhSetOverwriteToRollbackOverwrite(object sender, EventArgs e)
+    {
+      _controller.EhView_Overwrite_Rollback();
     }
 
     /// <summary> 

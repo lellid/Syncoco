@@ -1,3 +1,25 @@
+#region Copyright
+/////////////////////////////////////////////////////////////////////////////
+//    Syncoco:  synchronizing two computers with a data medium
+//    Copyright (C) 2004-2005 Dr. Dirk Lellinger
+//
+//    This program is free software; you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation; either version 2 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program; if not, write to the Free Software
+//    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+/////////////////////////////////////////////////////////////////////////////
+#endregion
+
 using System;
 using System.Collections;
 using System.Windows.Forms;
@@ -8,7 +30,7 @@ namespace Syncoco
 
   public enum SyncAction 
   {
-    Remove, RemoveManually, RemoveRollback, Copy, Overwrite, ResolveManually, ResolveManuallyOverwrite,
+    Remove, RemoveRollback, RemoveManually, RemoveManuallyRollback, Copy, Overwrite, OverwriteRollback, ResolveManually, ResolveManuallyOverwrite,
     ResolveManuallyIgnore, ResolveManuallyRollback
   };
 
@@ -99,8 +121,8 @@ namespace Syncoco
           item.SubItems.Add(dat);
         }
 
-      //  if(action==SyncAction.Copy)
-      //    item.BackColor = System.Drawing.Color.LightGray;
+        //  if(action==SyncAction.Copy)
+        //    item.BackColor = System.Drawing.Color.LightGray;
         list.Add(item);
       }
     }
@@ -150,15 +172,25 @@ namespace Syncoco
       }
     }
 
-    public void EhView_SetToRemove()
+    public void EhView_RemoveManually_Remove()
     {
       ChangeActionOnSelected(SyncAction.RemoveManually,SyncAction.Remove);
     }
 
-    public void EhView_SetToRollbackRemove()
+    public void EhView_Remove_Rollback()
     {
-      ChangeActionOnSelected(SyncAction.RemoveManually,SyncAction.RemoveRollback);
       ChangeActionOnSelected(SyncAction.Remove,SyncAction.RemoveRollback);
+    }
+
+    public void EhView_Overwrite_Rollback()
+    {
+      ChangeActionOnSelected(SyncAction.Overwrite,SyncAction.OverwriteRollback);
+    }
+
+
+    public void EhView_RemoveManually_Rollback()
+    {
+      ChangeActionOnSelected(SyncAction.RemoveManually,SyncAction.RemoveManuallyRollback);
     }
 
     public void EhView_ResolveManually_Overwrite()

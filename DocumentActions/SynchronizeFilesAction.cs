@@ -1,3 +1,25 @@
+#region Copyright
+/////////////////////////////////////////////////////////////////////////////
+//    Syncoco:  synchronizing two computers with a data medium
+//    Copyright (C) 2004-2005 Dr. Dirk Lellinger
+//
+//    This program is free software; you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation; either version 2 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program; if not, write to the Free Software
+//    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+/////////////////////////////////////////////////////////////////////////////
+#endregion
+
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
@@ -134,7 +156,7 @@ namespace Syncoco.DocumentActions
     }
 
 
-   FunctionResult DeleteFileForced(string path)
+    FunctionResult DeleteFileForced(string path)
     {
 #if DEBUG
       PathUtil.Assert_AbspathFilename(path);
@@ -164,7 +186,7 @@ namespace Syncoco.DocumentActions
         return FunctionResult.Failure;
       }
 
-     return FunctionResult.Success;
+      return FunctionResult.Success;
     }
 
 
@@ -178,7 +200,7 @@ namespace Syncoco.DocumentActions
           _monitor.Report(string.Format("Perform {0} on {1}",tag.Action.ToString(),tag.FileName));
 
         PerformAction(tag);
-        }
+      }
       
     }
 
@@ -232,6 +254,7 @@ namespace Syncoco.DocumentActions
           }
           break;
         case SyncAction.RemoveRollback:
+        case SyncAction.RemoveManuallyRollback:
           foRoot.DeleteFileNode(relPathFileName);
           break;
         case SyncAction.Copy:
@@ -267,6 +290,7 @@ namespace Syncoco.DocumentActions
           }
           break;
         case SyncAction.ResolveManuallyRollback:
+        case SyncAction.OverwriteRollback:
           foFileNode = foRoot.GetFileNode(relPathFileName);
           foFileNode.SetToUnchanged();
           myfileinfo = new System.IO.FileInfo(myfilename);
@@ -274,6 +298,8 @@ namespace Syncoco.DocumentActions
           if(myfilenode.IsUnchanged)
             myfilenode.SwitchFromUnchangedToChanged();
           break;
+       
+
       }
     }
   }

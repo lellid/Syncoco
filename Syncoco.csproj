@@ -213,6 +213,18 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "SyncocoHelp.chm"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "SyncocoHelp.hhc"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "SyncocoHelp.hhk"
+                    BuildAction = "Content"
+                />
+                <File
                     RelPath = "DocumentActions\AbstractDocumentAction.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

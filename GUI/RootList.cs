@@ -1,3 +1,25 @@
+#region Copyright
+/////////////////////////////////////////////////////////////////////////////
+//    Syncoco:  synchronizing two computers with a data medium
+//    Copyright (C) 2004-2005 Dr. Dirk Lellinger
+//
+//    This program is free software; you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation; either version 2 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program; if not, write to the Free Software
+//    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+/////////////////////////////////////////////////////////////////////////////
+#endregion
+
 using System;
 using System.Collections;
 using System.ComponentModel;
@@ -303,17 +325,17 @@ namespace Syncoco
       {
         listContextMenu.MenuItems.Add(new MenuItem("Add new Path", new EventHandler(btAddPath_Click)));
       }
-        if(this.lvRootList.SelectedIndices.Count==1)
-        {
-          listContextMenu.MenuItems.Add(new MenuItem("Edit filter", new EventHandler(btEditFilterList_Click)));
-          listContextMenu.MenuItems.Add(new MenuItem("-"));
-          listContextMenu.MenuItems.Add(new MenuItem("Edit path", new EventHandler(btEditPath_Click)));
-          listContextMenu.MenuItems.Add(new MenuItem("Delete root pair", new EventHandler(btDeletePath_Click)));
-        }
+      if(this.lvRootList.SelectedIndices.Count==1)
+      {
+        listContextMenu.MenuItems.Add(new MenuItem("Edit filter", new EventHandler(btEditFilterList_Click)));
+        listContextMenu.MenuItems.Add(new MenuItem("-"));
+        listContextMenu.MenuItems.Add(new MenuItem("Edit path", new EventHandler(btEditPath_Click)));
+        listContextMenu.MenuItems.Add(new MenuItem("Delete root pair", new EventHandler(btDeletePath_Click)));
+      }
 
       if(this.lvRootList.SelectedIndices.Count>=1)
       {
-           listContextMenu.MenuItems.Add(new MenuItem("-"));
+        listContextMenu.MenuItems.Add(new MenuItem("-"));
         listContextMenu.MenuItems.Add(new MenuItem("Move up", new EventHandler(bt_MoveUp_Click)));
         listContextMenu.MenuItems.Add(new MenuItem("Move down", new EventHandler(btMoveDown_Click)));
 

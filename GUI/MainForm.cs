@@ -1,3 +1,25 @@
+#region Copyright
+/////////////////////////////////////////////////////////////////////////////
+//    Syncoco:  synchronizing two computers with a data medium
+//    Copyright (C) 2004-2005 Dr. Dirk Lellinger
+//
+//    This program is free software; you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation; either version 2 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program; if not, write to the Free Software
+//    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+/////////////////////////////////////////////////////////////////////////////
+#endregion
+
 using System;
 using System.Drawing;
 using System.Collections;
@@ -42,6 +64,8 @@ namespace Syncoco
     private System.Windows.Forms.MenuItem menuEditCleanTransferDir;
     private System.Windows.Forms.MenuItem menuItem2;
     private System.Windows.Forms.MenuItem menuBeginSaveCleanIfNeccessary;
+    private System.Windows.Forms.MenuItem menuHelpSyncoco;
+    private System.Windows.Forms.MenuItem menuItem5;
 
     /// <summary>
     /// Required designer variable.
@@ -57,6 +81,7 @@ namespace Syncoco
 
       Current.Document.DirtyChanged += new EventHandler(EhDocumentDirtyChanged);
       Current.Document.FileNameChanged += new EventHandler(EhDocumentFileNameChanged);
+
 
     }
 
@@ -95,21 +120,23 @@ namespace Syncoco
       this.menuBeginWork = new System.Windows.Forms.MenuItem();
       this.menuBeginShowSyncFiles = new System.Windows.Forms.MenuItem();
       this.menuBeginSyncSelected = new System.Windows.Forms.MenuItem();
+      this.menuItem2 = new System.Windows.Forms.MenuItem();
+      this.menuBeginSaveCleanIfNeccessary = new System.Windows.Forms.MenuItem();
       this.menuEndWork = new System.Windows.Forms.MenuItem();
       this.menuEndUpdateSaveCopy = new System.Windows.Forms.MenuItem();
       this.menuActions = new System.Windows.Forms.MenuItem();
       this.menuEditCollect = new System.Windows.Forms.MenuItem();
       this.menuEditSynchronize = new System.Windows.Forms.MenuItem();
       this.menuEditUpdate = new System.Windows.Forms.MenuItem();
+      this.menuEditCleanTransferDir = new System.Windows.Forms.MenuItem();
       this.menuEditCopyFiles = new System.Windows.Forms.MenuItem();
       this.menuItem1 = new System.Windows.Forms.MenuItem();
       this.menuUpdateHash = new System.Windows.Forms.MenuItem();
       this.menuHelp = new System.Windows.Forms.MenuItem();
       this.menuHelpAbout = new System.Windows.Forms.MenuItem();
       this._tabControl = new System.Windows.Forms.TabControl();
-      this.menuEditCleanTransferDir = new System.Windows.Forms.MenuItem();
-      this.menuItem2 = new System.Windows.Forms.MenuItem();
-      this.menuBeginSaveCleanIfNeccessary = new System.Windows.Forms.MenuItem();
+      this.menuHelpSyncoco = new System.Windows.Forms.MenuItem();
+      this.menuItem5 = new System.Windows.Forms.MenuItem();
       this.SuspendLayout();
       // 
       // mainMenu1
@@ -199,6 +226,17 @@ namespace Syncoco
       this.menuBeginSyncSelected.Text = "Sync selected files";
       this.menuBeginSyncSelected.Click += new System.EventHandler(this.menuBeginSyncSelected_Click);
       // 
+      // menuItem2
+      // 
+      this.menuItem2.Index = 2;
+      this.menuItem2.Text = "-";
+      // 
+      // menuBeginSaveCleanIfNeccessary
+      // 
+      this.menuBeginSaveCleanIfNeccessary.Index = 3;
+      this.menuBeginSaveCleanIfNeccessary.Text = "SaveAndCleanIfNeccessary";
+      this.menuBeginSaveCleanIfNeccessary.Click += new System.EventHandler(this.menuBeginSaveCleanIfNeccessary_Click);
+      // 
       // menuEndWork
       // 
       this.menuEndWork.Index = 2;
@@ -245,6 +283,12 @@ namespace Syncoco
       this.menuEditUpdate.Text = "Update";
       this.menuEditUpdate.Click += new System.EventHandler(this.menuEditUpdate_Click);
       // 
+      // menuEditCleanTransferDir
+      // 
+      this.menuEditCleanTransferDir.Index = 3;
+      this.menuEditCleanTransferDir.Text = "Clean transfer directory";
+      this.menuEditCleanTransferDir.Click += new System.EventHandler(this.menuEditCleanTransferDir_Click);
+      // 
       // menuEditCopyFiles
       // 
       this.menuEditCopyFiles.Index = 4;
@@ -266,12 +310,14 @@ namespace Syncoco
       // 
       this.menuHelp.Index = 4;
       this.menuHelp.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                             this.menuHelpSyncoco,
+                                                                             this.menuItem5,
                                                                              this.menuHelpAbout});
       this.menuHelp.Text = "Help";
       // 
       // menuHelpAbout
       // 
-      this.menuHelpAbout.Index = 0;
+      this.menuHelpAbout.Index = 2;
       this.menuHelpAbout.Text = "About..";
       this.menuHelpAbout.Click += new System.EventHandler(this.menuHelpAbout_Click);
       // 
@@ -284,22 +330,16 @@ namespace Syncoco
       this._tabControl.Size = new System.Drawing.Size(520, 398);
       this._tabControl.TabIndex = 0;
       // 
-      // menuEditCleanTransferDir
+      // menuHelpSyncoco
       // 
-      this.menuEditCleanTransferDir.Index = 3;
-      this.menuEditCleanTransferDir.Text = "Clean transfer directory";
-      this.menuEditCleanTransferDir.Click += new System.EventHandler(this.menuEditCleanTransferDir_Click);
+      this.menuHelpSyncoco.Index = 0;
+      this.menuHelpSyncoco.Text = "Index..";
+      this.menuHelpSyncoco.Click += new System.EventHandler(this.menuHelpSyncoco_Click);
       // 
-      // menuItem2
+      // menuItem5
       // 
-      this.menuItem2.Index = 2;
-      this.menuItem2.Text = "-";
-      // 
-      // menuBeginSaveCleanIfNeccessary
-      // 
-      this.menuBeginSaveCleanIfNeccessary.Index = 3;
-      this.menuBeginSaveCleanIfNeccessary.Text = "SaveAndCleanIfNeccessary";
-      this.menuBeginSaveCleanIfNeccessary.Click += new System.EventHandler(this.menuBeginSaveCleanIfNeccessary_Click);
+      this.menuItem5.Index = 1;
+      this.menuItem5.Text = "-";
       // 
       // Syncoco
       // 
@@ -311,6 +351,7 @@ namespace Syncoco
       this.Name = "Syncoco";
       this.Text = "Syncoco";
       this.Closing += new System.ComponentModel.CancelEventHandler(this.EhFormClosing);
+      this.Load += new System.EventHandler(this.Syncoco_Load);
       this.ResumeLayout(false);
 
     }
@@ -524,7 +565,7 @@ namespace Syncoco
 
     private void menuEditCleanTransferDir_Click(object sender, System.EventArgs e)
     {
-    new DocumentActions.ClearMediumDirectoryAction(Current.Document).BackgroundExecute();
+      new DocumentActions.ClearMediumDirectoryAction(Current.Document).BackgroundExecute();
     }
 
     private void menuEditCopyFiles_Click(object sender, System.EventArgs e)
@@ -571,13 +612,13 @@ namespace Syncoco
 
     private void menuBeginSyncSelected_Click(object sender, System.EventArgs e)
     {
-       menuEditSyncronize_Click(sender,e);
+      menuEditSyncronize_Click(sender,e);
     }
 
     private void menuBeginSaveCleanIfNeccessary_Click(object sender, System.EventArgs e)
     {
       if(Current.Document.HasFileName)
-        new DocumentActions.SaveDocumentAndCleanIfNecessaryAction(Current.Document,Current.Document.FileName);    
+        new DocumentActions.SaveDocumentAndCleanIfNecessaryAction(Current.Document,Current.Document.FileName).BackgroundExecute();    
     }
 
 
@@ -601,6 +642,23 @@ namespace Syncoco
     #endregion
 
     #region Help menu
+
+    private void menuHelpSyncoco_Click(object sender, System.EventArgs e)
+    {
+      try
+      {
+        string name = System.Reflection.Assembly.GetEntryAssembly().Location;
+        
+        name = System.IO.Path.ChangeExtension(name,".chm");
+        
+        System.Diagnostics.Process.Start(name);
+      }
+      catch(Exception ex)
+      {
+        MessageBox.Show(this,ex.Message,"Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+      }
+    }
+
 
     private void menuHelpAbout_Click(object sender, System.EventArgs e)
     {
@@ -632,6 +690,18 @@ namespace Syncoco
 
   
     #endregion
+
+    private void Syncoco_Load(object sender, System.EventArgs e)
+    {
+      if(Current.InitialFileName!=null)
+      {
+        DocumentActions.OpenDocumentAction action = new OpenDocumentAction(Current.InitialFileName);
+        action.BackgroundExecute();
+        ExchangeCurrentDocument(action.Doc);
+        Current.InitialFileName=null;
+      }
+    
+    }
 
 
   
