@@ -96,11 +96,11 @@ namespace SyncTwoCo
       {
         Collector coll = _collectors[rootListIndex];
 
-        AddListViewItems(list, rootListIndex, SyncAction.Remove,coll.ToRemove);
-        AddListViewItems(list, rootListIndex, SyncAction.RemoveManually,coll.ToRemoveManually);
         AddListViewItems(list, rootListIndex, SyncAction.Copy,coll.ToCopy);
         AddListViewItems(list, rootListIndex, SyncAction.Overwrite,coll.ToOverwrite);
         AddListViewItems(list, rootListIndex, SyncAction.ResolveManually,coll.ToResolveManually);
+        AddListViewItems(list, rootListIndex, SyncAction.Remove,coll.ToRemove);
+        AddListViewItems(list, rootListIndex, SyncAction.RemoveManually,coll.ToRemoveManually);
       }
 
       _view.InitializeList(list);
