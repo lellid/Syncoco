@@ -30,8 +30,11 @@ namespace Syncoco
 
   public enum SyncAction 
   {
-    Remove, RemoveRollback, RemoveManually, RemoveManuallyRollback, Copy, Overwrite, OverwriteRollback, ResolveManually, ResolveManuallyOverwrite,
-    ResolveManuallyIgnore, ResolveManuallyRollback
+    Remove, RemoveRollback, 
+    RemoveManually, RemoveManuallyRollback, 
+    Copy,
+    Overwrite, OverwriteRollback, 
+    ResolveManually, ResolveManuallyOverwrite, ResolveManuallyIgnore, ResolveManuallyRollback
   };
 
   public class SyncItemTag
@@ -78,10 +81,22 @@ namespace Syncoco
 
     System.Drawing.Color GetBackColor(SyncAction action)
     {
-      if(action==SyncAction.RemoveManually || action==SyncAction.ResolveManually)
-        return System.Drawing.Color.LightGray;
-      else
-        return System.Drawing.Color.White;
+      switch(action)
+      {
+        case SyncAction.Remove:
+          return System.Drawing.Color.OrangeRed;
+
+        case SyncAction.Overwrite:
+        case SyncAction.ResolveManuallyOverwrite:
+          return System.Drawing.Color.Yellow;
+
+        case SyncAction.RemoveManually:
+        case SyncAction.ResolveManually:
+          return System.Drawing.Color.LightCyan;
+
+        default:
+          return System.Drawing.SystemColors.Window;
+      }
     }
 
     public void AddListViewItems(ArrayList list, int rootListIndex, SyncAction action, System.Collections.Specialized.StringCollection filenames)
@@ -106,7 +121,11 @@ namespace Syncoco
 
         ListViewItem item = new ListViewItem(filename);
         item.Tag = new SyncItemTag(rootListIndex,action,fullname);
-        item.SubItems.Add(action.ToString());
+        item.UseItemStyleForSubItems=false; // neccessary that the subitems can have different colors
+        
+        ListViewItem.ListViewSubItem actionItem = item.SubItems.Add(action.ToString());
+        actionItem.BackColor = this.GetBackColor(action);
+
         item.SubItems.Add(directoryname);
 
         if(!isDirectory)
