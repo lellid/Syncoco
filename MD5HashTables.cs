@@ -29,7 +29,7 @@ namespace SyncTwoCo
     public int Compare(object x, object y)
     {
       byte[] arrx = (byte[])x;
-      byte[] arry = (byte[])x;
+      byte[] arry = (byte[])y;
       
       if(arrx.Length!=arry.Length)
         return arrx.Length<arry.Length ? -1 : 1;
@@ -44,29 +44,6 @@ namespace SyncTwoCo
     #endregion
   }
   
-
-  public class MD5SumHashTable : System.Collections.Hashtable
-  {
-    static MD5SumComparer comp = new MD5SumComparer();
-    public MD5SumHashTable()
-      : base(comp,comp)
-    {
-    }
-
-    public void Add(byte[] arr, int length)
-    {
-      if(base.ContainsKey(arr) && length!=this[arr])
-        throw new ApplicationException("it should not happen, that two files with different length have the same hash, so rethink this");
-      base.Add(arr,length);
-    }
-
-    public int this[byte[] arr]
-    {
-      get { return (int)base[arr]; }
-      set { base[arr] = value; }     
-    }
-  }
-
   public class PathAndFileNode
   {
     string _Path;
@@ -82,6 +59,40 @@ namespace SyncTwoCo
     public FileNode Node { get { return _Node; }}
   
   }
+
+
+  public class MD5SumHashTable : System.Collections.Hashtable
+  {
+    static MD5SumComparer comp = new MD5SumComparer();
+    public MD5SumHashTable()
+      : base(comp,comp)
+    {
+    }
+
+    public void Add(byte[] arr, string path, FileNode node)
+    {
+      if(base.ContainsKey(arr))
+      {
+        PathAndFileNode existingNode = this[arr];
+        if(node.FileLength!=existingNode.Node.FileLength)
+          throw new ApplicationException(
+string.Format("it should not happen, that two files with different length have the same hash, so rethink this" +
+              "The two nodes here are: {0}(length={1}) and {2}(length={3})",existingNode.Path,existingNode.Node.FileLength,
+            path,node.FileLength));
+      }
+      else
+      {
+        base.Add(arr,new PathAndFileNode(path,node));
+      }
+    }
+
+    public PathAndFileNode this[byte[] arr]
+    {
+      get { return (PathAndFileNode)base[arr]; }
+    }
+  }
+
+  
 
   public class MD5SumFileNodesHashTable : System.Collections.Hashtable
   {

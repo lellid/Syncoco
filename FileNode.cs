@@ -283,10 +283,10 @@ namespace SyncTwoCo
       
     }
 
-    public void FillMd5HashTable(MD5SumHashTable table)
+    public void FillMd5HashTable(MD5SumHashTable table, string absoluteFileName)
     {
       if(!this.IsRemoved)
-        table.Add(this._fileHash,this._fileLength);
+        table.Add(this._fileHash, absoluteFileName, this);
     }
 
     public void FillMD5SumFileNodesHashTable (MD5SumFileNodesHashTable table, string absoluteFileName)

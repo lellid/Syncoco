@@ -126,7 +126,7 @@ namespace SyncTwoCo
 
     public void FillMd5HashTable(MD5SumHashTable table)
     {
-      this._DirectoryNode.FillMd5HashTable(table);
+      this._DirectoryNode.FillMd5HashTable(table,this.FilePath);
     }
 
     public void FillMD5SumFileNodesHashTable(MD5SumFileNodesHashTable table)

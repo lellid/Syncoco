@@ -713,17 +713,18 @@ namespace SyncTwoCo
     #endregion
 
     #region MD5 Hash sum
-    public void FillMd5HashTable(MD5SumHashTable table)
+    public void FillMd5HashTable(MD5SumHashTable table, string currentPath)
     {
       foreach(DictionaryEntry fentry in this._files)
       {
         FileNode fnode = (FileNode)fentry.Value;
-        fnode.FillMd5HashTable(table);
+        fnode.FillMd5HashTable(table,currentPath+(string)fentry.Key);
       }
       foreach(DictionaryEntry dentry in this._subDirectories)
       {
         DirectoryNode dnode = (DirectoryNode)dentry.Value;
-        dnode.FillMd5HashTable(table);
+        string subPath = currentPath + (string)dentry.Key + System.IO.Path.DirectorySeparatorChar;
+        dnode.FillMd5HashTable(table,subPath);
       }
     }
 
