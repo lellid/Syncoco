@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncTwoCo", "SyncTwoCo.csproj", "{5D826F2B-835F-455B-B9A2-BDD72F697A85}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{5D826F2B-835F-455B-B9A2-BDD72F697A85}.Debug.ActiveCfg = Debug|.NET
+		{5D826F2B-835F-455B-B9A2-BDD72F697A85}.Debug.Build.0 = Debug|.NET
+		{5D826F2B-835F-455B-B9A2-BDD72F697A85}.Release.ActiveCfg = Release|.NET
+		{5D826F2B-835F-455B-B9A2-BDD72F697A85}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
