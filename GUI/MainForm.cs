@@ -66,6 +66,7 @@ namespace Syncoco
     private System.Windows.Forms.MenuItem menuBeginSaveCleanIfNeccessary;
     private System.Windows.Forms.MenuItem menuHelpSyncoco;
     private System.Windows.Forms.MenuItem menuItem5;
+    private System.Windows.Forms.MenuItem menuEditDifferenceReport;
 
     /// <summary>
     /// Required designer variable.
@@ -137,6 +138,7 @@ namespace Syncoco
       this.menuItem5 = new System.Windows.Forms.MenuItem();
       this.menuHelpAbout = new System.Windows.Forms.MenuItem();
       this._tabControl = new System.Windows.Forms.TabControl();
+      this.menuEditDifferenceReport = new System.Windows.Forms.MenuItem();
       this.SuspendLayout();
       // 
       // mainMenu1
@@ -261,7 +263,8 @@ namespace Syncoco
                                                                                 this.menuEditCleanTransferDir,
                                                                                 this.menuEditCopyFiles,
                                                                                 this.menuItem1,
-                                                                                this.menuUpdateHash});
+                                                                                this.menuUpdateHash,
+                                                                                this.menuEditDifferenceReport});
       this.menuActions.Text = "Single Actions";
       this.menuActions.Popup += new System.EventHandler(this.menuActions_Popup);
       // 
@@ -341,6 +344,12 @@ namespace Syncoco
       this._tabControl.Size = new System.Drawing.Size(520, 398);
       this._tabControl.TabIndex = 0;
       this._tabControl.SelectedIndexChanged += new System.EventHandler(this._tabControl_SelectedIndexChanged);
+      // 
+      // menuEditDifferenceReport
+      // 
+      this.menuEditDifferenceReport.Index = 7;
+      this.menuEditDifferenceReport.Text = "Difference report";
+      this.menuEditDifferenceReport.Click += new System.EventHandler(this.menuEditDifferenceReport_Click);
       // 
       // Syncoco
       // 
@@ -596,6 +605,11 @@ namespace Syncoco
       _syncList.Synchronize();
       menuEditCollect_Click(sender, e);
 
+    }
+
+    private void menuEditDifferenceReport_Click(object sender, System.EventArgs e)
+    {
+      new DocumentActions.DifferenceReportAction(Current.Document).BackgroundExecute();
     }
 
     #endregion

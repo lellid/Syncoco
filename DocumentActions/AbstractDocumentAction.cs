@@ -66,6 +66,8 @@ namespace Syncoco.DocumentActions
     {
       int oldErrors = _reporter.NumberOfErrors;
       int oldWarnings = _reporter.NumberOfWarnings;
+      int oldTextLength = _reporter.TextLength;
+
       _reporter.ReportBeginNewParagraph();
 
       System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(this.CatchedDirectExecute));
@@ -82,21 +84,21 @@ namespace Syncoco.DocumentActions
       int nErrors =   _reporter.NumberOfErrors - oldErrors;
       int nWarnings = _reporter.NumberOfWarnings - oldWarnings;
 
-      if(nErrors!=0 || nWarnings!=0)
+      if(_reporter.TextLength != oldTextLength)
         ShowErrorsAndWarnings(nErrors,nWarnings);
-    
     }
 
 
     protected virtual void ShowErrorsAndWarnings(int nErrors, int nWarnings)
     {
-  
-      System.Windows.Forms.MessageBox.Show(Current.MainForm,
-        string.Format("Task {0} finished, {1} error(s), {2} warning(s). Please refer to the report for details!",this.GetType().Name,nErrors,nWarnings),
-        "Errors & Warnings",
-        System.Windows.Forms.MessageBoxButtons.OK,
-        System.Windows.Forms.MessageBoxIcon.Exclamation);
-
+      if(nErrors!=0 || nWarnings!=0)
+      {
+        System.Windows.Forms.MessageBox.Show(Current.MainForm,
+          string.Format("Task {0} finished, {1} error(s), {2} warning(s). Please refer to the report for details!",this.GetType().Name,nErrors,nWarnings),
+          "Errors & Warnings",
+          System.Windows.Forms.MessageBoxButtons.OK,
+          System.Windows.Forms.MessageBoxIcon.Exclamation);
+      }
       ((Syncoco)Current.MainForm).ShowReportList();
     }
 

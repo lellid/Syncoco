@@ -262,6 +262,8 @@ namespace Syncoco
 
     #region Access by full path strings
 
+
+
     public FileNode GetFileNodeFullPath(string path)
     {
       string relpath, filename;
@@ -379,6 +381,17 @@ namespace Syncoco
       get 
       {
         return _name;
+      }
+    }
+
+    public string FullRelativePath
+    {
+      get
+      {
+        if(_parent is DirectoryNode)
+          return ((DirectoryNode)_parent).FullRelativePath + _name + System.IO.Path.DirectorySeparatorChar;
+        else
+          return System.IO.Path.DirectorySeparatorChar.ToString();
       }
     }
 

@@ -48,6 +48,7 @@ namespace Syncoco.Traversing
     StringCollection _ToCopy = new StringCollection();
     StringCollection _ToOverwrite = new StringCollection();
     StringCollection _ToResolveManually = new StringCollection();
+    StringCollection _ToCreateDir = new StringCollection();
 
 
     public StringCollection ToRemove { get { return _ToRemove; }}
@@ -55,6 +56,7 @@ namespace Syncoco.Traversing
     public StringCollection ToCopy { get { return _ToCopy; }}
     public StringCollection ToOverwrite { get { return _ToOverwrite; }}
     public StringCollection ToResolveManually { get { return _ToResolveManually; }}
+    public StringCollection ToCreateDir { get { return _ToCreateDir; }}
 
 
 
@@ -116,6 +118,11 @@ namespace Syncoco.Traversing
     public void AddFileToOverwrite(string dirbase, string filename)
     {
       _ToOverwrite.Add(PathUtil.Combine_Relpath_Filename(dirbase,filename));
+    }
+
+    public void AddDirToCreate(string dirbase, string dirname)
+    {
+      _ToCreateDir.Add(PathUtil.Combine_Relpath_Dirname(dirbase,dirname));
     }
 
     protected bool IsFileOnMedium(string filename)
@@ -342,12 +349,19 @@ namespace Syncoco.Traversing
           {
             if(System.IO.Directory.Exists(GetFullPath(newdirectorybase)))
               myDir.AddSubDirectory(foreignSubDirName,new DirectoryNode(foreignSubDirName));
+            else if(!myDir.Directory(foreignSubDirName).IsRemoved) // directory here do not exist, but create it
+              this.AddDirToCreate(reldirectorybase,foreignSubDirName);
           }
           else if(myDir.Directory(foreignSubDirName).IsRemoved)
           {
             if(System.IO.Directory.Exists(GetFullPath(newdirectorybase)))
               myDir.Directory(foreignSubDirName).IsRemoved = false; // obviously it is not removed any longer
           }
+        }
+        else // myDir is null
+        {
+          if(!myDir.Directory(foreignSubDirName).IsRemoved)
+            this.AddDirToCreate(reldirectorybase,foreignSubDirName);
         }
 
         _pathFilter.EnterSubDirectory(foreignSubDirName);

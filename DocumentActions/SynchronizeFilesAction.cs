@@ -62,6 +62,24 @@ namespace Syncoco.DocumentActions
       return DirectoryUpdater.UpdateFileNode(fileSystemRoot.DirectoryNode,dirinfo,fileinfo,forceUpdateHash,_reporter);
     }
 
+    public FunctionResult CreateDirectory(string dirname)
+    {
+#if DEBUG
+      PathUtil.Assert_Abspath(dirname);
+#endif
+
+      if(!System.IO.Directory.Exists(dirname))
+      {
+        try { System.IO.Directory.CreateDirectory(dirname); }
+        catch( Exception ex)
+        {
+          _reporter.ReportError(string.Format("unable to create directory {0} : {1}",dirname,ex.Message));
+          return FunctionResult.Failure;
+        }
+      }
+    
+    return FunctionResult.Success;
+    }
 
     public FunctionResult CopyWithDirectoryCreation(string sourceFileName, string destFileName, bool overwrite, FileNode foFileNode)
     {
@@ -289,6 +307,9 @@ namespace Syncoco.DocumentActions
               myfilenode.SetToUnchanged();
             }
           }
+          break;
+        case SyncAction.CreateDirectory:
+          CreateDirectory(myfilename);          
           break;
         case SyncAction.Overwrite:
         case SyncAction.ResolveManuallyOverwrite:

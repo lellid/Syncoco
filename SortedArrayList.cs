@@ -214,6 +214,7 @@ namespace Syncoco
         int x = index - count ;
 
         Array.Copy(_items, x, _items, index, _size - x);
+        Array.Clear(_items,_size+count,-count); // clear the tail of the array so the items can be garbage collected
       }
     }
 

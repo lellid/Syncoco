@@ -42,14 +42,12 @@ namespace Syncoco
     }
 
 
-    int _oldNumberOfErrors;
-    int _oldNumberOfWarnings;
+    int _oldTextLength;
     public void EhView_TimerTick()
     {
-      if(this._numberOfErrors!=_oldNumberOfErrors || this._numberOfWarnings!=_oldNumberOfWarnings)
+      if(this.TextLength != _oldTextLength)
       {
-        _oldNumberOfErrors=_numberOfErrors;
-        _oldNumberOfWarnings=_numberOfWarnings;
+        _oldTextLength = this.TextLength;
         _view.SetText(_text.ToString());
       }
     }
@@ -94,6 +92,12 @@ namespace Syncoco
       Write("\r\n");
     }
 
+    public void ReportText(string msg)
+    {
+      WriteNewParagraph();
+      Write(msg);
+    }
+
     int _numberOfWarnings;
     int _numberOfErrors;
     public int NumberOfErrors
@@ -110,6 +114,11 @@ namespace Syncoco
       {
         return _numberOfWarnings;
       }
+    }
+
+    public int TextLength
+    {
+      get { return _text.Length; }
     }
 
     public string ErrorText 

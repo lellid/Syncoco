@@ -242,6 +242,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "DocumentActions\DifferenceReportAction.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "DocumentActions\DocumentUpdateAction.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -453,6 +458,11 @@
                 />
                 <File
                     RelPath = "Online\SimpleFileSystemRootList.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Traversing\DifferenceCollector.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

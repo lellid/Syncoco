@@ -96,6 +96,14 @@ namespace Syncoco
       Open(tr);
     }
 
+
+    public DirectoryNode Parent
+    {
+      get
+      {
+        return _parent;
+      }
+    }
     public void RestoreParentOfChildObjects(DirectoryNode parent)
     {
       _parent = parent;
@@ -194,6 +202,22 @@ namespace Syncoco
       get { return _hint is FileChangedHint; }
     }
 
+    public string HintAsString
+    {
+      get
+      {
+        if(_hint==null)
+          return string.Empty;
+        else if(_hint is FileNewHint)
+          return "FileNew";
+        else if(_hint is FileChangedHint)
+          return "FileChanged";
+        else if(_hint is FileRemovedHint)
+          return "FileRemoved";
+        else
+          return _hint.ToString();
+      }
+    }
     /// <summary>
     /// This function is called when the node is unchanged, but differences between the own node and the foreign node had occured.
     /// </summary>

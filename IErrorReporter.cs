@@ -32,9 +32,11 @@ namespace Syncoco
     void ReportBeginNewParagraph();
     void ReportError(string msg);
     void ReportWarning(string msg);
+    void ReportText(string msg);
     int  NumberOfErrors { get; }
     int  NumberOfWarnings { get; }
     string ErrorText { get; }
+    int    TextLength { get; }
   }
 
   class DefaultErrorReporter : IErrorReporter
@@ -72,6 +74,11 @@ namespace Syncoco
       _text.Append("\n");
     }
 
+    public void ReportText(string msg)
+    {
+      _text.Append(msg);
+    }
+
     public int NumberOfErrors
     {
       get
@@ -85,6 +92,15 @@ namespace Syncoco
       get
       {
         return _numberOfWarnings;
+      }
+    }
+
+
+    public int TextLength
+    {
+      get
+      {
+        return _text.Length;
       }
     }
 

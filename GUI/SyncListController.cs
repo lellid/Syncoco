@@ -34,7 +34,8 @@ namespace Syncoco
     RemoveManually, RemoveManuallyRollback, 
     Copy,
     Overwrite, OverwriteRollback, 
-    ResolveManually, ResolveManuallyOverwrite, ResolveManuallyIgnore, ResolveManuallyRollback
+    ResolveManually, ResolveManuallyOverwrite, ResolveManuallyIgnore, ResolveManuallyRollback,
+    CreateDirectory
   };
 
   public class SyncItemTag
@@ -158,6 +159,7 @@ namespace Syncoco
         if(null==coll)
           continue;
 
+        AddListViewItems(list, rootListIndex, SyncAction.CreateDirectory, coll.ToCreateDir);
         AddListViewItems(list, rootListIndex, SyncAction.Copy,coll.ToCopy);
         AddListViewItems(list, rootListIndex, SyncAction.Overwrite,coll.ToOverwrite);
         AddListViewItems(list, rootListIndex, SyncAction.ResolveManually,coll.ToResolveManually);

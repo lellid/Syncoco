@@ -149,6 +149,17 @@ namespace Syncoco
         return _DirectoryNode.GetFileNodeFullPath(pathname);
     }
 
+    public DirectoryNode GetDirectoryNode(string pathname)
+    {
+#if DEBUG
+      PathUtil.Assert_Relpath(pathname);
+#endif
+      if(_DirectoryNode==null)
+        return null;
+      else
+        return _DirectoryNode.GetDirectoryNodeFullPath(pathname);
+    }
+
     public void DeleteFileNode(string pathname)
     {
 #if DEBUG
