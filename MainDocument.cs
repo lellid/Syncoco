@@ -370,6 +370,24 @@ namespace Syncoco
 
     }
 
+
+    public void ExchangeRootPairPositions(int index1, int index2)
+    {
+      if(index1<0 || index2<0)
+        throw new ArgumentOutOfRangeException("Indizes have to be >=0");
+      if(index1>=_rootPairs.Count || index2>=_rootPairs.Count)
+        throw new ArgumentOutOfRangeException("Indizes have to be <Count");
+
+      object o = _rootPairs[index1];
+      _rootPairs[index1] = _rootPairs[index2];
+      _rootPairs[index2] = o;
+    }
+
+    public int RootCount
+    {
+      get { return _rootPairs.Count; }
+    }
+
     public FileSystemRoot MyRoot(int i)
     {
       return ((RootPair)_rootPairs[i]).MyRoot; 

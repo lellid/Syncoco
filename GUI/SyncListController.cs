@@ -99,8 +99,8 @@ namespace Syncoco
           item.SubItems.Add(dat);
         }
 
-        if(action==SyncAction.Copy)
-          item.BackColor = System.Drawing.Color.LightGray;
+      //  if(action==SyncAction.Copy)
+      //    item.BackColor = System.Drawing.Color.LightGray;
         list.Add(item);
       }
     }
@@ -112,6 +112,9 @@ namespace Syncoco
       for(int rootListIndex=0;rootListIndex<_collectors.Length;rootListIndex++)
       {
         FilesToSynchronizeCollector coll = _collectors[rootListIndex];
+        
+        if(null==coll)
+          continue;
 
         AddListViewItems(list, rootListIndex, SyncAction.Copy,coll.ToCopy);
         AddListViewItems(list, rootListIndex, SyncAction.Overwrite,coll.ToOverwrite);

@@ -60,18 +60,20 @@ namespace Syncoco.DocumentActions
       _collectedFiles = new FilesToSynchronizeCollector[_doc.Count];
       for(int i=0;i<_doc.Count;i++)
       {
-        _collectedFiles[i] = new FilesToSynchronizeCollector(
-          _doc.MediumDirectoryName,
-          _doc.MyRoot(i).FilePath,
-          this._allFilesHere,
-          _doc.RootPair(i).MyRoot.DirectoryNode,
-          _doc.RootPair(i).ForeignRoot.DirectoryNode,
-          _doc.RootPair(i).PathFilter,
-          _monitor,
-          _reporter);
-        
         if(_doc.ForeignRoot(i).IsValid && _doc.MyRoot(i).IsValid)
+        {
+          _collectedFiles[i] = new FilesToSynchronizeCollector(
+            _doc.MediumDirectoryName,
+            _doc.MyRoot(i).FilePath,
+            this._allFilesHere,
+            _doc.RootPair(i).MyRoot.DirectoryNode,
+            _doc.RootPair(i).ForeignRoot.DirectoryNode,
+            _doc.RootPair(i).PathFilter,
+            _monitor,
+            _reporter);
+        
           _collectedFiles[i].Traverse();
+        }
       }
     }
 

@@ -29,6 +29,12 @@ namespace Syncoco
     private System.Windows.Forms.ColumnHeader chSubPath;
     private System.Windows.Forms.ColumnHeader chDefaultAction;
     private System.Windows.Forms.TextBox edDefaultFilterAction;
+    private System.Windows.Forms.Button btAddPath;
+    private System.Windows.Forms.Button btEditPath;
+    private System.Windows.Forms.Button btDeletePath;
+    private System.Windows.Forms.Button btEditFilterList;
+    private System.Windows.Forms.Button btMoveUp;
+    private System.Windows.Forms.Button btMoveDown;
 
     private FilterListItemListController _controller;
 
@@ -72,6 +78,7 @@ namespace Syncoco
     /// </summary>
     private void InitializeComponent()
     {
+      System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(FilterListItemListControl));
       this.label1 = new System.Windows.Forms.Label();
       this.label2 = new System.Windows.Forms.Label();
       this.edMyRoot = new System.Windows.Forms.TextBox();
@@ -83,6 +90,12 @@ namespace Syncoco
       this.lblDefaultFilterAction = new System.Windows.Forms.Label();
       this.btDefaultFilter = new System.Windows.Forms.Button();
       this.edDefaultFilterAction = new System.Windows.Forms.TextBox();
+      this.btAddPath = new System.Windows.Forms.Button();
+      this.btEditPath = new System.Windows.Forms.Button();
+      this.btDeletePath = new System.Windows.Forms.Button();
+      this.btEditFilterList = new System.Windows.Forms.Button();
+      this.btMoveUp = new System.Windows.Forms.Button();
+      this.btMoveDown = new System.Windows.Forms.Button();
       this.SuspendLayout();
       // 
       // label1
@@ -134,19 +147,19 @@ namespace Syncoco
       this.lvFilterListItemList.ContextMenu = this.listContextMenu;
       this.lvFilterListItemList.Location = new System.Drawing.Point(8, 72);
       this.lvFilterListItemList.Name = "lvFilterListItemList";
-      this.lvFilterListItemList.Size = new System.Drawing.Size(376, 296);
+      this.lvFilterListItemList.Size = new System.Drawing.Size(336, 296);
       this.lvFilterListItemList.TabIndex = 4;
       this.lvFilterListItemList.View = System.Windows.Forms.View.Details;
       // 
       // chSubPath
       // 
       this.chSubPath.Text = "SubPath";
-      this.chSubPath.Width = 235;
+      this.chSubPath.Width = 244;
       // 
       // chDefaultAction
       // 
       this.chDefaultAction.Text = "Default Action";
-      this.chDefaultAction.Width = 92;
+      this.chDefaultAction.Width = 88;
       // 
       // listContextMenu
       // 
@@ -165,11 +178,14 @@ namespace Syncoco
       // btDefaultFilter
       // 
       this.btDefaultFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.btDefaultFilter.Image = ((System.Drawing.Image)(resources.GetObject("btDefaultFilter.Image")));
+      this.btDefaultFilter.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.btDefaultFilter.Location = new System.Drawing.Point(240, 376);
       this.btDefaultFilter.Name = "btDefaultFilter";
       this.btDefaultFilter.Size = new System.Drawing.Size(144, 23);
       this.btDefaultFilter.TabIndex = 6;
       this.btDefaultFilter.Text = "configure default filter";
+      this.btDefaultFilter.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       this.btDefaultFilter.Click += new System.EventHandler(this.btDefaultFilter_Click);
       // 
       // edDefaultFilterAction
@@ -183,8 +199,74 @@ namespace Syncoco
       this.edDefaultFilterAction.TabIndex = 7;
       this.edDefaultFilterAction.Text = "";
       // 
+      // btAddPath
+      // 
+      this.btAddPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btAddPath.Image = ((System.Drawing.Image)(resources.GetObject("btAddPath.Image")));
+      this.btAddPath.Location = new System.Drawing.Point(352, 72);
+      this.btAddPath.Name = "btAddPath";
+      this.btAddPath.Size = new System.Drawing.Size(32, 32);
+      this.btAddPath.TabIndex = 8;
+      this.btAddPath.Click += new System.EventHandler(this.EhAddNewPath);
+      // 
+      // btEditPath
+      // 
+      this.btEditPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btEditPath.Image = ((System.Drawing.Image)(resources.GetObject("btEditPath.Image")));
+      this.btEditPath.Location = new System.Drawing.Point(352, 112);
+      this.btEditPath.Name = "btEditPath";
+      this.btEditPath.Size = new System.Drawing.Size(32, 32);
+      this.btEditPath.TabIndex = 9;
+      this.btEditPath.Click += new System.EventHandler(this.EhEditPath);
+      // 
+      // btDeletePath
+      // 
+      this.btDeletePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btDeletePath.Image = ((System.Drawing.Image)(resources.GetObject("btDeletePath.Image")));
+      this.btDeletePath.Location = new System.Drawing.Point(352, 152);
+      this.btDeletePath.Name = "btDeletePath";
+      this.btDeletePath.Size = new System.Drawing.Size(32, 32);
+      this.btDeletePath.TabIndex = 10;
+      this.btDeletePath.Click += new System.EventHandler(this.EhDeletePath);
+      // 
+      // btEditFilterList
+      // 
+      this.btEditFilterList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btEditFilterList.Image = ((System.Drawing.Image)(resources.GetObject("btEditFilterList.Image")));
+      this.btEditFilterList.Location = new System.Drawing.Point(352, 192);
+      this.btEditFilterList.Name = "btEditFilterList";
+      this.btEditFilterList.Size = new System.Drawing.Size(32, 32);
+      this.btEditFilterList.TabIndex = 11;
+      this.btEditFilterList.Click += new System.EventHandler(this.EhEditFilter);
+      // 
+      // btMoveUp
+      // 
+      this.btMoveUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.btMoveUp.Image = ((System.Drawing.Image)(resources.GetObject("btMoveUp.Image")));
+      this.btMoveUp.Location = new System.Drawing.Point(352, 296);
+      this.btMoveUp.Name = "btMoveUp";
+      this.btMoveUp.Size = new System.Drawing.Size(32, 32);
+      this.btMoveUp.TabIndex = 12;
+      this.btMoveUp.Click += new System.EventHandler(this.EhMoveUp);
+      // 
+      // btMoveDown
+      // 
+      this.btMoveDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.btMoveDown.Image = ((System.Drawing.Image)(resources.GetObject("btMoveDown.Image")));
+      this.btMoveDown.Location = new System.Drawing.Point(352, 336);
+      this.btMoveDown.Name = "btMoveDown";
+      this.btMoveDown.Size = new System.Drawing.Size(32, 32);
+      this.btMoveDown.TabIndex = 13;
+      this.btMoveDown.Click += new System.EventHandler(this.EhMoveDown);
+      // 
       // FilterListItemListControl
       // 
+      this.Controls.Add(this.btMoveDown);
+      this.Controls.Add(this.btMoveUp);
+      this.Controls.Add(this.btEditFilterList);
+      this.Controls.Add(this.btDeletePath);
+      this.Controls.Add(this.btEditPath);
+      this.Controls.Add(this.btAddPath);
       this.Controls.Add(this.edDefaultFilterAction);
       this.Controls.Add(this.btDefaultFilter);
       this.Controls.Add(this.lblDefaultFilterAction);
@@ -208,15 +290,19 @@ namespace Syncoco
       {
         listContextMenu.MenuItems.Add(new MenuItem("Add new Path", new EventHandler(EhAddNewPath)));
       }
-      else
+      if(this.lvFilterListItemList.SelectedIndices.Count==1)
       {
-        if(this.lvFilterListItemList.SelectedIndices.Count==1)
-        {
-          listContextMenu.MenuItems.Add(new MenuItem("Edit filter", new EventHandler(EhEditFilter)));
-          listContextMenu.MenuItems.Add(new MenuItem("-"));
-        }
-
+        listContextMenu.MenuItems.Add(new MenuItem("Edit filter", new EventHandler(EhEditFilter)));
+        listContextMenu.MenuItems.Add(new MenuItem("-"));
+        listContextMenu.MenuItems.Add(new MenuItem("Edit path", new EventHandler(EhEditPath)));
         listContextMenu.MenuItems.Add(new MenuItem("Delete path", new EventHandler(EhDeletePath)));
+      }
+      if(this.lvFilterListItemList.SelectedIndices.Count>=1)
+      {
+        listContextMenu.MenuItems.Add(new MenuItem("-"));
+        listContextMenu.MenuItems.Add(new MenuItem("Move up", new EventHandler(EhMoveUp)));
+        listContextMenu.MenuItems.Add(new MenuItem("Move down", new EventHandler(EhMoveDown)));
+
       }
 
     
@@ -238,6 +324,13 @@ namespace Syncoco
       this.lvFilterListItemList.EndUpdate();
     }
 
+    public void SelectListItems(int[] selectedIndices)
+    {
+      for(int i=0;i<selectedIndices.Length;i++)
+        lvFilterListItemList.Items[selectedIndices[i]].Selected=true;
+    }
+
+
     public void UpdatePathInformation(string myRootPath, string foreignRootPath)
     {
       this.edMyRoot.Text = myRootPath;
@@ -256,17 +349,23 @@ namespace Syncoco
         Controller.EhView_AddNewPath();
     }
 
-    private int[] GetIndexArray(System.Windows.Forms.ListView.SelectedIndexCollection coll)
+    private void EhEditPath(object sender, EventArgs e)
     {
-      int[] res = new int[coll.Count];
-      coll.CopyTo(res,0);
-      return res;
+      if(null!=this.Controller)
+        Controller.EhView_EditPath(this.lvFilterListItemList.SelectedIndices[0]);
     }
 
     private void EhDeletePath(object sender, EventArgs e)
     {
       if(null!=this.Controller)
         Controller.EhView_DeletePath(GetIndexArray(this.lvFilterListItemList.SelectedIndices));
+    }
+
+    private int[] GetIndexArray(System.Windows.Forms.ListView.SelectedIndexCollection coll)
+    {
+      int[] res = new int[coll.Count];
+      coll.CopyTo(res,0);
+      return res;
     }
 
     private void EhEditFilter(object sender, EventArgs e)
@@ -279,7 +378,25 @@ namespace Syncoco
     {
       if(null!=Controller)
         Controller.EhView_ShowDefaultFilter();
-
     }
+
+    private void EhMoveUp(object sender, EventArgs e)
+    {
+      if(null!=this.Controller && lvFilterListItemList.SelectedIndices.Count>0)
+      {
+        Controller.EhView_MoveUp(GetIndexArray(this.lvFilterListItemList.SelectedIndices));
+      lvFilterListItemList.Focus();
+      }
+      }
+
+    private void EhMoveDown(object sender, EventArgs e)
+    {
+      if(null!=this.Controller && lvFilterListItemList.SelectedIndices.Count>0)
+      {
+        Controller.EhView_MoveDown(GetIndexArray(this.lvFilterListItemList.SelectedIndices));
+      lvFilterListItemList.Focus();
+      }
+    }
+
   }
 }

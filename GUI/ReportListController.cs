@@ -8,6 +8,7 @@ namespace Syncoco
 	public class ReportListController : IErrorReporter
 	{
     ReportListControl _view;
+    System.Text.StringBuilder _text = new System.Text.StringBuilder();
 
     public ReportListControl View { get { return _view; }}
 
@@ -16,6 +17,19 @@ namespace Syncoco
 
       _view = new ReportListControl();
       _view.Controller = this;
+    }
+
+
+    int _oldNumberOfErrors;
+    int _oldNumberOfWarnings;
+    public void EhView_TimerTick()
+    {
+      if(this._numberOfErrors!=_oldNumberOfErrors || this._numberOfWarnings!=_oldNumberOfWarnings)
+      {
+        _oldNumberOfErrors=_numberOfErrors;
+        _oldNumberOfWarnings=_numberOfWarnings;
+        _view.SetText(_text.ToString());
+      }
     }
 
     #region IErrorReporter Members
@@ -31,13 +45,13 @@ namespace Syncoco
       if(_newParagraphPending)
       {
         _newParagraphPending = false;
-        Write("------- " + DateTime.Now.ToLongTimeString() + " ---------");
+        Write("------- " + DateTime.Now.ToLongTimeString() + " ---------\r\n");
       }
     }
 
     private void Write(string msg)
     {
-      _view.AppendText(msg);
+      _text.Append(msg);
     }
 
     public void ReportError(string msg)
@@ -46,7 +60,7 @@ namespace Syncoco
 
       WriteNewParagraph();
       Write("Error: " + msg);
-      Write("\n");
+      Write("\r\n");
     }
 
     public void ReportWarning(string msg)
@@ -55,7 +69,7 @@ namespace Syncoco
 
       WriteNewParagraph();
       Write("Warning: " + msg);
-      Write("\n");
+      Write("\r\n");
     }
 
     int _numberOfWarnings;
@@ -78,7 +92,7 @@ namespace Syncoco
 
     public string ErrorText 
     {
-      get { return _view.GetText(); }
+      get { return _text.ToString(); }
     }
 
     #endregion

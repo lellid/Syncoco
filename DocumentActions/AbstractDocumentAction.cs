@@ -43,6 +43,7 @@ namespace Syncoco.DocumentActions
     {
       int oldErrors = _reporter.NumberOfErrors;
       int oldWarnings = _reporter.NumberOfWarnings;
+      _reporter.ReportBeginNewParagraph();
 
       System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(this.DirectExecute));
       thread.Name = this.GetType().Name;

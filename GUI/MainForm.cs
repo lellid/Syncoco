@@ -383,7 +383,7 @@ namespace Syncoco
           Current.Document = action.Doc;
           Current.Document.DirtyChanged += new EventHandler(EhDocumentDirtyChanged);
           Current.Document.FileNameChanged += new EventHandler(EhDocumentFileNameChanged);
-
+          this.UpdateTitle();
           _rootList = new RootListController(Current.Document);
           ShowControl("Root",_rootList.View);
         }
@@ -403,7 +403,7 @@ namespace Syncoco
         Current.Document = (MainDocument)doc;
         Current.Document.DirtyChanged += new EventHandler(EhDocumentDirtyChanged);
         Current.Document.FileNameChanged += new EventHandler(EhDocumentFileNameChanged);
-
+        this.UpdateTitle();
         _rootList = new RootListController(Current.Document);
         ShowControl("Root",_rootList.View);
       }
@@ -444,6 +444,8 @@ namespace Syncoco
     private void menuEditSyncronize_Click(object sender, System.EventArgs e)
     {
       _syncList.Synchronize();
+      menuEditCollect_Click(sender, e);
+
     }
 
     private void menuBeginShowSyncFiles_Click(object sender, System.EventArgs e)

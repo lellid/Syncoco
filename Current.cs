@@ -25,7 +25,7 @@ namespace Syncoco
     {
       for(int i=0;i<argv.Length;i++)
       {
-        if(argv[i].ToLower()=="/m" || argv[i].ToLower()=="-m")
+        if(argv[i].ToLower()=="/n" || argv[i].ToLower()=="-n")
         {
           if((i+1)<argv.Length)
           {

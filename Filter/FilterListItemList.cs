@@ -63,5 +63,17 @@ namespace Syncoco.Filter
     {
       Open(tr);
     }
+
+    public void ExchangeItemPositions(int index1, int index2)
+    {
+      if(index1<0 || index2<0)
+        throw new ArgumentOutOfRangeException("Indizes have to be >=0");
+      if(index1>=Count || index2>=Count)
+        throw new ArgumentOutOfRangeException("Indizes have to be <Count");
+
+      object o = InnerList[index1];
+      InnerList[index1] = InnerList[index2];
+      InnerList[index2] = o;
+    }
   }
 }

@@ -42,7 +42,16 @@ namespace Syncoco.DocumentActions
       _doc.EnsureAlignment();
 
       for(int i=0;i<_doc.Count;i++)
-        Update(_doc.RootPair(i));
+      {
+        if(_doc.RootPair(i).MyRoot.IsValid)
+        {
+          Update(_doc.RootPair(i));
+        }
+        else
+        {
+          _reporter.ReportWarning(string.Format("RootPair[{0}] not updated because the path is invalid.",i));
+        }
+      }
     }
 
     // RootPair

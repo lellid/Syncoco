@@ -14,10 +14,8 @@ namespace Syncoco
 	{
     private System.Windows.Forms.TextBox textBox1;
     ReportListController _controller;
-		/// <summary> 
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.Container components = null;
+    private System.Windows.Forms.Timer timer1;
+    private System.ComponentModel.IContainer components;
 
 		public ReportListControl()
 		{
@@ -31,12 +29,17 @@ namespace Syncoco
     public ReportListController Controller
     {
       get { return _controller; }
-      set { _controller = value; }
+      set
+      { 
+        _controller = value;
+        if(_controller!=null)
+          timer1.Start();
+      }
     }
 
-    public void AppendText(string msg)
+    public void SetText(string msg)
     {
-      textBox1.AppendText(msg);
+      textBox1.Text= msg;
     }
 
     public string GetText()
@@ -65,7 +68,9 @@ namespace Syncoco
 		/// </summary>
 		private void InitializeComponent()
 		{
+      this.components = new System.ComponentModel.Container();
       this.textBox1 = new System.Windows.Forms.TextBox();
+      this.timer1 = new System.Windows.Forms.Timer(this.components);
       this.SuspendLayout();
       // 
       // textBox1
@@ -80,6 +85,11 @@ namespace Syncoco
       this.textBox1.TabIndex = 0;
       this.textBox1.Text = "";
       // 
+      // timer1
+      // 
+      this.timer1.Interval = 1000;
+      this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+      // 
       // ReportListControl
       // 
       this.Controls.Add(this.textBox1);
@@ -89,5 +99,11 @@ namespace Syncoco
 
     }
 		#endregion
+
+    private void timer1_Tick(object sender, System.EventArgs e)
+    {
+      if(null!=_controller)
+        _controller.EhView_TimerTick();
+    }
 	}
 }
