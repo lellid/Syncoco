@@ -198,6 +198,26 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "DocumentActions\AbstractDocumentAction.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "DocumentActions\CopyFilesToMediumAction.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "DocumentActions\DocumentUpdateAction.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "DocumentActions\DocumentUpdateSaveAndCopyAction.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Filter\FilterAction.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

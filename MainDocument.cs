@@ -300,6 +300,12 @@ namespace SyncTwoCo
       _IsDirty = false;
     }
 
+
+    public bool IsDirty
+    {
+      get { return _IsDirty; }
+    }
+
     public bool  HasFileName 
     { 
       get 
@@ -406,11 +412,16 @@ namespace SyncTwoCo
       }
     }
 
+    public void ClearCachedMyFiles()
+    {
+       this._allFilesHere=null;
+    }
+
     public void AddRoot(string basename)
     {
       PathUtil.Assert_Abspath(basename);
 
-      this._allFilesHere=null;
+      ClearCachedMyFiles();
 
       EnsureAlignment();
 
@@ -427,60 +438,9 @@ namespace SyncTwoCo
       ((RootPair)_rootPairs[item]).MyRoot.SetFilePath(path);
     }
 
-    public void Update(bool forceUpdateHash, IBackgroundMonitor monitor)
-    {
-      this._allFilesHere=null;
+  
 
-      EnsureAlignment();
-
-      for(int i=0;i<Count;i++)
-        RootPair(i).Update(forceUpdateHash, monitor);
-    }
-
-    public void CopyFilesToMedium(IBackgroundMonitor monitor)
-    {
-      EnsureAlignment();
-
-      if(_FileName==null || _FileName==string.Empty || _IsDirty)
-        throw new ApplicationException("The document was not saved yet");
-    
-      PathUtil.Assert_Abspath(MediumDirectoryName);
-      if(!System.IO.Directory.Exists(MediumDirectoryName))
-        throw new ApplicationException(string.Format("The directory {0} does not exist!",MediumDirectoryName));
-
-      if(monitor.ShouldReport)
-        monitor.Report("Filling MD5 hashtable ...");
-
-      // create a table with all md5 hash sums of the foreign(!) file system
-      MD5SumHashTable md5HashTable = new MD5SumHashTable();
-      for(int i=0;i<Count;i++)
-      {
-        if(MyRoot(i).IsValid)
-        {
-          if(monitor.ShouldReport)
-            monitor.Report("Filling MD5 hashtable from " + RootPair(i).ForeignRoot.FilePath);
-
-          RootPair(i).ForeignRoot.FillMd5HashTable(md5HashTable);
-        }
-      }
-
-
-      Hashtable copiedFiles = new Hashtable();
-
-      // now copy first with exclusion of the already existing files 
-      for(int i=0;i<Count;i++)
-      {
-        if(MyRoot(i).IsValid)
-          RootPair(i).CopyFilesToMedium(MediumDirectoryName,copiedFiles,md5HashTable,monitor);
-      }
-
-      // and now copy all other files
-      for(int i=0;i<Count;i++)
-      {
-        if(MyRoot(i).IsValid)
-          RootPair(i).CopyFilesToMedium(MediumDirectoryName,copiedFiles,null,monitor);
-      }
-    }
+   
 
 
     public void ClearMediumDirectory()
@@ -506,60 +466,9 @@ namespace SyncTwoCo
     }
 
   
-    class ActionUpdateSaveAndCopy
-    {
-      MainDocument _doc;
-      IBackgroundMonitor _monitor = new DummyBackgroundMonitor();
-
-      public ActionUpdateSaveAndCopy(MainDocument doc)
-      {
-        _doc = doc;
-      }
-      public IBackgroundMonitor Monitor
-      {
-        set
-        { 
-          _monitor = value; 
-        }
-      }
-      public void Execute()
-      {
-        _monitor.Report("Updating file system ...");
-        _doc.Update(false, _monitor);
-
-        _monitor.Report("Cleaning transfer medium ...");
-        _doc.ClearMediumDirectory();
-
-        _monitor.Report("Saving document ...");
-        _doc.Save();
-
-        _monitor.Report("Copy files to medium ...");
-        _doc.CopyFilesToMedium(_monitor);
-      }
-    }
    
 
-    public void UpdateAndSaveAndCopyFilesToMedium()
-    {
-      if(!this.HasFileName)
-        throw new ApplicationException("This operation is possible only if the document has a file name");
-
-
-      
-
-      ActionUpdateSaveAndCopy action = new ActionUpdateSaveAndCopy(this);
-
-      System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(action.Execute));
-      thread.Name = "UpdateSaveAndCopy";
-      thread.IsBackground = true;
-     
-      GUI.BackgroundCancelDialog dlg = new GUI.BackgroundCancelDialog(thread);
-      action.Monitor = dlg;
-      thread.Start();
-
-      dlg.ShowDialog(Current.MainForm);
-
-    }
+   
 
     public FilesToSynchronizeCollector[] Collect()
     {

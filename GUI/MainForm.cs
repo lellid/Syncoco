@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Data;
 
+using SyncTwoCo.DocumentActions;
+
 namespace SyncTwoCo
 {
   /// <summary>
@@ -363,17 +365,18 @@ namespace SyncTwoCo
 
     private void menuEditUpdate_Click(object sender, System.EventArgs e)
     {
-      Current.Document.Update(false, new DummyBackgroundMonitor());
+      new DocumentActions.DocumentUpdateAction(Current.Document,false).BackgroundExecute();
+
     }
 
     private void menuUpdateHash_Click(object sender, System.EventArgs e)
     {
-      Current.Document.Update(true,new DummyBackgroundMonitor());
+      new DocumentActions.DocumentUpdateAction(Current.Document,true).BackgroundExecute();
     }
 
     private void menuEditCopyFiles_Click(object sender, System.EventArgs e)
     {
-      Current.Document.CopyFilesToMedium(new DummyBackgroundMonitor());
+      new DocumentActions.CopyFilesToMediumAction(Current.Document).BackgroundExecute();
     }
 
     private void menuEditCollect_Click(object sender, System.EventArgs e)
@@ -405,7 +408,8 @@ namespace SyncTwoCo
 
     private void menuEndUpdateSaveCopy_Click(object sender, System.EventArgs e)
     {
-      Current.Document.UpdateAndSaveAndCopyFilesToMedium();
+      new DocumentActions.DocumentUpdateSaveAndCopyAction(Current.Document).BackgroundExecute();
+
     }
 
     

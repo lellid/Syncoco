@@ -90,6 +90,13 @@ namespace SyncTwoCo
     public DirectoryNode DirectoryNode
     {
       get { return _DirectoryNode; }
+      set 
+      {
+        if(null==_DirectoryNode)
+          _DirectoryNode = value;
+        else
+          throw new ApplicationException("Try to set an already existing DirectoryNode");
+      }
     }
 
     public void SetFilePath(string path)
@@ -141,15 +148,7 @@ namespace SyncTwoCo
         _DirectoryNode.DeleteSubDirectoryNodeFullPath(path);
     }
 
-    public void Update(PathFilter pathFilter, bool forceUpdateHash, IBackgroundMonitor monitor)
-    {
-      System.IO.DirectoryInfo dirinfo = new System.IO.DirectoryInfo(_FilePath);
-
-      if(null!=_DirectoryNode)
-        new DirectoryUpdater(pathFilter,monitor).Update(DirectoryNode, dirinfo, forceUpdateHash);
-      else
-        _DirectoryNode = new DirectoryUpdater(pathFilter,monitor).NewDirectoryNode(dirinfo);
-    }
+  
 
     public FileNode UpdateMyFile(FileInfo fileinfo, bool forceUpdateHash)
     {
@@ -158,14 +157,7 @@ namespace SyncTwoCo
       return DirectoryUpdater.UpdateFileNode(_DirectoryNode,dirinfo,fileinfo,forceUpdateHash);
     }
 
-    public void FillMd5HashTable(MD5SumHashTable table)
-    {
-      if(null!=this._DirectoryNode && null!=this.FilePath)
-      {
-        Traversing.Md5HashTableCollector coll = new Traversing.Md5HashTableCollector(this.DirectoryNode,this.FilePath,table);
-        coll.Traverse();
-      }
-    }
+  
 
     public void FillMD5SumFileNodesHashTable(MD5SumFileNodesHashTable table)
     {

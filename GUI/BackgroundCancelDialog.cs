@@ -10,20 +10,22 @@ namespace SyncTwoCo.GUI
 	/// <summary>
 	/// Summary description for BackgroundCancelDialog.
 	/// </summary>
-	public class BackgroundCancelDialog : System.Windows.Forms.Form , IBackgroundMonitor
+	public class BackgroundCancelDialog : System.Windows.Forms.Form
 	{
     private System.Windows.Forms.Label lblText;
     private System.Windows.Forms.Button btCancel;
     private System.Timers.Timer _timer;
     System.Threading.Thread _thread;
-		/// <summary>
+		ExternalDrivenBackgroundMonitor _monitor;
+    /// <summary>
 		/// Required designer variable.
 		/// </summary>
 		private System.ComponentModel.Container components = null;
 
-		public BackgroundCancelDialog(  System.Threading.Thread thread)
+		public BackgroundCancelDialog(  System.Threading.Thread thread, ExternalDrivenBackgroundMonitor monitor)
 		{
       _thread = thread;
+      _monitor = monitor;
 			//
 			// Required for Windows Form Designer support
 			//
@@ -95,55 +97,38 @@ namespace SyncTwoCo.GUI
       this.Controls.Add(this.lblText);
       this.Name = "BackgroundCancelDialog";
       this.Text = "Working...";
+      this.Closing += new System.ComponentModel.CancelEventHandler(this.BackgroundCancelDialog_Closing);
       ((System.ComponentModel.ISupportInitialize)(this._timer)).EndInit();
       this.ResumeLayout(false);
 
     }
 		#endregion
 
-    bool _shouldReport;
-    string _reportText;
+   
   
     private void _timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
     {
       if(!_thread.IsAlive)
-        this.Close();
-
-      _shouldReport = true;
-    }
-
-    #region IBackgroundMonitor Members
-
-    public bool ShouldReport
-    {
-      get
       {
-        return _shouldReport;
+        this.Close();
       }
+
+      this.lblText.Text = _monitor.ReportText;
+
+      _monitor.ShouldReport = true;
     }
 
-    public void Report(string text)
-    {
-      _shouldReport = false;
-      _reportText = text;
-      this.lblText.Text = _reportText;
-    }
 
-    bool _cancelledByUser;
+  
     private void btCancel_Click(object sender, System.EventArgs e)
     {
-    _cancelledByUser = true;
+    _monitor.CancelledByUser = true;
     }
 
-    public bool CancelledByUser
+    private void BackgroundCancelDialog_Closing(object sender, System.ComponentModel.CancelEventArgs e)
     {
-      get
-      {
-        
-        return _cancelledByUser;
-      }
+      if(_thread.IsAlive)
+        e.Cancel = true;
     }
-
-    #endregion
 	}
 }
