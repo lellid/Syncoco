@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Runtime.InteropServices;
 
+
 namespace SyncTwoCo
 {
   /// <summary>
@@ -183,7 +184,7 @@ namespace SyncTwoCo
     }
 
 
-    public void CopyFilesToMedium(string directoryname, ref HashTable copiedFiles, MD5SumHashTable md5Hashes)
+    public void CopyFilesToMedium(string directoryname, Hashtable copiedFiles, MD5SumHashTable md5Hashes)
     {
       FileSystemRoot myRoot = this.MyRoot;
       FileSystemRoot foreignRoot = this.ForeignRoot;
@@ -191,8 +192,7 @@ namespace SyncTwoCo
       SortedList changedfiles = new SortedList();
       DirectoryNode.GetNewOrChangedFiles(myRoot.DirectoryNode,foreignRoot.DirectoryNode, changedfiles,string.Empty);
 
-      if(copiedFiles==null)
-        copiedFiles = new Hashtable();
+     
 
       // Here code found to get the free space on the drive
       /*
@@ -219,7 +219,7 @@ namespace SyncTwoCo
           FileNode node = (FileNode)entry.Value;
           if(node.FileLength<maxLength 
             && !copiedFiles.Contains(node)
-            && (md5Hashes==null || !node.IsContainedIn(md5Hashes)
+            && (md5Hashes==null || !node.IsContainedIn(md5Hashes))
             )
           {
             string sourcefilename = System.IO.Path.Combine(myRoot.FilePath,(string)entry.Key);

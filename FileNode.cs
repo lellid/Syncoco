@@ -277,7 +277,13 @@ namespace SyncTwoCo
 
     public void FillMd5HashTable(MD5SumHashTable table)
     {
-      table.Add(this._fileHash,this._fileLength);
+      if(!this.IsRemoved)
+        table.Add(this._fileHash,this._fileLength);
+    }
+
+    public bool IsContainedIn(MD5SumHashTable table)
+    {
+      return table.ContainsKey(this._fileHash);
     }
 
     public string MediumFileName

@@ -283,16 +283,26 @@ namespace SyncTwoCo
       for(int i=0;i<Count;i++)
       {
         if(MyRoot(i).IsValid)
-          RootPair(i).ForeignRoot.FillMd5HashTable();
+          RootPair(i).ForeignRoot.FillMd5HashTable(md5HashTable);
       }
 
+
+      Hashtable copiedFiles = new Hashtable();
 
       // now copy first with exclusion of the already existing files 
       for(int i=0;i<Count;i++)
       {
         if(MyRoot(i).IsValid)
-          RootPair(i).CopyFilesToMedium(MediumDirectoryName);
+          RootPair(i).CopyFilesToMedium(MediumDirectoryName,copiedFiles,md5HashTable);
       }
+
+      // and now copy all other files
+      for(int i=0;i<Count;i++)
+      {
+        if(MyRoot(i).IsValid)
+          RootPair(i).CopyFilesToMedium(MediumDirectoryName,copiedFiles,null);
+      }
+
 
     }
 
