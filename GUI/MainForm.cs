@@ -298,7 +298,8 @@ namespace SyncTwoCo
     {
       if(Current.Document.HasFileName)
       {
-        Current.Document.Save();
+        DocumentActions.SaveDocumentAction action = new SaveDocumentAction(Current.Document,Current.Document.FileName);
+        action.BackgroundExecute();
       }
       else
       {
@@ -312,7 +313,8 @@ namespace SyncTwoCo
       System.Windows.Forms.SaveFileDialog dlg = new System.Windows.Forms.SaveFileDialog();
       if(System.Windows.Forms.DialogResult.OK==dlg.ShowDialog(Current.MainForm))
       {
-        Current.Document.Save(dlg.FileName);
+        DocumentActions.SaveDocumentAction action = new SaveDocumentAction(Current.Document,dlg.FileName);
+        action.BackgroundExecute();
       }
     }
 
@@ -331,8 +333,9 @@ namespace SyncTwoCo
       System.Windows.Forms.OpenFileDialog dlg = new System.Windows.Forms.OpenFileDialog();
       if(System.Windows.Forms.DialogResult.OK==dlg.ShowDialog(Current.MainForm))
       {
-        MainDocument doc = MainDocument.Open(dlg.FileName);
-        if(doc != null)
+        DocumentActions.OpenDocumentAction action = new OpenDocumentAction(dlg.FileName);
+        action.BackgroundExecute();
+        if(action.Doc != null)
         {
           if(this._control!=null)
           {
@@ -340,7 +343,7 @@ namespace SyncTwoCo
             this._control=null;
           }
 
-          Current.Document = doc;
+          Current.Document = action.Doc;
           _rootList = new RootListController(Current.Document);
           ShowControl("Root",_rootList.View);
         }
@@ -384,7 +387,9 @@ namespace SyncTwoCo
       if(_syncList==null)
         _syncList = new SyncListController();
 
-      _syncList.SetCollectors(Current.Document.Collect());
+      DocumentActions.CollectFilesToSynchronizeAction action = new CollectFilesToSynchronizeAction(Current.Document);
+      action.BackgroundExecute();
+      _syncList.SetCollectors(action.CollectedFiles);
 
       ShowSyncList();
     

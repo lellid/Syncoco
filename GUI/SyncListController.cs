@@ -176,48 +176,22 @@ namespace SyncTwoCo
 
     public void Synchronize()
     {
-      System.Text.StringBuilder stb = new System.Text.StringBuilder();
-      
+      ArrayList list = new ArrayList();
+
+
       int count = _view.GetItemCount();
       for(int i=0;i<count;i++)
       {
-        if(!_view.IsItemSelected(i))
-          continue;
-
-      
-        SyncItemTag tag = (SyncItemTag)_view.GetItemTag(i);
-
-        try
-        {
-
-          if(false==Synchronize(tag))
-            break;
-        }
-        catch(Exception ex)
-        {
-          if(stb.Length>0)
-            stb.Append(System.Environment.NewLine);
-          stb.Append(ex.ToString());
-        }
-
-
+        if(_view.IsItemSelected(i))
+          list.Add(_view.GetItem(i));
       }
 
-      if(stb.Length>0)
-      {
-        System.Windows.Forms.MessageBox.Show(Current.MainForm,stb.ToString(),"Error report",System.Windows.Forms.MessageBoxButtons.OK,System.Windows.Forms.MessageBoxIcon.Exclamation);
-      }
-
-    
+      DocumentActions.SynchronizeFilesAction action = new DocumentActions.SynchronizeFilesAction(Current.Document,list);
+      action.BackgroundExecute();
     }
 
 
-    bool Synchronize(SyncItemTag tag)
-    {
-      Current.Document.PerformAction(tag);
-
-      return true;
-    }
+ 
 
   }
 }

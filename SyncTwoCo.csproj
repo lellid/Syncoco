@@ -203,6 +203,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "DocumentActions\ClearMediumDirectoryAction.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "DocumentActions\CollectFilesToSynchronizeAction.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "DocumentActions\CopyFilesToMediumAction.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -214,6 +224,21 @@
                 />
                 <File
                     RelPath = "DocumentActions\DocumentUpdateSaveAndCopyAction.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "DocumentActions\OpenDocumentAction.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "DocumentActions\SaveDocumentAction.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "DocumentActions\SynchronizeFilesAction.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

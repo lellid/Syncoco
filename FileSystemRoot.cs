@@ -150,20 +150,7 @@ namespace SyncTwoCo
 
   
 
-    public FileNode UpdateMyFile(FileInfo fileinfo, bool forceUpdateHash)
-    {
-      DirectoryInfo dirinfo = new DirectoryInfo(this._FilePath);
 
-      return DirectoryUpdater.UpdateFileNode(_DirectoryNode,dirinfo,fileinfo,forceUpdateHash);
-    }
-
-  
-
-    public void FillMD5SumFileNodesHashTable(MD5SumFileNodesHashTable table)
-    {
-      Traversing.MD5SumFileNodesHashTableCollector coll = new Traversing.MD5SumFileNodesHashTableCollector(this.DirectoryNode,this.FilePath,table);
-      coll.Traverse();
-    }
    
     #region IParentDirectory Members
 

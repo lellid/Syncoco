@@ -278,20 +278,7 @@ namespace SyncTwoCo
     return doc;
     }
 
-    public static MainDocument Open(string filename)
-    {
-      if(System.IO.Path.GetExtension(filename).ToLower()==".stcbin")
-      {
-        return OpenAsBinary(filename);
-      }
-      else
-      {
-        MainDocument doc = new MainDocument();
-        doc.OpenAsXML(filename);
-        return doc;
-      }
-    }
-
+  
    
 
     public void SetFileSavedFlag(string filename)
@@ -312,6 +299,11 @@ namespace SyncTwoCo
       { 
         return _FileName != null && _FileName != string.Empty;
       }
+    }
+
+    public string FileName
+    {
+      get { return _FileName; }
     }
 
     protected void ExchangeRoots()
@@ -417,6 +409,12 @@ namespace SyncTwoCo
        this._allFilesHere=null;
     }
 
+    public MD5SumFileNodesHashTable CachedAllMyFiles
+    {
+      get { return _allFilesHere; }
+      set { _allFilesHere = value; }
+    }
+
     public void AddRoot(string basename)
     {
       PathUtil.Assert_Abspath(basename);
@@ -443,255 +441,8 @@ namespace SyncTwoCo
    
 
 
-    public void ClearMediumDirectory()
-    {
-      if(!this.HasFileName)
-        throw new ApplicationException("Must have a file name to know where the medium directory is");
-
-      PathUtil.Assert_Abspath(this.MediumDirectoryName);
-      System.IO.DirectoryInfo dirinfo = new System.IO.DirectoryInfo(this.MediumDirectoryName);
-      if(!dirinfo.Exists)
-        return;
-
-      System.IO.FileInfo[] fileinfos = dirinfo.GetFiles("X*.XXX");
-
-      foreach(System.IO.FileInfo fileinfo in fileinfos)
-      {
-        if(0!=(fileinfo.Attributes & System.IO.FileAttributes.ReadOnly))
-        {
-          fileinfo.Attributes &= ~System.IO.FileAttributes.ReadOnly;
-        }
-        fileinfo.Delete();
-      }
-    }
+  
 
   
-   
-
-   
-
-    public FilesToSynchronizeCollector[] Collect()
-    {
-      EnsureAlignment();
-
-      if(_FileName==null || _FileName==string.Empty)
-        throw new ApplicationException("The document was not saved yet");
-
-
-      // before we collect, we save the md5 hashes of all files (not current, but from the XML file)
-      // into one hashtable
-
-      this._allFilesHere = new MD5SumFileNodesHashTable();
-      for(int i=0;i<Count;i++)
-      {
-        if(MyRoot(i).IsValid)
-          RootPair(i).MyRoot.FillMD5SumFileNodesHashTable(this._allFilesHere);
-      }
-
-      // now that we have all the current files, the information can be used by the collectors to
-      // decide if a file can be copied or not
-
-      FilesToSynchronizeCollector[] collectors = new FilesToSynchronizeCollector[Count];
-      for(int i=0;i<Count;i++)
-      {
-        collectors[i] = new FilesToSynchronizeCollector(
-          this.MediumDirectoryName,
-          MyRoot(i).FilePath,
-          this._allFilesHere,
-          RootPair(i).MyRoot.DirectoryNode,
-          RootPair(i).ForeignRoot.DirectoryNode,
-          RootPair(i).PathFilter);
-        
-        if(ForeignRoot(i).IsValid && MyRoot(i).IsValid)
-          collectors[i].Traverse();
-      }
-      return collectors;
-    }
-
-    public void CopyWithDirectoryCreation(string sourceFileName, string destFileName, bool overwrite, FileNode foFileNode)
-    {
-#if DEBUG
-      PathUtil.Assert_AbspathFilename(sourceFileName);
-      PathUtil.Assert_AbspathFilename(destFileName);
-#endif
-
-      string dirname = System.IO.Path.GetDirectoryName(destFileName);
-      if(!System.IO.Directory.Exists(dirname))
-        System.IO.Directory.CreateDirectory(dirname);
-
-      System.IO.File.Copy(sourceFileName,destFileName,overwrite);
-      System.IO.FileInfo info = new System.IO.FileInfo(destFileName);
-      if(info.Exists)
-      {
-        // first clear the readonly attribute
-        info.Attributes &= ~System.IO.FileAttributes.ReadOnly;
-       
-        info.CreationTimeUtc = foFileNode.CreationTimeUtc;
-        info.LastWriteTimeUtc = foFileNode.LastWriteTimeUtc;
-        info.Attributes = foFileNode.Attributes;
-      }
-    }
-
-    /// <summary>
-    /// This functions looks from where to copy the foFileNode from. First we have a look in our own file system.
-    /// Then we look at the files on the medium.
-    /// </summary>
-    /// <param name="foFileNode">This is the file in the foreign file system that should be copied here to destFileName.</param>
-    /// <param name="destFileName">The destination file name where to copy to.</param>
-    /// <param name="overwrite">True if the destination file can be overwritten. False if not.</param>
-    /// <returns>True if the copy was successfull, false otherwise.</returns>
-    public bool CopyWithDirectoryCreation(FileNode foFileNode, string destFileName, bool overwrite)
-    {
-      object o = this._allFilesHere[foFileNode.FileHash];
-      if(o is PathAndFileNode)
-      {
-        PathAndFileNode pfn = (PathAndFileNode)o;
-        if(System.IO.File.Exists(pfn.Path) && foFileNode.HasSameHashThan(pfn.Path))
-        {
-          CopyWithDirectoryCreation(pfn.Path, destFileName, overwrite, foFileNode);
-          return true;
-        }
-      }
-      else if(o is ArrayList) // there is more than one possibility where to copy from
-      {
-        ArrayList arr = (ArrayList)o;
-        foreach(PathAndFileNode pfn in arr) // use the first successfull possibility where to copy from
-        {
-#if DEBUG
-          PathUtil.Assert_AbspathFilename(pfn.Path);
-#endif
-          if(System.IO.File.Exists(pfn.Path) && foFileNode.HasSameHashThan(pfn.Path))
-          {
-            CopyWithDirectoryCreation(pfn.Path, destFileName, overwrite,foFileNode);
-            return true; // return true if the copy was successfull
-          }
-        }
-       
-      }
-    
-
-      string sourcefilename = PathUtil.Combine_Abspath_Filename(this.MediumDirectoryName,foFileNode.MediumFileName);
-      if(foFileNode.HasSameHashThan(sourcefilename))
-      {
-        CopyWithDirectoryCreation(sourcefilename, destFileName, overwrite, foFileNode);
-        return true;
-      }
-      
-      return false;
-    }
-
-
-    void DeleteFileForced(string path)
-    {
-#if DEBUG
-      PathUtil.Assert_AbspathFilename(path);
-#endif
-
-      try
-      {
-        System.IO.File.Delete(path);
-        return;
-      }
-      catch(System.IO.IOException)
-      {
-      }
-
-      // if this was not successfull, try to remove the read-only attribute
-      System.IO.FileInfo info = new System.IO.FileInfo(path);
-      info.Attributes &= ~(System.IO.FileAttributes.ReadOnly | System.IO.FileAttributes.Hidden | System.IO.FileAttributes.System);
-      // this time we try to delete the file without catching the exception
-      System.IO.File.Delete(path);
-    }
-
-
-    public void PerformAction(SyncItemTag tag)
-    {
-      System.Diagnostics.Debug.Assert(tag!=null);
-
-      string relPathFileName = tag.FileName;
-      string absrootdir = MyRoot(tag.RootListIndex).FilePath;
-
-
-#if DEBUG
-      PathUtil.Assert_RelpathOrFilename(relPathFileName);
-      PathUtil.Assert_Abspath(absrootdir);
-#endif
-
-      
-      string myfilename = PathUtil.Combine_Abspath_RelpathOrFilename(absrootdir,relPathFileName);
-
-      FileSystemRoot myRoot = MyRoot(tag.RootListIndex);
-      FileSystemRoot foRoot = ForeignRoot(tag.RootListIndex);
-      FileNode foFileNode;
-     
-      System.IO.FileInfo myfileinfo;
-      FileNode myfilenode;
-
-      switch(tag.Action)
-      {
-        case SyncAction.Remove:
-          if(PathUtil.IsDirectoryName(myfilename)) // delete subdir
-          {
-            try 
-            {
-              System.IO.Directory.Delete(myfilename); 
-              myRoot.DeleteSubDirectoryNode(relPathFileName);
-              foRoot.DeleteSubDirectoryNode(relPathFileName);
-
-            }
-            catch(System.IO.IOException )  { } // Don't care if subdir cannot be deleted, maybe files are still in there!
-          }
-          else // Delete file
-          {
-            DeleteFileForced(myfilename);
-            myRoot.DeleteFileNode(relPathFileName);
-            foRoot.DeleteFileNode(relPathFileName);
-          }
-          break;
-        case SyncAction.RemoveRollback:
-          foRoot.DeleteFileNode(relPathFileName);
-          break;
-        case SyncAction.Copy:
-          foFileNode = foRoot.GetFileNode(relPathFileName);
-       
-          if(CopyWithDirectoryCreation(foFileNode,myfilename,false))
-          {
-            // update the own FileNode (enforce (!) update the hash of this node also), only if the hash match, then set the own and the foreign
-            // file node to unchanged
-            myfileinfo = new System.IO.FileInfo(myfilename);
-            myfilenode = MyRoot(tag.RootListIndex).UpdateMyFile(myfileinfo,true);
-            if(foFileNode.HasSameHashThan(myfilenode))
-            {
-              foFileNode.SetToUnchanged();
-              myfilenode.SetToUnchanged();
-            }
-          }
-          break;
-        case SyncAction.Overwrite:
-        case SyncAction.ResolveManuallyOverwrite:
-          foFileNode = foRoot.GetFileNode(relPathFileName);
-          if(CopyWithDirectoryCreation(foFileNode,myfilename,true))
-          {
-            // update the own FileNode (enforce (!) update the hash of this node also), only if the hash match, then set the own and the foreign
-            // file node to unchanged
-            myfileinfo = new System.IO.FileInfo(myfilename);
-            myfilenode = MyRoot(tag.RootListIndex).UpdateMyFile(myfileinfo,true);
-            if(foFileNode.HasSameHashThan(myfilenode))
-            {
-              foFileNode.SetToUnchanged();
-              myfilenode.SetToUnchanged();
-            }
-          }
-          break;
-        case SyncAction.ResolveManuallyRollback:
-          foFileNode = foRoot.GetFileNode(relPathFileName);
-          foFileNode.SetToUnchanged();
-          myfileinfo = new System.IO.FileInfo(myfilename);
-          myfilenode = MyRoot(tag.RootListIndex).UpdateMyFile(myfileinfo,true);
-          if(myfilenode.IsUnchanged)
-            myfilenode.SwitchFromUnchangedToChanged();
-          break;
-      }
-    }
   }
 }

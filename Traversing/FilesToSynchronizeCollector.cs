@@ -18,6 +18,7 @@ namespace SyncTwoCo.Traversing
     DirectoryNode _myDirRoot;
     DirectoryNode _foreignDirRoot;
     PathFilter _pathFilter;
+    IBackgroundMonitor _monitor = new DummyBackgroundMonitor();
     
     StringCollection _ToRemove = new StringCollection();
     StringCollection _ToRemoveButChanged = new StringCollection();
@@ -41,7 +42,8 @@ namespace SyncTwoCo.Traversing
       MD5SumFileNodesHashTable  allFilesHereOnDisk,
       DirectoryNode myDirRoot,
       DirectoryNode foreignDirRoot,
-      PathFilter pathFilter)
+      PathFilter pathFilter,
+      IBackgroundMonitor monitor)
     {
 #if DEBUG
       PathUtil.Assert_Abspath(mediumdirectory);
@@ -54,6 +56,7 @@ namespace SyncTwoCo.Traversing
       _myDirRoot = myDirRoot;
       _foreignDirRoot = foreignDirRoot;
       _pathFilter = pathFilter;
+      _monitor = monitor;
     }
 
     public string GetFullPath(string relativdir)
@@ -159,6 +162,9 @@ namespace SyncTwoCo.Traversing
       foreach(FileNode foreignFileNode in foreignDir.Files)
       {
         string   foreignFileName = foreignFileNode.Name;
+
+        if(_monitor.ShouldReport)
+          _monitor.Report("Visit file " + foreignFileName);
 
         if(foreignFileNode.IsUnchanged)
           continue;

@@ -58,13 +58,13 @@ namespace SyncTwoCo
 
   public class ExternalDrivenBackgroundMonitor : IBackgroundMonitor
   {
-    bool _shouldReport;
+    protected bool _shouldReport;
     string _reportText;
     bool _cancelledByUser;
 
     #region IBackgroundMonitor Members
 
-    public bool ShouldReport
+    public virtual bool ShouldReport
     {
       get
       {
@@ -78,6 +78,7 @@ namespace SyncTwoCo
 
     public void Report(string text)
     {
+      _shouldReport = false;
       _reportText = text;
     }
 
@@ -100,6 +101,26 @@ namespace SyncTwoCo
 
     #endregion
 
+  }
+
+  public class ExternalDrivenTimeReportMonitor : ExternalDrivenBackgroundMonitor
+  {
+    DateTime _timeBegin = DateTime.Now;
+
+    public override bool ShouldReport
+    {
+      get
+      {
+        return _shouldReport;
+      }
+      set
+      {
+        _shouldReport |= value;
+
+        if(_shouldReport)
+          Report("Busy ... " + (DateTime.Now - _timeBegin).ToString());
+      }
+    }
   }
 
   public class TimedBackgroundMonitor : IBackgroundMonitor
@@ -138,7 +159,7 @@ namespace SyncTwoCo
     {
       get
       {
-        return false;
+        return _shouldReport;
       }
     }
 

@@ -10,6 +10,7 @@ namespace SyncTwoCo.DocumentActions
 	{
     protected IBackgroundMonitor _monitor=new DummyBackgroundMonitor();
     protected MainDocument _doc;
+    protected System.Text.StringBuilder _errors = new System.Text.StringBuilder();
 
     public AbstractDocumentAction(MainDocument doc)
       : this(doc,null)
@@ -24,6 +25,14 @@ namespace SyncTwoCo.DocumentActions
     }
 
 
+    public string Errors
+    {
+      get
+      {
+        return _errors.Length==0 ? null : _errors.ToString();
+      }
+    }
+
     public virtual void BackgroundExecute()
     {
       System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(this.DirectExecute));
@@ -31,7 +40,9 @@ namespace SyncTwoCo.DocumentActions
       thread.IsBackground = true;
       thread.Start();
      
-      _monitor = new ExternalDrivenBackgroundMonitor();
+      if(!(_monitor is ExternalDrivenBackgroundMonitor))
+        _monitor = new ExternalDrivenBackgroundMonitor();
+
       GUI.BackgroundCancelDialog dlg = new GUI.BackgroundCancelDialog(thread,(ExternalDrivenBackgroundMonitor)_monitor);
       dlg.ShowDialog(Current.MainForm);
     }

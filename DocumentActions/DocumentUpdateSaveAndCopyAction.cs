@@ -34,7 +34,7 @@ namespace SyncTwoCo.DocumentActions
       new DocumentUpdateAction(_doc,false,_monitor).DirectExecute();
 
       _monitor.Report("Cleaning transfer medium ...");
-      _doc.ClearMediumDirectory();
+      new ClearMediumDirectoryAction(_doc,_monitor).DirectExecute();
 
       _monitor.Report("Saving document ...");
       _doc.Save();

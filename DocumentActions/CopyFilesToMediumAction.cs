@@ -134,7 +134,14 @@ namespace SyncTwoCo.DocumentActions
               if(monitor.ShouldReport)
                 monitor.Report("Copy file " + sourcefilename);
 
-              System.IO.File.Copy(sourcefilename,destfilename);
+              try 
+              {
+                System.IO.File.Copy(sourcefilename,destfilename);
+              }
+              catch(Exception ex)
+              {
+                _errors.AppendFormat("Error copying file {0} : {1}\n",sourcefilename,ex.Message);
+              }
               GetDiskFreeSpaceEx(directoryname, out freeBytesAvailable, out totalNumberOfBytes, out totalNumberOfFreeBytes);
               maxLength = (long)freeBytesAvailable;
             }
