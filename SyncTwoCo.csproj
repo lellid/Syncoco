@@ -158,6 +158,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "IBackgroundMonitor.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "IFileHint.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -221,6 +226,16 @@
                     RelPath = "Filter\PathFilter.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "GUI\BackgroundCancelDialog.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "GUI\BackgroundCancelDialog.resx"
+                    DependentUpon = "BackgroundCancelDialog.cs"
+                    BuildAction = "EmbeddedResource"
                 />
                 <File
                     RelPath = "GUI\DialogShellController.cs"

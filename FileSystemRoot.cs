@@ -141,14 +141,14 @@ namespace SyncTwoCo
         _DirectoryNode.DeleteSubDirectoryNodeFullPath(path);
     }
 
-    public void Update(PathFilter pathFilter, bool forceUpdateHash)
+    public void Update(PathFilter pathFilter, bool forceUpdateHash, IBackgroundMonitor monitor)
     {
       System.IO.DirectoryInfo dirinfo = new System.IO.DirectoryInfo(_FilePath);
 
       if(null!=_DirectoryNode)
-        new DirectoryUpdater(pathFilter).Update(DirectoryNode, dirinfo, forceUpdateHash);
+        new DirectoryUpdater(pathFilter,monitor).Update(DirectoryNode, dirinfo, forceUpdateHash);
       else
-        _DirectoryNode = new DirectoryUpdater(pathFilter).NewDirectoryNode(dirinfo);
+        _DirectoryNode = new DirectoryUpdater(pathFilter,monitor).NewDirectoryNode(dirinfo);
     }
 
     public FileNode UpdateMyFile(FileInfo fileinfo, bool forceUpdateHash)

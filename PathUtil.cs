@@ -134,7 +134,7 @@ namespace SyncTwoCo
       Assert_Abspath(abspath);
       Assert_RelpathFilename(relpathFilename);
 #endif
-      return abspath+relpathFilename;
+      return abspath+relpathFilename.Substring(1);
     }
    
     /// <summary>

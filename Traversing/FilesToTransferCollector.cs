@@ -61,6 +61,10 @@ namespace SyncTwoCo.Traversing
             list.Add(PathUtil.Combine_Relpath_Filename(nameroot,myFileName),myFileNode);
           }
         }
+        else if(myFileNode.IsUnchanged && (foreignDir==null || !foreignDir.ContainsFile(myFileName)))
+        {
+          list.Add(PathUtil.Combine_Relpath_Filename(nameroot,myFileName),myFileNode);
+        }
       }
 
       foreach(DirectoryNode mySubDirNode in myDir.Directories)

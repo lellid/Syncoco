@@ -151,20 +151,23 @@ namespace SyncTwoCo
     }
 
 
-    public void Update(bool forceUpdateHash)
+    public void Update(bool forceUpdateHash, IBackgroundMonitor monitor)
     {
       PathFilter.ResetCurrentDirectory();
-      MyRoot.Update(PathFilter, forceUpdateHash);
+      MyRoot.Update(PathFilter, forceUpdateHash, monitor);
     }
 
    
 
 
-    public void CopyFilesToMedium(string directoryname, Hashtable copiedFiles, MD5SumHashTable md5Hashes)
+    public void CopyFilesToMedium(string directoryname, Hashtable copiedFiles, MD5SumHashTable md5Hashes, IBackgroundMonitor monitor)
     {
       FileSystemRoot myRoot = this.MyRoot;
       FileSystemRoot foreignRoot = this.ForeignRoot;
  
+      if(monitor.ShouldReport)
+        monitor.Report("Look for files to transfer in " + directoryname);
+
       FilesToTransferCollector ftCollector = new FilesToTransferCollector(myRoot.DirectoryNode,foreignRoot.DirectoryNode);
       ftCollector.Traverse();
       SortedList changedfiles = ftCollector.Result;
@@ -207,6 +210,9 @@ namespace SyncTwoCo
 
             if(!System.IO.File.Exists(destfilename)) // copy only, if this file not already exists
             {
+              if(monitor.ShouldReport)
+                monitor.Report("Copy file " + sourcefilename);
+
               System.IO.File.Copy(sourcefilename,destfilename);
               GetDiskFreeSpaceEx(directoryname, out freeBytesAvailable, out totalNumberOfBytes, out totalNumberOfFreeBytes);
               maxLength = (long)freeBytesAvailable;

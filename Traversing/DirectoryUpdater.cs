@@ -11,12 +11,18 @@ namespace SyncTwoCo.Traversing
 	public class DirectoryUpdater
 	{
     PathFilter pathFilter;
+    IBackgroundMonitor _monitor = new DummyBackgroundMonitor();
 
 		public DirectoryUpdater(PathFilter filt)
 		{
 			pathFilter = filt;
 		}
 
+    public DirectoryUpdater(PathFilter filt, IBackgroundMonitor monitor)
+    {
+      pathFilter = filt;
+      _monitor = monitor;
+    }
 
    
 
@@ -109,6 +115,9 @@ namespace SyncTwoCo.Traversing
     /// <param name="pathFilter">The path filter.</param>
     protected void UpdateFiles(DirectoryNode dirNode, System.IO.DirectoryInfo dirinfo, bool forceUpdateHash)
     {
+      if(_monitor.ShouldReport)
+        _monitor.Report("Updating directory " + dirinfo.FullName);
+
       System.IO.FileInfo[] fileinfos = dirinfo.GetFiles();
       // create a hash table of the actual
       Hashtable actualFiles = new Hashtable();
@@ -139,15 +148,23 @@ namespace SyncTwoCo.Traversing
         if(!pathFilter.IsFileIncluded(file))
           continue;
 
+        if(_monitor.CancelledByUser)
+          break;
+
+        System.IO.FileInfo fileinfo = (System.IO.FileInfo)actualFiles[file];
+
+        if(_monitor.ShouldReport)
+          _monitor.Report("Updating file " + fileinfo.FullName);
+
         if(dirNode.ContainsFile(file))
         {
-          dirNode.File(file).Update((System.IO.FileInfo)actualFiles[file],forceUpdateHash);
+          dirNode.File(file).Update(fileinfo,forceUpdateHash);
           // this file was here before, we look if it was changed
         }
         else
         {
           // this is a new file, we create a new file node for this
-          dirNode.AddFile(file,new FileNode((System.IO.FileInfo)actualFiles[file],dirNode));
+          dirNode.AddFile(file,new FileNode(fileinfo,dirNode));
         }
       }
     }
@@ -192,6 +209,9 @@ namespace SyncTwoCo.Traversing
       {
         if(!pathFilter.IsDirectoryIncluded(name))
           continue;
+
+        if(_monitor.CancelledByUser)
+          break;
 
         pathFilter.EnterSubDirectory(name);
         if(dirNode.Directories.Contains(name))

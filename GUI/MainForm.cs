@@ -363,17 +363,17 @@ namespace SyncTwoCo
 
     private void menuEditUpdate_Click(object sender, System.EventArgs e)
     {
-      Current.Document.Update(false);
+      Current.Document.Update(false, new DummyBackgroundMonitor());
     }
 
     private void menuUpdateHash_Click(object sender, System.EventArgs e)
     {
-      Current.Document.Update(true);
+      Current.Document.Update(true,new DummyBackgroundMonitor());
     }
 
     private void menuEditCopyFiles_Click(object sender, System.EventArgs e)
     {
-      Current.Document.CopyFilesToMedium();
+      Current.Document.CopyFilesToMedium(new DummyBackgroundMonitor());
     }
 
     private void menuEditCollect_Click(object sender, System.EventArgs e)

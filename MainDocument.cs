@@ -427,17 +427,17 @@ namespace SyncTwoCo
       ((RootPair)_rootPairs[item]).MyRoot.SetFilePath(path);
     }
 
-    public void Update(bool forceUpdateHash)
+    public void Update(bool forceUpdateHash, IBackgroundMonitor monitor)
     {
       this._allFilesHere=null;
 
       EnsureAlignment();
 
       for(int i=0;i<Count;i++)
-        RootPair(i).Update(forceUpdateHash);
+        RootPair(i).Update(forceUpdateHash, monitor);
     }
 
-    public void CopyFilesToMedium()
+    public void CopyFilesToMedium(IBackgroundMonitor monitor)
     {
       EnsureAlignment();
 
@@ -448,6 +448,8 @@ namespace SyncTwoCo
       if(!System.IO.Directory.Exists(MediumDirectoryName))
         throw new ApplicationException(string.Format("The directory {0} does not exist!",MediumDirectoryName));
 
+      if(monitor.ShouldReport)
+        monitor.Report("Filling MD5 hashtable ...");
 
       // create a table with all md5 hash sums of the foreign(!) file system
       MD5SumHashTable md5HashTable = new MD5SumHashTable();
@@ -455,6 +457,9 @@ namespace SyncTwoCo
       {
         if(MyRoot(i).IsValid)
         {
+          if(monitor.ShouldReport)
+            monitor.Report("Filling MD5 hashtable from " + RootPair(i).ForeignRoot.FilePath);
+
           RootPair(i).ForeignRoot.FillMd5HashTable(md5HashTable);
         }
       }
@@ -466,14 +471,14 @@ namespace SyncTwoCo
       for(int i=0;i<Count;i++)
       {
         if(MyRoot(i).IsValid)
-          RootPair(i).CopyFilesToMedium(MediumDirectoryName,copiedFiles,md5HashTable);
+          RootPair(i).CopyFilesToMedium(MediumDirectoryName,copiedFiles,md5HashTable,monitor);
       }
 
       // and now copy all other files
       for(int i=0;i<Count;i++)
       {
         if(MyRoot(i).IsValid)
-          RootPair(i).CopyFilesToMedium(MediumDirectoryName,copiedFiles,null);
+          RootPair(i).CopyFilesToMedium(MediumDirectoryName,copiedFiles,null,monitor);
       }
     }
 
@@ -501,6 +506,37 @@ namespace SyncTwoCo
     }
 
   
+    class ActionUpdateSaveAndCopy
+    {
+      MainDocument _doc;
+      IBackgroundMonitor _monitor = new DummyBackgroundMonitor();
+
+      public ActionUpdateSaveAndCopy(MainDocument doc)
+      {
+        _doc = doc;
+      }
+      public IBackgroundMonitor Monitor
+      {
+        set
+        { 
+          _monitor = value; 
+        }
+      }
+      public void Execute()
+      {
+        _monitor.Report("Updating file system ...");
+        _doc.Update(false, _monitor);
+
+        _monitor.Report("Cleaning transfer medium ...");
+        _doc.ClearMediumDirectory();
+
+        _monitor.Report("Saving document ...");
+        _doc.Save();
+
+        _monitor.Report("Copy files to medium ...");
+        _doc.CopyFilesToMedium(_monitor);
+      }
+    }
    
 
     public void UpdateAndSaveAndCopyFilesToMedium()
@@ -508,10 +544,21 @@ namespace SyncTwoCo
       if(!this.HasFileName)
         throw new ApplicationException("This operation is possible only if the document has a file name");
 
-      this.Update(false);
-      this.ClearMediumDirectory();
-      this.Save();
-      this.CopyFilesToMedium();
+
+      
+
+      ActionUpdateSaveAndCopy action = new ActionUpdateSaveAndCopy(this);
+
+      System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(action.Execute));
+      thread.Name = "UpdateSaveAndCopy";
+      thread.IsBackground = true;
+     
+      GUI.BackgroundCancelDialog dlg = new GUI.BackgroundCancelDialog(thread);
+      action.Monitor = dlg;
+      thread.Start();
+
+      dlg.ShowDialog(Current.MainForm);
+
     }
 
     public FilesToSynchronizeCollector[] Collect()
@@ -625,6 +672,29 @@ namespace SyncTwoCo
     }
 
 
+    void DeleteFileForced(string path)
+    {
+#if DEBUG
+      PathUtil.Assert_AbspathFilename(path);
+#endif
+
+      try
+      {
+        System.IO.File.Delete(path);
+        return;
+      }
+      catch(System.IO.IOException)
+      {
+      }
+
+      // if this was not successfull, try to remove the read-only attribute
+      System.IO.FileInfo info = new System.IO.FileInfo(path);
+      info.Attributes &= ~(System.IO.FileAttributes.ReadOnly | System.IO.FileAttributes.Hidden | System.IO.FileAttributes.System);
+      // this time we try to delete the file without catching the exception
+      System.IO.File.Delete(path);
+    }
+
+
     public void PerformAction(SyncItemTag tag)
     {
       System.Diagnostics.Debug.Assert(tag!=null);
@@ -664,7 +734,7 @@ namespace SyncTwoCo
           }
           else // Delete file
           {
-            System.IO.File.Delete(myfilename);
+            DeleteFileForced(myfilename);
             myRoot.DeleteFileNode(relPathFileName);
             foRoot.DeleteFileNode(relPathFileName);
           }
