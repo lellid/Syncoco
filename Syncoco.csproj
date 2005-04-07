@@ -277,6 +277,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "DocumentActions\SynchronizingStrategy.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Filter\FilterAction.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

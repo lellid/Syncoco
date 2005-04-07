@@ -350,5 +350,16 @@ namespace Syncoco
 #endif
       return result;
     }
+
+    /// <summary>
+    /// This normalizes the name so that it can be compared with other file names. Currently,
+    /// the name is converted to lower letters to be case insensitive.
+    /// </summary>
+    /// <param name="name">Name to normalized.</param>
+    /// <returns>Normalized path.</returns>
+    public static string NormalizeForComparison(string name)
+    {
+      return name.ToLower();
+    }
   }
 }
