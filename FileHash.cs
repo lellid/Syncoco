@@ -92,7 +92,13 @@ namespace Syncoco
         return Hi.ToString("X16")+Lo.ToString("X16");
       }
     }
-
+    public string MediumFileName
+    {
+      get
+      {
+        return string.Format("X{0}.XXX", BinHexRepresentation);
+      }
+    }
     public static bool operator ==(FileHash a, FileHash b)
     {
       return  a.Hi==b.Hi && a.Lo==b.Lo ;

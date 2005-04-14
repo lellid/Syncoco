@@ -51,6 +51,20 @@ namespace Syncoco
     }
   }
 
+  public class SyncItemTagList : System.Collections.CollectionBase
+  {
+    public SyncItemTag this[int i]
+    {
+      get { return (SyncItemTag)this.InnerList[i]; }
+      set { this.InnerList[i] = value; }
+    }
+
+    public void Add(SyncItemTag item)
+    {
+      this.InnerList.Add(item);
+    }
+  }
+
 
   /// <summary>
   /// Summary description for SyncListController.

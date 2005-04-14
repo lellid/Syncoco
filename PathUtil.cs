@@ -76,6 +76,22 @@ namespace Syncoco
     }
 
     /// <summary>
+    /// Extracts the relative file name from the full name and the root path.
+    /// </summary>
+    /// <param name="fullpath">The full file name. Has to start with root path.</param>
+    /// <param name="rootpath">The root path of the file.</param>
+    /// <returns>The relative file name.</returns>
+    public static string GetRelpathFromAbspath(string fullpath, string rootpath)
+    {
+      string result;
+      if(HasRootPath(rootpath,fullpath,out result))
+        return result;
+      else
+        throw new ArgumentException(string.Format("fullpath {0} does not start with rootpath {1}",fullpath,rootpath));
+      }
+
+
+    /// <summary>
     /// Gets the array of directory names for the relative name (the relativename must not contain drive letters etc.)
     /// If relativename is a directory, it must end with a DirectorySeparatorChar to be distinguished from a file name.
     /// </summary>
@@ -319,6 +335,8 @@ namespace Syncoco
 #endif
     }
     
+
+   
     /// <summary>
     /// Returns a path with is forced to end with a DirectorySeparatorChar
     /// </summary>
@@ -360,6 +378,18 @@ namespace Syncoco
     public static string NormalizeForComparison(string name)
     {
       return name.ToLower();
+    }
+
+    /// <summary>
+    /// Determines if two paths are equal. For Windows systems, two names are compared
+    /// using case insensitive comparison.
+    /// </summary>
+    /// <param name="name1">First path.</param>
+    /// <param name="name2">Second path.</param>
+    /// <returns>True if the two paths are considered equal.</returns>
+    public static bool ArePathsEqual(string name1, string name2)
+    {
+      return NormalizeForComparison(name1)==NormalizeForComparison(name2);
     }
   }
 }

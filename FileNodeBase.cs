@@ -215,7 +215,7 @@ namespace Syncoco
     {
       get
       {
-        return string.Format("X{0}.XXX", _fileHash.BinHexRepresentation);
+        return _fileHash.MediumFileName;
       }
     }
 
