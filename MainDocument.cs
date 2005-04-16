@@ -275,7 +275,7 @@ namespace Syncoco
       string compu2 = tr.ReadElementString("ComputerName2");
 
 
-      if(Current.ComputerName!=compu1 && Current.ComputerName!=compu2)
+      if(Current.ComputerName!=compu1 && Current.ComputerName!=compu2 && compu2!=string.Empty)
       {
         throw new DocumentNotForThisComputerException(string.Format("The file loaded is intended for synchronization between {0} and {1}, and not for your computer {2} !",compu1,compu2, Current.ComputerName));
       }

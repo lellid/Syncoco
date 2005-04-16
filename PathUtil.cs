@@ -85,7 +85,7 @@ namespace Syncoco
     {
       string result;
       if(HasRootPath(rootpath,fullpath,out result))
-        return result;
+        return System.IO.Path.DirectorySeparatorChar.ToString()+result;
       else
         throw new ArgumentException(string.Format("fullpath {0} does not start with rootpath {1}",fullpath,rootpath));
       }
@@ -187,7 +187,7 @@ namespace Syncoco
       Assert_Abspath(abspath);
       Assert_RelpathOrFilename(filename);
 #endif
-      return abspath+filename;
+      return abspath+filename.Substring(1);
     }
 
     /// <summary>

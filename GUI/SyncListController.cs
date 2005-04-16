@@ -63,6 +63,30 @@ namespace Syncoco
     {
       this.InnerList.Add(item);
     }
+
+    public void Sort()
+    {
+      this.InnerList.Sort(new Comparer());
+    }
+
+    private class Comparer : IComparer
+    {
+      #region IComparer Members
+
+      public int Compare(object x, object y)
+      {
+        SyncItemTag xx = (SyncItemTag)x;
+        SyncItemTag yy = (SyncItemTag)y;
+
+        if(xx.RootListIndex!=yy.RootListIndex)
+          return xx.RootListIndex<yy.RootListIndex ? -1 : 1;
+
+        int sresult = string.Compare(xx.FileName,yy.FileName,true);
+        return sresult;
+      }
+
+      #endregion
+    }
   }
 
 
@@ -252,14 +276,14 @@ namespace Syncoco
 
     public void Synchronize()
     {
-      ArrayList list = new ArrayList();
+      SyncItemTagList list = new SyncItemTagList();
 
 
       int count = _view.GetItemCount();
       for(int i=0;i<count;i++)
       {
         if(_view.IsItemSelected(i))
-          list.Add(_view.GetItem(i).Tag);
+          list.Add((SyncItemTag)_view.GetItem(i).Tag);
       }
 
       if(count>0 && list.Count==0)
@@ -270,12 +294,13 @@ namespace Syncoco
         if(DialogResult.Yes==dlgres)
         {
           for(int i=0;i<count;i++)
-            list.Add(_view.GetItem(i).Tag);
+            list.Add((SyncItemTag)_view.GetItem(i).Tag);
         }
       }
 
 
-      DocumentActions.SynchronizeFilesAction action = new DocumentActions.SynchronizeFilesAction(Current.Document,list);
+//    DocumentActions.SynchronizeFilesAction action = new DocumentActions.SynchronizeFilesAction(Current.Document,list);
+      DocumentActions.SynchronizingStrategy action = new DocumentActions.SynchronizingStrategy(Current.Document,list);
       action.BackgroundExecute();
     }
 
