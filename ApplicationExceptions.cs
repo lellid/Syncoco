@@ -24,11 +24,11 @@ using System;
 
 namespace Syncoco
 {
-	public class DocumentNotForThisComputerException : ApplicationException
-	{
-		public DocumentNotForThisComputerException(string msg)
-		: base(msg)
+  public class DocumentNotForThisComputerException : ApplicationException
+  {
+    public DocumentNotForThisComputerException(string msg)
+      : base(msg)
     {
-		}
-	}
+    }
+  }
 }

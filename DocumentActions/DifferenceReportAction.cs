@@ -25,15 +25,15 @@ using System.Collections;
 
 namespace Syncoco.DocumentActions
 {
-	/// <summary>
-	/// Summary description for DifferenceReportAction.
-	/// </summary>
-	public class DifferenceReportAction  : AbstractDocumentAction
-	{
+  /// <summary>
+  /// Summary description for DifferenceReportAction.
+  /// </summary>
+  public class DifferenceReportAction  : AbstractDocumentAction
+  {
     public DifferenceReportAction(MainDocument doc, IBackgroundMonitor monitor, IErrorReporter reporter)
-    : base(doc,monitor,reporter)
-		{
-		}
+      : base(doc,monitor,reporter)
+    {
+    }
 
     public DifferenceReportAction(MainDocument doc)
       : this(doc,null,null)
@@ -57,5 +57,5 @@ namespace Syncoco.DocumentActions
       _reporter.ReportText("End of difference report\n");
     }
 
-	}
+  }
 }

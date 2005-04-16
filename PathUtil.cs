@@ -88,7 +88,7 @@ namespace Syncoco
         return System.IO.Path.DirectorySeparatorChar.ToString()+result;
       else
         throw new ArgumentException(string.Format("fullpath {0} does not start with rootpath {1}",fullpath,rootpath));
-      }
+    }
 
 
     /// <summary>

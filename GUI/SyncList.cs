@@ -50,7 +50,7 @@ namespace Syncoco
       // TODO: Add any initialization after the InitializeComponent call
       ContextMenu contextMenu = new ContextMenu();
       contextMenu.MenuItems.Add("Set remove manually to remove",new EventHandler(this.EhSetRemoveManuallyToRemove));
-       contextMenu.MenuItems.Add("Set remove to forced remove",new EventHandler(this.EhSetRemoveToForcedRemove));
+      contextMenu.MenuItems.Add("Set remove to forced remove",new EventHandler(this.EhSetRemoveToForcedRemove));
       contextMenu.MenuItems.Add("Set remove manually to rollback remove",new EventHandler(this.EhSetRemoveManuallyToRollback));
       contextMenu.MenuItems.Add("-");
       

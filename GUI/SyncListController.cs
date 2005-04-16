@@ -299,7 +299,7 @@ namespace Syncoco
       }
 
 
-//    DocumentActions.SynchronizeFilesAction action = new DocumentActions.SynchronizeFilesAction(Current.Document,list);
+      //    DocumentActions.SynchronizeFilesAction action = new DocumentActions.SynchronizeFilesAction(Current.Document,list);
       DocumentActions.SynchronizingStrategy action = new DocumentActions.SynchronizingStrategy(Current.Document,list);
       action.BackgroundExecute();
     }

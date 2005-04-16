@@ -1033,6 +1033,9 @@ namespace Syncoco.DocumentActions
     }
 
 
+    /// <summary>
+    /// Perform the copy actions of all residual copy items.
+    /// </summary>
     public void CopyAllItems()
     {
       if(_verbose)
@@ -1077,6 +1080,13 @@ namespace Syncoco.DocumentActions
     #endregion
 
     #region Action not requiring order
+
+
+    /// <summary>
+    /// This performs an action on an item that does not requires order. Thus, this item must not be
+    /// a copy, overwrite or delete file item.
+    /// </summary>
+    /// <param name="tag">The item for which to perform the action.</param>
     public void PerformAction(SyncItemTag tag)
     {
       System.Diagnostics.Debug.Assert(tag!=null);

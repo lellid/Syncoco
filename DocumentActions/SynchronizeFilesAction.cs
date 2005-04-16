@@ -78,7 +78,7 @@ namespace Syncoco.DocumentActions
         }
       }
     
-    return FunctionResult.Success;
+      return FunctionResult.Success;
     }
 
     public FunctionResult CopyWithDirectoryCreation(string sourceFileName, string destFileName, bool overwrite, FileNode foFileNode)
@@ -244,7 +244,7 @@ namespace Syncoco.DocumentActions
       catch(System.UnauthorizedAccessException exb)
       {
         if(!deleteForced)
-        _reporter.ReportWarning(string.Format("directory {0} could not be removed: {1}",dirInfo.FullName, exb.Message));
+          _reporter.ReportWarning(string.Format("directory {0} could not be removed: {1}",dirInfo.FullName, exb.Message));
 
       }
 
