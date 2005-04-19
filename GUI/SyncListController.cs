@@ -40,9 +40,16 @@ namespace Syncoco
 
   public class SyncItemTag
   {
+    public string ShortName;
     public string FileName;
+    public string FullDirectoryName;
     public SyncAction Action;
     public int RootListIndex;
+    public long myFileLength=-1;
+    public long foFileLength=-1;
+    public DateTime myWriteTime;
+    public DateTime foWriteTime;
+
     public SyncItemTag(int rootListIndex, SyncAction action, string fullFileName)
     {
       RootListIndex = rootListIndex;
@@ -98,6 +105,7 @@ namespace Syncoco
     FilesToSynchronizeCollector[] _collectors;
 
     SyncList _view;
+    ListViewItemComparer _comparer = new ListViewItemComparer();
 
     public SyncList View { get { return _view; }}
 
@@ -106,6 +114,7 @@ namespace Syncoco
 
       _view = new SyncList();
       _view._controller = this;
+      _view.InitializeColumnHeaders();
       //      _view.InitializeListCaptions(_document.MyRootComputerName,_document.ForeignRootComputerName);
     }
 
@@ -123,6 +132,7 @@ namespace Syncoco
       switch(action)
       {
         case SyncAction.Remove:
+        case SyncAction.ForcedRemove:
           return System.Drawing.Color.OrangeRed;
 
         case SyncAction.Overwrite:
@@ -159,7 +169,9 @@ namespace Syncoco
         }
 
         ListViewItem item = new ListViewItem(filename);
-        item.Tag = new SyncItemTag(rootListIndex,action,fullname);
+        SyncItemTag syncItemTag = new SyncItemTag(rootListIndex,action,fullname);
+        syncItemTag.ShortName = filename;
+        item.Tag = syncItemTag;
         item.UseItemStyleForSubItems=false; // neccessary that the subitems can have different colors
         
         ListViewItem.ListViewSubItem actionItem = item.SubItems.Add(action.ToString());
@@ -167,12 +179,23 @@ namespace Syncoco
 
         string fullDirectoryName = PathUtil.Combine_Abspath_RelPath(Current.Document.MyRoot(rootListIndex).FilePath,directoryname);
         item.SubItems.Add(fullDirectoryName);
+        syncItemTag.FullDirectoryName = fullDirectoryName;
 
         if(!isDirectory)
         {
           FileNode myNode = Current.Document.RootPair(rootListIndex).MyRoot.DirectoryNode.GetFileNodeFullPath(fullname);
           FileNode foNode = Current.Document.RootPair(rootListIndex).ForeignRoot.DirectoryNode.GetFileNodeFullPath(fullname);
           
+          if(myNode!=null)
+          {
+            syncItemTag.myFileLength = myNode.FileLength;
+            syncItemTag.myWriteTime = myNode.LastWriteTimeUtc;
+          }
+          if(foNode!=null)
+          {
+            syncItemTag.foFileLength = foNode.FileLength;
+            syncItemTag.foWriteTime = foNode.LastWriteTimeUtc;
+          }
 
           string dat = string.Format("{0} | {1}",myNode==null ? "?" : myNode.LastWriteTimeUtc.ToString(), foNode==null? "?":foNode.LastWriteTimeUtc.ToString());
           string len = string.Format("{0} | {1}",myNode==null ? "?" : myNode.FileLength.ToString(), foNode==null? "?":foNode.FileLength.ToString());
@@ -206,6 +229,9 @@ namespace Syncoco
       }
 
       _view.InitializeList(list);
+
+      _comparer = new ListViewItemComparer();
+      _view.SortList(_comparer,2,false);
     }
 
     public void ChangeActionOnSelected(SyncAction originalAction, SyncAction newAction)
@@ -272,7 +298,158 @@ namespace Syncoco
       ChangeActionOnSelected(SyncAction.ResolveManually,SyncAction.ResolveManuallyRollback);
     }
 
+    public void EhView_ColumnClick(int nColumn)
+    {
+      bool reverse=false;
+      switch(nColumn)
+      {
+        case 0:
+          reverse = _comparer.ColumnClick(ListViewComparerColumn.Name);
+          break;
+        case 1:
+          reverse = _comparer.ColumnClick(ListViewComparerColumn.Action);
+          break;
+        case 2:
+          reverse = _comparer.ColumnClick(ListViewComparerColumn.Path);
+          break;
+        case 3:
+          reverse = _comparer.ColumnClick(ListViewComparerColumn.FileLength);
+          break;
+        case 4:
+          reverse = _comparer.ColumnClick(ListViewComparerColumn.FileTime);
+          break;
+      }
 
+    _view.SortList(_comparer,nColumn,reverse);
+
+ 
+    }
+
+    #region Sorting class
+    public enum ListViewComparerColumn
+    {
+      Name,
+      Path,
+      Action,
+      FileLength,
+      FileTime
+    }
+    class ListViewItemComparer : IComparer 
+    {
+      protected delegate int CompareFunction(SyncItemTag x, SyncItemTag y);
+
+      CompareFunction[] _comparers = new CompareFunction[3];
+      bool[] _reverse = new bool[3];
+
+    
+      public ListViewItemComparer() 
+      {
+        _comparers[0] = new CompareFunction( ComparePath );
+        _comparers[1] = new CompareFunction( CompareName );
+      }
+      
+      public bool ColumnClick(ListViewComparerColumn col)
+      {
+        CompareFunction func = GetCompareFunction(col);
+        if(func==_comparers[0])
+        {
+          _reverse[0] = !_reverse[0];
+        }
+        else
+        {
+          for(int i=_comparers.Length-1;i>0;i--)
+          {
+            _comparers[i] = _comparers[i-1];
+            _reverse[i] = _reverse[i-1];
+          }
+          _comparers[0] = func;
+          _reverse[0] = false;
+        }
+
+        return _reverse[0];
+      }
+
+      private CompareFunction GetCompareFunction(ListViewComparerColumn col)
+      {
+        switch(col)
+        {
+          case ListViewComparerColumn.Name:
+            return new CompareFunction( CompareName);
+           
+          case ListViewComparerColumn.Path:
+            return new CompareFunction( ComparePath);
+           
+          case ListViewComparerColumn.Action:
+            return new CompareFunction( CompareAction);
+           
+          case ListViewComparerColumn.FileLength:
+            return new CompareFunction( CompareFileLength);
+           
+          case ListViewComparerColumn.FileTime:
+            return new CompareFunction( CompareFileTime);
+         
+          default:
+            throw new ApplicationException("Oops, probably I have forgotten to implement the case " + col.ToString());
+        }
+      }
+
+      public int Compare(object x, object y) 
+      {
+        //return String.Compare(((ListViewItem)x).SubItems[col].Text, ((ListViewItem)y).SubItems[col].Text);
+        SyncItemTag xx = (SyncItemTag)(((ListViewItem)x).Tag);
+        SyncItemTag yy = (SyncItemTag)(((ListViewItem)y).Tag);
+        for(int i=0;i<_comparers.Length;i++)
+        {
+          CompareFunction func = _comparers[i];
+          if(null==func)
+            break;
+
+          int result = func(xx,yy);
+          if(result!=0) 
+            return _reverse[i] ? -result : result;
+        }
+
+        return 0;
+      }
+
+      protected int CompareName(SyncItemTag x, SyncItemTag y)
+      {
+        return string.Compare(x.ShortName,y.ShortName,true);
+      }
+
+      protected int ComparePath(SyncItemTag x, SyncItemTag y)
+      {
+        return string.Compare(x.FullDirectoryName,y.FullDirectoryName);
+      }
+
+      protected int CompareAction(SyncItemTag x, SyncItemTag y)
+      {
+        return x.Action==y.Action ? 0 : ((int)x.Action)<((int)y.Action) ? -1 : 1;
+      }
+
+      protected int CompareFileLength(SyncItemTag x, SyncItemTag y)
+      {
+        long xx = Math.Max(x.myFileLength,x.foFileLength);
+        long yy = Math.Max(y.myFileLength,y.foFileLength);
+        return xx==yy ? 0 : (xx<yy ? -1 : 1);
+      }
+      protected int CompareFileTime(SyncItemTag x, SyncItemTag y)
+      {
+        DateTime xx = Max(x.myWriteTime,x.foWriteTime);
+        DateTime yy = Max(y.myWriteTime,y.foWriteTime);
+        return xx==yy ? 0 : (xx<yy ? -1 : 1);
+      }
+
+      private DateTime Max(DateTime x, DateTime y)
+      {
+        return x>y ? x : y;
+      }
+
+
+    
+    }
+
+    #endregion
 
     public void Synchronize()
     {

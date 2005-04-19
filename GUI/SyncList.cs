@@ -68,17 +68,22 @@ namespace Syncoco
 
     public SyncListController _controller;
 
+
+    public void InitializeColumnHeaders()
+    {
+      lvSyncList.Clear();
+      lvSyncList.Columns.Add("Name",170,System.Windows.Forms.HorizontalAlignment.Center);
+      lvSyncList.Columns.Add("Action",70,System.Windows.Forms.HorizontalAlignment.Center);
+      lvSyncList.Columns.Add("Path",70,System.Windows.Forms.HorizontalAlignment.Center);
+
+      lvSyncList.Columns.Add("Length",70,System.Windows.Forms.HorizontalAlignment.Center);
+      lvSyncList.Columns.Add("WrTime",90,System.Windows.Forms.HorizontalAlignment.Center);
+    }
+
     public void InitializeList(ArrayList list)
     {
       lvSyncList.BeginUpdate();
-      lvSyncList.Clear();
-      lvSyncList.Columns.Add("Name",150,System.Windows.Forms.HorizontalAlignment.Center);
-      lvSyncList.Columns.Add("Action",50,System.Windows.Forms.HorizontalAlignment.Center);
-      lvSyncList.Columns.Add("Path",50,System.Windows.Forms.HorizontalAlignment.Center);
-
-      lvSyncList.Columns.Add("Length",50,System.Windows.Forms.HorizontalAlignment.Center);
-      lvSyncList.Columns.Add("WrTime",50,System.Windows.Forms.HorizontalAlignment.Center);
-
+      lvSyncList.Items.Clear();
       lvSyncList.Items.AddRange((ListViewItem[])list.ToArray(typeof(ListViewItem)));
       lvSyncList.EndUpdate();
     }
@@ -101,6 +106,23 @@ namespace Syncoco
     public ListViewItem GetItem(int idx)
     {
       return lvSyncList.Items[idx];
+    }
+
+    public void SortList(IComparer comparer, int nColumn, bool reverse)
+    {
+      char upArrow = '\u2191';
+      char dnArrow = '\u2193';
+
+      lvSyncList.ListViewItemSorter = comparer;
+      lvSyncList.Sort();
+      // and now indicate in the column name that this column is sorted now
+      lvSyncList.Columns[0].Text = "Name";
+      lvSyncList.Columns[1].Text = "Action";
+      lvSyncList.Columns[2].Text = "Path";
+      lvSyncList.Columns[3].Text = "Length";
+      lvSyncList.Columns[4].Text = "WrTime";
+
+      lvSyncList.Columns[nColumn].Text += reverse ? dnArrow : upArrow;
     }
 
     public void EhSetRemoveManuallyToRemove(object sender, EventArgs e)
@@ -139,6 +161,11 @@ namespace Syncoco
     public void EhSetOverwriteToRollbackOverwrite(object sender, EventArgs e)
     {
       _controller.EhView_Overwrite_Rollback();
+    }
+
+    private void EhSyncList_ColumnClick(object sender, System.Windows.Forms.ColumnClickEventArgs e)
+    {
+    _controller.EhView_ColumnClick(e.Column);
     }
 
     protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -189,11 +216,13 @@ namespace Syncoco
         | System.Windows.Forms.AnchorStyles.Right)));
       this.lvSyncList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
                                                                                  this._chName});
+      this.lvSyncList.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
       this.lvSyncList.Location = new System.Drawing.Point(8, 8);
       this.lvSyncList.Name = "lvSyncList";
       this.lvSyncList.Size = new System.Drawing.Size(360, 320);
       this.lvSyncList.TabIndex = 0;
       this.lvSyncList.View = System.Windows.Forms.View.Details;
+      this.lvSyncList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.EhSyncList_ColumnClick);
       // 
       // _chName
       // 
@@ -209,5 +238,7 @@ namespace Syncoco
 
     }
     #endregion
+
+  
   }
 }
