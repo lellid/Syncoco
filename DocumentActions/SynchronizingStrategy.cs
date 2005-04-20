@@ -1217,6 +1217,8 @@ namespace Syncoco.DocumentActions
 
     public override void DirectExecute()
     {
+      _doc.SetDirty();
+
       ExecuteUntilAllLockedUp();
 
       // if nothing more can be done and there are still items to overwrite,
