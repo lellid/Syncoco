@@ -345,7 +345,10 @@ namespace Syncoco.DocumentActions
       {
         ArrayList list = (ArrayList)val;
         foreach(PathAndFileNode pafn in list)
+        {
           Add(key,pafn.Path,existingvalue);
+          existingvalue = this[key];
+        }
       }
     }
 
