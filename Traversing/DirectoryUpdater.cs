@@ -77,7 +77,7 @@ namespace Syncoco.Traversing
           throw new System.IO.IOException(string.Format("The directory {0} should exist, since it should be a root directory of the file {1}", dirinfo.FullName,fileinfo.FullName));
 
         if(!dirnode.ContainsDirectory(subdirs[i]))
-          dirnode.AddSubDirectory(subdirs[i],new DirectoryNode(subdirs[i]));
+          dirnode.AddSubDirectory(subdirs[i],new DirectoryNode(subdirs[i],dirnode));
 
         dirnode = dirnode.Directory(subdirs[i]);
       }
@@ -256,7 +256,7 @@ namespace Syncoco.Traversing
         else
         {
           // this is a new file, we create a new file node for this
-          dirNode.AddSubDirectory(name, NewDirectoryNode((System.IO.DirectoryInfo)actualDirs[name]));
+          dirNode.AddSubDirectory(name, NewDirectoryNode((System.IO.DirectoryInfo)actualDirs[name],dirNode));
         }
         pathFilter.LeaveSubDirectory(name);
       }
@@ -269,23 +269,23 @@ namespace Syncoco.Traversing
     /// </summary>
     /// <param name="dirinfo">Directory info for the dir node.</param>
     /// <param name="pathFilter">The path filter.</param>
-    public  DirectoryNode NewDirectoryNode(System.IO.DirectoryInfo dirinfo)
+    public  DirectoryNode NewDirectoryNode(System.IO.DirectoryInfo dirinfo, IParentDirectory parentDirectory)
     {
       System.Diagnostics.Debug.Assert(null!=pathFilter);
-      DirectoryNode dirNode = new DirectoryNode(dirinfo.Name);
+      DirectoryNode dirNode = new DirectoryNode(dirinfo.Name,parentDirectory);
       Update(dirNode,dirinfo,true);
 
       return dirNode;
     }
 
-    /// <summary>
+  /// <summary>
     /// Creates a dir node with the right name. Files and subdirectories in this dir are not (!) created.
     /// </summary>
     /// <param name="dirinfo">Directory info for the dir node.</param>
-    public static DirectoryNode NewEmptyDirectoryNode(System.IO.DirectoryInfo dirinfo)
+    public static DirectoryNode NewEmptyDirectoryNode(System.IO.DirectoryInfo dirinfo, IParentDirectory parentDirectory)
     {
-      DirectoryNode dirNode = new DirectoryNode(dirinfo.Name);
+      DirectoryNode dirNode = new DirectoryNode(dirinfo.Name, parentDirectory);
       return dirNode;
-    }
+    }   
   }
 }

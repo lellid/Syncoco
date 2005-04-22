@@ -423,7 +423,7 @@ namespace Syncoco.DocumentActions
 
     SyncItemTagList _syncItemTagList;
 
-    bool _verbose=true;
+    bool _verbose=false;
 
     #endregion
 

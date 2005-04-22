@@ -348,7 +348,7 @@ namespace Syncoco.Traversing
           if(!myDir.ContainsDirectory(foreignSubDirName))
           {
             if(System.IO.Directory.Exists(GetFullPath(newdirectorybase)))
-              myDir.AddSubDirectory(foreignSubDirName,new DirectoryNode(foreignSubDirName));
+              myDir.AddSubDirectory(foreignSubDirName,new DirectoryNode(foreignSubDirName,myDir));
             else if(!foreignSubDirNode.IsRemoved) // directory here do not exist, but create it
               this.AddDirToCreate(reldirectorybase,foreignSubDirName);
           }

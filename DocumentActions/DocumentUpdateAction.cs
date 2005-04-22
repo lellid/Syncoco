@@ -88,7 +88,7 @@ namespace Syncoco.DocumentActions
       if(null!=fileSystemRoot.DirectoryNode)
         new DirectoryUpdater(pathFilter,_monitor,_reporter).Update(fileSystemRoot.DirectoryNode, dirinfo, _forceUpdateHash);
       else
-        fileSystemRoot.DirectoryNode = new DirectoryUpdater(pathFilter,_monitor,_reporter).NewDirectoryNode(dirinfo);
+        fileSystemRoot.DirectoryNode = new DirectoryUpdater(pathFilter,_monitor,_reporter).NewDirectoryNode(dirinfo,fileSystemRoot);
     }
   }
 }

@@ -128,7 +128,7 @@ namespace Syncoco
       PathUtil.Assert_Abspath(_FilePath);
       System.IO.DirectoryInfo dirinfo = new System.IO.DirectoryInfo(_FilePath);
       if(dirinfo.Exists)
-        _DirectoryNode = DirectoryUpdater.NewEmptyDirectoryNode(dirinfo);
+        _DirectoryNode = DirectoryUpdater.NewEmptyDirectoryNode(dirinfo,this);
       else
         _DirectoryNode = null;
     }

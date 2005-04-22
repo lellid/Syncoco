@@ -143,9 +143,15 @@ namespace Syncoco
 
     #region Constructors
   
-    public DirectoryNode(string name)
+    /// <summary>
+    /// Creates a new empty directory node with a name and a parent. This node is not (!) updated here.
+    /// </summary>
+    /// <param name="name">The name of this node. Must not contain DirectorySeparatorChars.</param>
+    /// <param name="parent">The parent node of this node.</param>
+    public DirectoryNode(string name, IParentDirectory parent)
     {
       _name = name;
+      _parent = parent;
     }
   
    

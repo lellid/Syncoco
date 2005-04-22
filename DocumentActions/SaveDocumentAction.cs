@@ -47,7 +47,11 @@ namespace Syncoco.DocumentActions
     public override void DirectExecute()
     
     {
+      
       _doc.Save(_filename);
+
+      CheckParentHierarchyAction checkHierarchy = new CheckParentHierarchyAction(_doc,_monitor,_reporter);
+      checkHierarchy.DirectExecute();
     }
 
   }
