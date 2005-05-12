@@ -33,7 +33,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_D7902042037C4383A63321E7C95AF701"
+        "MsmKey" = "8:_A6EF7339DAF34C6299508A6E2610B6B0"
         "OwnerKey" = "8:_335FEFD3AF3B47409B859967CA29C32F"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -257,19 +257,19 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Syncoco"
-        "ProductCode" = "8:{379138CC-8F34-4E7C-8CA6-1B911DFAAC36}"
-        "PackageCode" = "8:{A3C8B862-C4EF-4FF0-903A-068584984847}"
+        "ProductCode" = "8:{22044E10-D917-4CEA-9D62-B82AC03C4D03}"
+        "PackageCode" = "8:{29BD9177-9BD9-4A23-879B-7A568ABE5620}"
         "UpgradeCode" = "8:{9EBF5349-0878-4D13-B8F2-D76DE70FD7EC}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
-        "ProductVersion" = "8:1.0.1"
+        "ProductVersion" = "8:1.0.2"
         "Manufacturer" = "8:sourceforge.net"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
         "Title" = "8:Syncoco Setup"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:Dr. D. Lellinger"
+        "ARPCONTACT" = "8:Dr. Dirk Lellinger"
         "Keywords" = "8:file and directory synchronization"
         "ARPCOMMENTS" = "8:Syncoco synchronization via data medium"
         "ARPURLINFOABOUT" = "8:http://www.sourceforge.net/projects/syncoco"
@@ -797,7 +797,7 @@
         }
         "MergeModule"
         {
-            "{35A69C6E-5BA4-440D-803D-762B59A45393}:_D7902042037C4383A63321E7C95AF701"
+            "{35A69C6E-5BA4-440D-803D-762B59A45393}:_A6EF7339DAF34C6299508A6E2610B6B0"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
