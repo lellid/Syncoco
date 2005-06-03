@@ -54,12 +54,21 @@ namespace Syncoco.DocumentActions
 
       _monitor.Report("Updating file system ...");
       new DocumentUpdateAction(_doc,false,_monitor,_reporter).DirectExecute();
+      if(_monitor.CancelledByUser)
+        return;
+
 
       _monitor.Report("Cleaning transfer medium ...");
       new ClearMediumDirectoryAction(_doc,_monitor,_reporter).DirectExecute();
+      if(_monitor.CancelledByUser)
+        return;
+
 
       _monitor.Report("Saving document ...");
       new SaveDocumentAction(_doc,_monitor,_reporter,_doc.FileName).DirectExecute();
+      if(_monitor.CancelledByUser)
+        return;
+
 
       _monitor.Report("Copy files to medium ...");
       new CopyFilesToMediumAction(_doc,_monitor,_reporter).DirectExecute();

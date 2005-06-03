@@ -62,6 +62,9 @@ namespace Syncoco.DocumentActions
 
       for(int i=0;i<_doc.Count;i++)
       {
+        if(_monitor.CancelledByUser)
+          return;
+
         if(_doc.RootPair(i).MyRoot.IsValid)
         {
           Update(_doc.RootPair(i));

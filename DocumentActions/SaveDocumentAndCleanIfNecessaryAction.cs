@@ -62,7 +62,11 @@ namespace Syncoco.DocumentActions
     public override void DirectExecute()
     {
       if(_mode==WorkMode.WithCleaning)
+      {
         new ClearMediumDirectoryAction(_doc,_monitor,_reporter).DirectExecute();
+        if(_monitor.CancelledByUser)
+          return;
+      }
 
       try
       {

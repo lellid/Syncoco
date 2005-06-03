@@ -974,6 +974,9 @@ namespace Syncoco.DocumentActions
       bool hasDeleted = false;
       for(int i=_deleteItems.Count-1;i>=0;i--)
       {
+        if(_monitor.CancelledByUser)
+          return hasDeleted;
+
         if(CanBeDeleted(_deleteItems[i].Destination,_deleteItems[i].DestinationContentHash, true))
         {
           ExecuteDeleteOn(_deleteItems[i]);
@@ -999,6 +1002,9 @@ namespace Syncoco.DocumentActions
       bool hasOverwritten = false;
       for(int i=_overwriteItems.Count-1;i>=0;i--)
       {
+        if(_monitor.CancelledByUser)
+          return hasOverwritten;
+
         if(CanBeDeleted(_overwriteItems[i].Destination,_overwriteItems[i].DestinationContentHash, true))
         {
           ExecuteOverwriteOn(_overwriteItems[i]);
@@ -1064,14 +1070,28 @@ namespace Syncoco.DocumentActions
       {
         do
         {
+          if(_monitor.CancelledByUser)
+            return;
+
           somethingDone = false;
-          
           DeletePossibleItems();
 
+          if(_monitor.CancelledByUser)
+            return;
+
         while(OverwritePossibleItems())
+        {
           somethingDone = true;
 
+          if(_monitor.CancelledByUser)
+            return;
+
+        }
+
         } while(somethingDone);
+
+        if(_monitor.CancelledByUser)
+          return;
 
         // if neither delete or overwrite can be done, try to copy those files, which are
         // destination files for delete or overwrite (which prevents deleteItems to be deleted)
@@ -1230,7 +1250,14 @@ namespace Syncoco.DocumentActions
 
       while(_overwriteItems.Count>0)
       {
+        if(_monitor.CancelledByUser)
+          return;
+
         MoveSingleOverwriteItemToTemporaryLocation();
+        
+        if(_monitor.CancelledByUser)
+          return;
+        
         ExecuteUntilAllLockedUp();
       }
 
@@ -1239,11 +1266,19 @@ namespace Syncoco.DocumentActions
 
       // the remaining are those files to copy, that have not locked up other files.
       CopyAllItems();
+      
+      if(_monitor.CancelledByUser)
+        return;
 
 
       // now perform the rest of the actions
       for(int i=_syncItemTagList.Count-1;i>=0;i--)
+      {
+        if(_monitor.CancelledByUser)
+          return;
+
         PerformAction(_syncItemTagList[i]);
+      }
     }
   }
 

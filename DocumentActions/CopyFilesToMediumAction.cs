@@ -63,6 +63,9 @@ namespace Syncoco.DocumentActions
       MD5SumHashTable md5HashTable = new MD5SumHashTable();
       for(int i=0;i<_doc.Count;i++)
       {
+        if(_monitor.CancelledByUser)
+          return;
+
         if(_doc.MyRoot(i).IsValid)
         {
           if(_monitor.ShouldReport)
@@ -78,6 +81,9 @@ namespace Syncoco.DocumentActions
       // now copy first with exclusion of the already existing files 
       for(int i=0;i<_doc.Count;i++)
       {
+        if(_monitor.CancelledByUser)
+          return;
+
         if(_doc.MyRoot(i).IsValid)
           CopyFilesToMedium(_doc.RootPair(i),_doc.MediumDirectoryName,copiedFiles,md5HashTable);
       }
@@ -85,6 +91,9 @@ namespace Syncoco.DocumentActions
       // and now copy all other files
       for(int i=0;i<_doc.Count;i++)
       {
+        if(_monitor.CancelledByUser)
+          return;
+
         if(_doc.MyRoot(i).IsValid)
           CopyFilesToMedium(_doc.RootPair(i),_doc.MediumDirectoryName,copiedFiles,null);
       }

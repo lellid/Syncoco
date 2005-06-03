@@ -33,7 +33,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_A6EF7339DAF34C6299508A6E2610B6B0"
+        "MsmKey" = "8:_8F47DE9623494DC89A1305BB81DAB7A5"
         "OwnerKey" = "8:_335FEFD3AF3B47409B859967CA29C32F"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -257,13 +257,13 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Syncoco"
-        "ProductCode" = "8:{22044E10-D917-4CEA-9D62-B82AC03C4D03}"
-        "PackageCode" = "8:{29BD9177-9BD9-4A23-879B-7A568ABE5620}"
+        "ProductCode" = "8:{09C7FBD7-3D1C-4FAA-A123-D29C11D93FBF}"
+        "PackageCode" = "8:{7BD07919-DECF-4C7A-B7E5-421A877042BD}"
         "UpgradeCode" = "8:{9EBF5349-0878-4D13-B8F2-D76DE70FD7EC}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
-        "ProductVersion" = "8:1.0.2"
+        "ProductVersion" = "8:1.0.3"
         "Manufacturer" = "8:sourceforge.net"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -797,7 +797,7 @@
         }
         "MergeModule"
         {
-            "{35A69C6E-5BA4-440D-803D-762B59A45393}:_A6EF7339DAF34C6299508A6E2610B6B0"
+            "{35A69C6E-5BA4-440D-803D-762B59A45393}:_8F47DE9623494DC89A1305BB81DAB7A5"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"

@@ -71,9 +71,11 @@ namespace Syncoco.DocumentActions
 
       foreach(System.IO.FileInfo fileinfo in fileinfos)
       {
+        if(_monitor.CancelledByUser)
+          return;
+
         if(_monitor.ShouldReport)
           _monitor.Report("Deleting file " + fileinfo.FullName);
-
 
         if(0!=(fileinfo.Attributes & System.IO.FileAttributes.ReadOnly))
         {
