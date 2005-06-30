@@ -130,7 +130,7 @@ namespace Syncoco.Filter
       else if(EndMatchCondition(matchstring, out sub))
         return new EndMatcher(sub.ToLower());
       else if(StartAndEndMatchCondition(matchstring, out sub, out sub1))
-        return new StartAndEndMatcher(sub,sub1);
+        return new StartAndEndMatcher(sub.ToLower(),sub1.ToLower());
       else
         return new FullMatch(matchstring.ToLower());
     }
