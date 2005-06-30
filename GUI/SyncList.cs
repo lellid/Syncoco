@@ -172,9 +172,10 @@ namespace Syncoco
     {
       if((Keys.A | Keys.Control)==keyData)
       {
+        this.lvSyncList.BeginUpdate();
         for(int i=0;i<lvSyncList.Items.Count;i++)
           this.lvSyncList.Items[i].Selected=true;
-
+        this.lvSyncList.EndUpdate();
         
 
       }

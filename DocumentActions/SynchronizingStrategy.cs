@@ -258,7 +258,7 @@ namespace Syncoco.DocumentActions
 
   #region Source item
 
-  public class SourceItem
+  public class SourceItem : System.IComparable
   {
     public string Path;
     public bool Verified;
@@ -268,28 +268,49 @@ namespace Syncoco.DocumentActions
       Path = fullpath;
       Verified = false;
     }
+    #region IComparable Members
+
+    public int CompareTo(object obj)
+    {
+      return string.Compare(this.Path, ((SourceItem)obj).Path,true);
+    }
+
+    #endregion
   }
 
   public class SourceItemArray : System.Collections.CollectionBase
   {
+    private System.Collections.Hashtable _pathhash = new System.Collections.Hashtable(new System.Collections.CaseInsensitiveHashCodeProvider(), new System.Collections.CaseInsensitiveComparer());
+
     public SourceItem this[int i]
     {
-      get { return (SourceItem)this.InnerList[i]; }
-      set { this.InnerList[i] = value; }
+      get 
+      {
+        return (SourceItem)this.InnerList[i]; 
+      }
+      set
+      {
+        throw new ApplicationException("Programming error - This should not happen");
+        // this.InnerList[i] = value; 
+      }
     }
 
     public void Add(SourceItem item)
     {
       this.InnerList.Add(item);
+      _pathhash.Add(item.Path,null);
     }
 
     public bool Contains(string fullpath)
     {
-      for(int i=Count-1;i>=0;i--)
+      return _pathhash.ContainsKey(fullpath);
+
+      /*for(int i=Count-1;i>=0;i--)
         if(PathUtil.ArePathsEqual(this[i].Path,fullpath))
           return true;
 
       return false;
+      */
     }
   }
 
