@@ -235,7 +235,7 @@ namespace Syncoco.Traversing
           {
             if(null==foreignFilesToRemove) foreignFilesToRemove=new System.Collections.Specialized.StringCollection();
             foreignFilesToRemove.Add(foreignFileName);  // foreignDir._files.Remove(foreignFileName);
-            if(myDir.ContainsFile(foreignFileName))
+            if(myDir!=null && myDir.ContainsFile(foreignFileName))
               myDir.Files.Remove(foreignFileName);
           }
         }
