@@ -199,7 +199,7 @@ namespace Syncoco.Traversing
         if(_monitor.ShouldReport)
           _monitor.Report("Visit file " + foreignFileName);
 
-        if(foreignFileNode.IsUnchanged)
+        if(foreignFileNode.IsUnchanged && myDir!=null && myDir.ContainsFile(foreignFileName))
           continue;
         if(!_pathFilter.IsFileIncluded(foreignFileName))
           continue;
@@ -285,6 +285,11 @@ namespace Syncoco.Traversing
             if(IsFileHereAnywhere(foreignFileNode))
               AddFileToCopy(reldirectorybase,foreignFileName);
           }
+        }
+        else if(foreignFileNode.IsUnchanged && (myDir==null || !myDir.ContainsFile(foreignFileName)))
+        {
+          if(IsFileHereAnywhere(foreignFileNode))
+            AddFileToCopy(reldirectorybase,foreignFileName);
         }
       
       } // foreach file
