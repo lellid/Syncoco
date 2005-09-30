@@ -126,7 +126,7 @@ namespace Syncoco.Traversing
     public void Update(DirectoryNode dirNode, System.IO.DirectoryInfo dirinfo, bool forceUpdateHash)
     {
       System.Diagnostics.Debug.Assert(dirinfo!=null);
-      System.Diagnostics.Debug.Assert(dirNode.ParentDirectory==null || dirNode.ParentDirectory.IsFileSystemRoot || dirNode.Name==dirinfo.Name);
+      System.Diagnostics.Debug.Assert(dirNode.ParentDirectory==null || dirNode.ParentDirectory.IsFileSystemRoot || PathUtil.ArePathsEqual(dirNode.Name,dirinfo.Name));
 
       //if(dirinfo!=null)
       //  dirNode.SetName( dirinfo.Name );
