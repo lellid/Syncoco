@@ -128,6 +128,8 @@ namespace Syncoco.Traversing
       System.Diagnostics.Debug.Assert(dirinfo!=null);
       System.Diagnostics.Debug.Assert(dirNode.ParentDirectory==null || dirNode.ParentDirectory.IsFileSystemRoot || PathUtil.ArePathsEqual(dirNode.Name,dirinfo.Name));
 
+      dirNode.IsRemoved = false; // obviously this directory exist, if it was deleted previously, make it existent again
+      
       //if(dirinfo!=null)
       //  dirNode.SetName( dirinfo.Name );
 
@@ -149,7 +151,7 @@ namespace Syncoco.Traversing
     protected void UpdateFiles(DirectoryNode dirNode, System.IO.DirectoryInfo dirinfo, bool forceUpdateHash)
     {
       if(_monitor.ShouldReport)
-        _monitor.Report("Updating directory " + dirinfo.FullName);
+        _monitor.Report("Visiting directory " + dirinfo.FullName);
 
       System.IO.FileInfo[] fileinfos = dirinfo.GetFiles();
       // create a hash table of the actual
@@ -187,7 +189,7 @@ namespace Syncoco.Traversing
         System.IO.FileInfo fileinfo = (System.IO.FileInfo)actualFiles[file];
 
         if(_monitor.ShouldReport)
-          _monitor.Report("Updating file " + fileinfo.FullName);
+          _monitor.Report("Visiting file " + fileinfo.FullName);
 
         try
         {
@@ -198,7 +200,7 @@ namespace Syncoco.Traversing
         }        
         catch(HashCalculationException hce)
         {
-          _reporter.ReportWarning(string.Format("file {0} could not be updated: {1}",file,hce.Message));
+          _reporter.ReportWarning(string.Format("File {0} could not be updated: {1}",file,hce.Message));
         }
       }
     }
