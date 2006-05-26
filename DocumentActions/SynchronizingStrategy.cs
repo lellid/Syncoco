@@ -1191,7 +1191,12 @@ namespace Syncoco.DocumentActions
           break;
         case SyncAction.RemoveRollback:
         case SyncAction.RemoveManuallyRollback:
-          foRoot.DeleteFileNode(relPathFileName);
+        {
+          if(PathUtil.IsDirectoryName(relPathFileName))
+            foRoot.DeleteSubDirectoryNode(relPathFileName);
+          else
+            foRoot.DeleteFileNode(relPathFileName);
+        }
           break;
         case SyncAction.Copy:
           throw new ApplicationException("Please report this exception to the bug list");
