@@ -1,508 +1,343 @@
-<VisualStudioProject>
-    <CSHARP
-        ProjectType = "Local"
-        ProductVersion = "7.10.3077"
-        SchemaVersion = "2.0"
-        ProjectGuid = "{5D826F2B-835F-455B-B9A2-BDD72F697A85}"
-    >
-        <Build>
-            <Settings
-                ApplicationIcon = "App.ico"
-                AssemblyKeyContainerName = ""
-                AssemblyName = "Syncoco"
-                AssemblyOriginatorKeyFile = ""
-                DefaultClientScript = "JScript"
-                DefaultHTMLPageLayout = "Grid"
-                DefaultTargetSchema = "IE50"
-                DelaySign = "false"
-                OutputType = "WinExe"
-                PreBuildEvent = ""
-                PostBuildEvent = ""
-                RootNamespace = "Syncoco"
-                RunPostBuildEvent = "OnBuildSuccess"
-                StartupObject = ""
-            >
-                <Config
-                    Name = "Debug"
-                    AllowUnsafeBlocks = "false"
-                    BaseAddress = "285212672"
-                    CheckForOverflowUnderflow = "false"
-                    ConfigurationOverrideFile = ""
-                    DefineConstants = "DEBUG;TRACE;WRITEDATEASTICKS;READDATEASTICKS"
-                    DocumentationFile = ""
-                    DebugSymbols = "true"
-                    FileAlignment = "4096"
-                    IncrementalBuild = "false"
-                    NoStdLib = "false"
-                    NoWarn = ""
-                    Optimize = "false"
-                    OutputPath = "bin\Debug\"
-                    RegisterForComInterop = "false"
-                    RemoveIntegerChecks = "false"
-                    TreatWarningsAsErrors = "false"
-                    WarningLevel = "4"
-                />
-                <Config
-                    Name = "Release"
-                    AllowUnsafeBlocks = "false"
-                    BaseAddress = "285212672"
-                    CheckForOverflowUnderflow = "false"
-                    ConfigurationOverrideFile = ""
-                    DefineConstants = "TRACE"
-                    DocumentationFile = ""
-                    DebugSymbols = "false"
-                    FileAlignment = "4096"
-                    IncrementalBuild = "false"
-                    NoStdLib = "false"
-                    NoWarn = ""
-                    Optimize = "true"
-                    OutputPath = "bin\Release\"
-                    RegisterForComInterop = "false"
-                    RemoveIntegerChecks = "false"
-                    TreatWarningsAsErrors = "false"
-                    WarningLevel = "4"
-                />
-            </Settings>
-            <References>
-                <Reference
-                    Name = "System"
-                    AssemblyName = "System"
-                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.dll"
-                />
-                <Reference
-                    Name = "System.Data"
-                    AssemblyName = "System.Data"
-                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Data.dll"
-                />
-                <Reference
-                    Name = "System.Drawing"
-                    AssemblyName = "System.Drawing"
-                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Drawing.dll"
-                />
-                <Reference
-                    Name = "System.Windows.Forms"
-                    AssemblyName = "System.Windows.Forms"
-                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Windows.Forms.dll"
-                />
-                <Reference
-                    Name = "System.XML"
-                    AssemblyName = "System.Xml"
-                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.XML.dll"
-                />
-                <Reference
-                    Name = "System.Runtime.Serialization.Formatters.Soap"
-                    AssemblyName = "System.Runtime.Serialization.Formatters.Soap"
-                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Runtime.Serialization.Formatters.Soap.dll"
-                />
-            </References>
-        </Build>
-        <Files>
-            <Include>
-                <File
-                    RelPath = "App.ico"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "ApplicationExceptions.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "AssemblyInfo.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Current.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "CurrentDirectoryService.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "DirectoryNode.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "FileChangedHint.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "FileHash.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "FileNewHint.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "FileNode.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "FileNodeBase.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "FileRemovedHint.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "FileSystemRoot.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "FunctionResult.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "HashCalculationException.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Help.ico"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "IBackgroundMonitor.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "IErrorReporter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "IFileHint.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "IParentDirectory.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "MainDocument.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "MD5HashTables.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "PathUtil.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "RootPair.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "SortedArrayList.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "DocumentActions\AbstractDocumentAction.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "DocumentActions\CheckParentHierarchyAction.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "DocumentActions\ClearMediumDirectoryAction.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "DocumentActions\CollectFilesToSynchronizeAction.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "DocumentActions\CopyFilesToMediumAction.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "DocumentActions\DifferenceReportAction.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "DocumentActions\DocumentUpdateAction.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "DocumentActions\DocumentUpdateSaveAndCopyAction.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "DocumentActions\OpenDocumentAction.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "DocumentActions\SaveDocumentAction.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "DocumentActions\SaveDocumentAndCleanIfNecessaryAction.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "DocumentActions\SynchronizeFilesAction.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "DocumentActions\SynchronizingStrategy.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Filter\FilterAction.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Filter\FilterItem.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Filter\FilterList.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Filter\FilterListItem.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Filter\FilterListItemList.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Filter\PathFilter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "GUI\AboutDialog.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "GUI\AboutDialog.resx"
-                    DependentUpon = "AboutDialog.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "GUI\BackgroundCancelDialog.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "GUI\BackgroundCancelDialog.resx"
-                    DependentUpon = "BackgroundCancelDialog.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "GUI\DialogShellController.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "GUI\DialogShellView.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "GUI\DialogShellView.resx"
-                    DependentUpon = "DialogShellView.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "GUI\FilterListControl.cs"
-                    SubType = "UserControl"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "GUI\FilterListControl.resx"
-                    DependentUpon = "FilterListControl.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "GUI\FilterListController.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "GUI\FilterListItemListControl.cs"
-                    SubType = "UserControl"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "GUI\FilterListItemListControl.resx"
-                    DependentUpon = "FilterListItemListControl.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "GUI\FilterListItemListController.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "GUI\IApplyController.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "GUI\MainForm.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "GUI\MainForm.resx"
-                    DependentUpon = "MainForm.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "GUI\ReportListControl.cs"
-                    SubType = "UserControl"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "GUI\ReportListControl.resx"
-                    DependentUpon = "ReportListControl.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "GUI\ReportListController.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "GUI\RootList.cs"
-                    SubType = "UserControl"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "GUI\RootList.resx"
-                    DependentUpon = "RootList.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "GUI\RootListController.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "GUI\SyncList.cs"
-                    SubType = "UserControl"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "GUI\SyncList.resx"
-                    DependentUpon = "SyncList.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "GUI\SyncListController.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Online\SimpleDirectoryNode.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Online\SimpleDirectoryNodeList.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Online\SimpleFileNode.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Online\SimpleFileNodeList.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Online\SimpleFileSystemRoot.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Online\SimpleFileSystemRootList.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Traversing\DifferenceCollector.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Traversing\DirectoryUpdater.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Traversing\FilesToSynchronizeCollector.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Traversing\FilesToTransferCollector.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Traversing\Md5HashTableCollector.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Traversing\MD5SumFileNodesHashTableCollector.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-            </Include>
-        </Files>
-    </CSHARP>
-</VisualStudioProject>
-
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{5D826F2B-835F-455B-B9A2-BDD72F697A85}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>App.ico</ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>Syncoco</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Syncoco</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE;WRITEDATEASTICKS;READDATEASTICKS</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization.Formatters.Soap">
+      <Name>System.Runtime.Serialization.Formatters.Soap</Name>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="App.ico" />
+    <EmbeddedResource Include="GUI\AboutDialog.resx">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\BackgroundCancelDialog.resx">
+      <DependentUpon>BackgroundCancelDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\DialogShellView.resx">
+      <DependentUpon>DialogShellView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\FilterListControl.resx">
+      <DependentUpon>FilterListControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\FilterListItemListControl.resx">
+      <DependentUpon>FilterListItemListControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\ReportListControl.resx">
+      <DependentUpon>ReportListControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\RootList.resx">
+      <DependentUpon>RootList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\SyncList.resx">
+      <DependentUpon>SyncList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Help.ico" />
+    <Compile Include="ApplicationExceptions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Current.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CurrentDirectoryService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DirectoryNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DocumentActions\AbstractDocumentAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DocumentActions\CheckParentHierarchyAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DocumentActions\ClearMediumDirectoryAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DocumentActions\CollectFilesToSynchronizeAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DocumentActions\CopyFilesToMediumAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DocumentActions\DifferenceReportAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DocumentActions\DocumentUpdateAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DocumentActions\DocumentUpdateSaveAndCopyAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DocumentActions\OpenDocumentAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DocumentActions\SaveDocumentAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DocumentActions\SaveDocumentAndCleanIfNecessaryAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DocumentActions\SynchronizeFilesAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DocumentActions\SynchronizingStrategy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FileChangedHint.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FileHash.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FileNewHint.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FileNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FileNodeBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FileRemovedHint.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FileSystemRoot.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Filter\FilterAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Filter\FilterItem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Filter\FilterList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Filter\FilterListItem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Filter\FilterListItemList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Filter\PathFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FunctionResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GUI\AboutDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\BackgroundCancelDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\DialogShellController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GUI\DialogShellView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\FilterListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\FilterListController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GUI\FilterListItemListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\FilterListItemListController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GUI\IApplyController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GUI\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ReportListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\ReportListController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GUI\RootList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\RootListController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GUI\SyncList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\SyncListController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HashCalculationException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IBackgroundMonitor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IErrorReporter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IFileHint.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IParentDirectory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainDocument.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MD5HashTables.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Online\SimpleDirectoryNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Online\SimpleDirectoryNodeList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Online\SimpleFileNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Online\SimpleFileNodeList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Online\SimpleFileSystemRoot.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Online\SimpleFileSystemRootList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PathUtil.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RootPair.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SortedArrayList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Traversing\DifferenceCollector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Traversing\DirectoryUpdater.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Traversing\FilesToSynchronizeCollector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Traversing\FilesToTransferCollector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Traversing\Md5HashTableCollector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Traversing\MD5SumFileNodesHashTableCollector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

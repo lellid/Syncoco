@@ -1,27 +1,23 @@
-Microsoft Visual Studio Solution File, Format Version 8.00
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Syncoco", "Syncoco.csproj", "{5D826F2B-835F-455B-B9A2-BDD72F697A85}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{6E7E852E-469D-470D-89F0-B4F8E01D910A}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
 EndProject
 Global
-	GlobalSection(SolutionConfiguration) = preSolution
-		Debug = Debug
-		Release = Release
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(ProjectConfiguration) = postSolution
-		{5D826F2B-835F-455B-B9A2-BDD72F697A85}.Debug.ActiveCfg = Debug|.NET
-		{5D826F2B-835F-455B-B9A2-BDD72F697A85}.Debug.Build.0 = Debug|.NET
-		{5D826F2B-835F-455B-B9A2-BDD72F697A85}.Release.ActiveCfg = Release|.NET
-		{5D826F2B-835F-455B-B9A2-BDD72F697A85}.Release.Build.0 = Release|.NET
-		{6E7E852E-469D-470D-89F0-B4F8E01D910A}.Debug.ActiveCfg = Debug
-		{6E7E852E-469D-470D-89F0-B4F8E01D910A}.Release.ActiveCfg = Release
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5D826F2B-835F-455B-B9A2-BDD72F697A85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D826F2B-835F-455B-B9A2-BDD72F697A85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D826F2B-835F-455B-B9A2-BDD72F697A85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D826F2B-835F-455B-B9A2-BDD72F697A85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E7E852E-469D-470D-89F0-B4F8E01D910A}.Debug|Any CPU.ActiveCfg = Debug
+		{6E7E852E-469D-470D-89F0-B4F8E01D910A}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-	EndGlobalSection
-	GlobalSection(ExtensibilityAddIns) = postSolution
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
