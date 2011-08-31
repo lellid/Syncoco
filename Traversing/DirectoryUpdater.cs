@@ -186,22 +186,28 @@ namespace Syncoco.Traversing
         if(_monitor.CancelledByUser)
           break;
 
-        System.IO.FileInfo fileinfo = (System.IO.FileInfo)actualFiles[file];
 
-        if(_monitor.ShouldReport)
-          _monitor.Report("Visiting file " + fileinfo.FullName);
 
-        try
-        {
-          if(dirNode.ContainsFile(file))
-            dirNode.File(file).Update(fileinfo,forceUpdateHash);  // this file was here before, we look if it was changed
-          else
-            dirNode.AddFile(file,new FileNode(fileinfo,dirNode));           // this is a new file, we create a new file node for this
-        }        
-        catch(HashCalculationException hce)
-        {
-          _reporter.ReportWarning(string.Format("File {0} could not be updated: {1}",file,hce.Message));
-        }
+				try
+				{
+					System.IO.FileInfo fileinfo = (System.IO.FileInfo)actualFiles[file];
+
+					if (_monitor.ShouldReport)
+						_monitor.Report("Visiting file " + fileinfo.FullName);
+
+					if (dirNode.ContainsFile(file))
+						dirNode.File(file).Update(fileinfo, forceUpdateHash);  // this file was here before, we look if it was changed
+					else
+						dirNode.AddFile(file, new FileNode(fileinfo, dirNode));           // this is a new file, we create a new file node for this
+				}
+				catch (HashCalculationException hce)
+				{
+					_reporter.ReportWarning(string.Format("File {0} could not be updated: {1}", file, hce.Message));
+				}
+				catch (System.IO.PathTooLongException)
+				{
+					_reporter.ReportError(string.Format("Path too long: file: {0} in path: {1}", file, dirinfo.FullName));
+				}
       }
     }
 

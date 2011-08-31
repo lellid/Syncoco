@@ -67,7 +67,10 @@ namespace Syncoco.DocumentActions
 
         if(_doc.RootPair(i).MyRoot.IsValid)
         {
-          Update(_doc.RootPair(i));
+          if(System.IO.Directory.Exists(_doc.RootPair(i).MyRoot.FilePath))
+            Update(_doc.RootPair(i));
+          else
+            _reporter.ReportWarning(string.Format("RootPair[{0}] not updated because the path is unavailable.", i));
         }
         else
         {

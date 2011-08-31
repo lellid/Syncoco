@@ -87,7 +87,6 @@ namespace Syncoco
 
       tw.WriteEndElement(); // File
     }
-
    
     public FileNode(System.Xml.XmlTextReader tr, DirectoryNode parent)
     {
@@ -95,7 +94,6 @@ namespace Syncoco
       _parent = parent;
       Open(tr);
     }
-
 
     public DirectoryNode Parent
     {
@@ -172,9 +170,10 @@ namespace Syncoco
     public FileNode(System.IO.FileInfo info, DirectoryNode parent)
     {
       System.Diagnostics.Debug.Assert(null!=parent);
-      _parent = parent;
-      Update(info,false,true);
-      _hint = new FileNewHint();
+			
+			_parent = parent;
+			Update(info, false, true);
+			_hint = new FileNewHint();
     }
 
     /// <summary>

@@ -171,16 +171,16 @@ namespace Syncoco
     {
       try
       {
-        byte[] result=null;
-        using(System.IO.FileStream stream = fileinfo.OpenRead())
+        byte[] result = null;
+        using (System.IO.FileStream stream = fileinfo.OpenRead())
         {
           result = md5.ComputeHash(stream);
         }
         return new FileHash(result);
       }
-      catch(System.IO.IOException ex)
+      catch (System.IO.IOException ex2)
       {
-        throw new HashCalculationException(fileinfo.FullName,ex.Message);
+        throw new HashCalculationException(fileinfo.FullName, ex2.Message);
       }
     }
 

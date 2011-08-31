@@ -1,0 +1,5 @@
+bin/
+obj/
+Setup/Debug/
+Setup/Release/
+.suo

@@ -415,11 +415,18 @@ namespace Syncoco
       ShowControl("Report",_reportList.View);
     }
 
+    delegate void StringSetter(string val);
+
     void UpdateTitle()
     {
       string filename = Current.Document.HasFileName? Current.Document.FileName : "Unnamed";
       string dirty = Current.Document.IsDirty?  "*" : string.Empty;
-      this.Text = string.Format("{1}{2} - Syncoco@{0}",Current.ComputerName, filename, dirty);
+      string newTitle = string.Format("{1}{2} - Syncoco@{0}",Current.ComputerName, filename, dirty);
+      
+      if (InvokeRequired)
+        this.Invoke((MethodInvoker)delegate{ this.Text = newTitle; });
+      else
+        this.Text = newTitle;
     }
 
     public void ExchangeCurrentDocument(MainDocument newDoc)
