@@ -1,7 +1,7 @@
 #region Copyright
 /////////////////////////////////////////////////////////////////////////////
-//    Syncoco:  synchronizing two computers with a data medium
-//    Copyright (C) 2004-2005 Dr. Dirk Lellinger
+//    Syncoco: offline file synchronization
+//    Copyright (C) 2004-2099 Dr. Dirk Lellinger
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by

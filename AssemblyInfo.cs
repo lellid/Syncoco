@@ -1,7 +1,7 @@
 #region Copyright
 /////////////////////////////////////////////////////////////////////////////
-//    Syncoco:  synchronizing two computers with a data medium
-//    Copyright (C) 2004-2005 Dr. Dirk Lellinger
+//    Syncoco: offline file synchronization
+//    Copyright (C) 2004-2099 Dr. Dirk Lellinger
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -29,11 +29,11 @@ using System.Runtime.CompilerServices;
 // associated with an assembly.
 //
 [assembly: AssemblyTitle("Syncoco")]
-[assembly: AssemblyDescription("Syncoco synchronization by transfer medium utility")]
+[assembly: AssemblyDescription("Syncoco offline file synchronization")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("http://www.sourceforge.net/projects/syncoco")]
+[assembly: AssemblyCompany("http://syncoco.sourceforge.net")]
 [assembly: AssemblyProduct("Syncoco")]
-[assembly: AssemblyCopyright("(C) Dr. D. Lellinger 2004-2005")]
+[assembly: AssemblyCopyright("(C) Dr. D. Lellinger 2004-$YEAR$")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]   
 
@@ -48,7 +48,7 @@ using System.Runtime.CompilerServices;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.0.4.45")]
+[assembly: AssemblyVersion("1.0.6.$REVNUM$")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 

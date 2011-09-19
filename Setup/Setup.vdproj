@@ -27,6 +27,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_76B920BC24004E4AB15E8C16FEA92017"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_5D37884477614F71AE4C3DFEFCF8DACD"
         "MsmSig" = "8:_UNDEFINED"
@@ -93,6 +99,19 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
             }
         }
     }
@@ -143,9 +162,52 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_76B920BC24004E4AB15E8C16FEA92017"
+            {
+            "SourcePath" = "8:..\\Help.ico"
+            "TargetName" = "8:Help.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_F9144D66CAAF4676A60D9F3DE7039946"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
+            "{5EB83D71-FA18-4901-BE56-DE22E13CC478}:_A5CC29CA0F404C169AC3C46148889C14"
+            {
+            "Name" = "8:Syncoco document"
+            "Description" = "8:Open syncoco documents"
+            "Extensions" = "8:syncox"
+            "MIME" = "8:"
+            "Icon" = "8:_5D37884477614F71AE4C3DFEFCF8DACD"
+            "IconIndex" = "3:32512"
+                "Command"
+                {
+                "Command" = "8:_5D37884477614F71AE4C3DFEFCF8DACD"
+                }
+                "Verbs"
+                {
+                    "{95C0C507-CBF0-42B8-B119-07219E384A4A}:_5DFACA96569242CA804C6E93F6153554"
+                    {
+                    "Command" = "8:&Open"
+                    "Verb" = "8:open"
+                    "Arguments" = "8:\"%1\""
+                    "Order" = "3:0"
+                    }
+                }
+            }
         }
         "Folder"
         {
@@ -211,8 +273,8 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Syncoco"
         "ProductCode" = "8:{F06D5600-853D-4AC7-8154-96E99E8DCC9E}"
-        "PackageCode" = "8:{62BE2AD4-574C-4F98-A5B8-6CC8C78DCDF5}"
-        "UpgradeCode" = "8:{CDCA04C7-F42F-47C6-A52C-C478DA805870}"
+        "PackageCode" = "8:{5ECF5827-EDDE-4261-8785-38AF2CA155CE}"
+        "UpgradeCode" = "8:{9EBF5349-0878-4D13-B8F2-D76DE70FD7EC}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
@@ -227,9 +289,9 @@
         "ARPCONTACT" = "8:Dr. Dirk Lellinger"
         "Keywords" = "8:file and directory synchronization"
         "ARPCOMMENTS" = "8:Syncoco synchronization via data medium"
-        "ARPURLINFOABOUT" = "8:http://www.sourceforge.net/projects/syncoco"
-        "ARPPRODUCTICON" = "8:"
-        "ARPIconIndex" = "3:0"
+        "ARPURLINFOABOUT" = "8:http://syncoco.sourceforge.net"
+        "ARPPRODUCTICON" = "8:_5D37884477614F71AE4C3DFEFCF8DACD"
+        "ARPIconIndex" = "3:32512"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
         "TargetPlatform" = "3:0"
@@ -342,7 +404,7 @@
             "Target" = "8:_7654F765166F4450A7591C68EA9A1FDF"
             "Folder" = "8:_19D30F26D05D43ED8001B636B89DDC88"
             "WorkingFolder" = "8:_F9144D66CAAF4676A60D9F3DE7039946"
-            "Icon" = "8:"
+            "Icon" = "8:_76B920BC24004E4AB15E8C16FEA92017"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_50680126C28A470E862D0D5296BE6362"
@@ -351,12 +413,12 @@
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
+            "IconIndex" = "3:32512"
             "Transitive" = "11:FALSE"
             "Target" = "8:_5D37884477614F71AE4C3DFEFCF8DACD"
             "Folder" = "8:_19D30F26D05D43ED8001B636B89DDC88"
             "WorkingFolder" = "8:_F9144D66CAAF4676A60D9F3DE7039946"
-            "Icon" = "8:"
+            "Icon" = "8:_5D37884477614F71AE4C3DFEFCF8DACD"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_A1730C219DD64BF1BAF5294225F6AE3A"
@@ -365,12 +427,12 @@
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
+            "IconIndex" = "3:32512"
             "Transitive" = "11:FALSE"
             "Target" = "8:_5D37884477614F71AE4C3DFEFCF8DACD"
             "Folder" = "8:_2C640CA12A7F4849B0E34B9E51E924AF"
             "WorkingFolder" = "8:_F9144D66CAAF4676A60D9F3DE7039946"
-            "Icon" = "8:"
+            "Icon" = "8:_5D37884477614F71AE4C3DFEFCF8DACD"
             "Feature" = "8:"
             }
         }
