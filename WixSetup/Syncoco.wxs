@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product	Id="{F06D5600-853D-4AC7-8154-96E99E8DCC9E}"
+						Codepage="1252" Language="1033"
+						Manufacturer="sourceforge.net"
+						Name="Syncoco"
+						UpgradeCode="{9EBF5349-0878-4D13-B8F2-D76DE70FD7EC}"
+						Version="1.0.6">
+		<Package	Comments="Syncoco synchronization via data medium"
+							Compressed="yes"
+							InstallerVersion="200"
+							InstallScope="perMachine"
+							Keywords="file and directory synchronization"
+							Languages="1033"
+							Manufacturer="Dr. Dirk Lellinger"
+							Platform="x86" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<Media Id='1' Cabinet='Syncoco.cab' EmbedCab='yes'/>
+
+		<Feature Id="Complete" Title="Syncoco" Level="1" ConfigurableDirectory='APPLICATIONFOLDER' Description='The complete SYNCOCO package.' Display='expand' >
+			<ComponentGroupRef Id="ProductComponents" />
+			<ComponentRef Id="ProgramMenuDir"/>
+		</Feature>
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="APPLICATIONFOLDER" Name="Syncoco" />
+			</Directory>
+			<Directory Id="DesktopFolder"/>
+			<Directory Id="ProgramMenuFolder" >
+				<Directory Id="ProgramMenuDir" Name="Syncoco" >
+					<Component Id="ProgramMenuDir" Guid="0C29D761-C54B-427C-B167-340AE017D097">
+						<RemoveFolder Id='ProgramMenuDir' On='uninstall' />
+						<RegistryValue Root='HKCU' Key='Software\[Manufacturer]\[ProductName]' Type='string' Value='' KeyPath='yes' />
+					</Component>
+				</Directory>
+			</Directory>
+		</Directory>
+	</Fragment>
+	<Fragment>
+
+
+		<ComponentGroup Id="ProductComponents" Directory="APPLICATIONFOLDER">
+			<Component Id="ProductComponent">
+				<File Id="_E61A0A47AC99F90F5EBD1A352CB2F51A" Name="Syncoco.exe" KeyPath="yes" DiskId="1" Source="..\bin\debug\Syncoco.exe" >
+					<Shortcut Id="startmenuSyncoco" Directory="ProgramMenuDir" Name="Syncoco"
+									WorkingDirectory='INSTALLFOLDER' Icon="SyncocoIcon.exe" IconIndex="0" Advertise="yes" />
+					<Shortcut Id="desktopSyncoco" Directory="DesktopFolder" Name="Syncoco"
+								 WorkingDirectory='INSTALLFolder' Icon="SyncocoIcon.exe" IconIndex="0" Advertise="yes" />
+				</File>
+				<ProgId Id="SyncocoDocument" Description="Syncoco document" Icon="_E61A0A47AC99F90F5EBD1A352CB2F51A" IconIndex="0">
+					<Extension Id="syncox">
+						<Verb Id="open" Command="&amp;Open" Argument="&quot;%1&quot;" TargetFile="_E61A0A47AC99F90F5EBD1A352CB2F51A"/>
+					</Extension>
+				</ProgId>
+			</Component>
+		</ComponentGroup>
+		<Icon Id="SyncocoIcon.exe" SourceFile="..\bin\debug\Syncoco.exe" />
+		<Property Id="ARPPRODUCTICON" Value="SyncocoIcon.exe" />
+		<Property Id="ApplicationFolderName" Value="Syncoco" />
+		<Property Id="WixAppFolder" Value="WixPerMachineFolder" />
+
+		<WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+
+
+		<UIRef Id="WixUI_Mondo" />
+		<UIRef Id="WixUI_ErrorProgressText" />
+
+
+	</Fragment>
+
+
+
+
+
+</Wix>
