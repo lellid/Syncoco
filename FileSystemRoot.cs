@@ -1,4 +1,5 @@
 #region Copyright
+
 /////////////////////////////////////////////////////////////////////////////
 //    Syncoco: offline file synchronization
 //    Copyright (C) 2004-2099 Dr. Dirk Lellinger
@@ -18,206 +19,196 @@
 //    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 /////////////////////////////////////////////////////////////////////////////
-#endregion
+
+#endregion Copyright
 
 using System;
 using System.Collections;
+
 //using System.Management;
 
 using System.IO;
 
 namespace Syncoco
 {
-  using Filter;
-  using Traversing;
+	using Filter;
+	using Traversing;
 
-  /// <summary>
-  /// Summary description for FileSystemRoot.
-  /// </summary>
-  [Serializable]
-  public class FileSystemRoot : IParentDirectory
-  {
+	/// <summary>
+	/// Summary description for FileSystemRoot.
+	/// </summary>
+	[Serializable]
+	public class FileSystemRoot : IParentDirectory
+	{
+		private string _FilePath;
 
-    string _FilePath;
+		private DirectoryNode _DirectoryNode;
 
-    DirectoryNode _DirectoryNode;
+		public FileSystemRoot()
+		{
+			_FilePath = null;
+			_DirectoryNode = null;
+		}
 
+		public FileSystemRoot(string path)
+		{
+			PathUtil.Assert_Abspath(path);
+			SetFilePath(path);
+		}
 
+		public FileSystemRoot(string path, DirectoryNode dirnode)
+		{
+			PathUtil.Assert_Abspath(path);
+			_FilePath = path;
+			_DirectoryNode = dirnode;
+		}
 
-    public FileSystemRoot()
-    {
-      _FilePath = null;
-      _DirectoryNode = null;
-    }
+		public FileSystemRoot(System.Xml.XmlTextReader tr, string localName)
+		{
+			tr.ReadStartElement(localName);
+			Read(tr);
+			tr.ReadEndElement();
+		}
 
-    public FileSystemRoot(string path)
-    {
-      PathUtil.Assert_Abspath(path);
-      SetFilePath(path);
-    }
+		public void Save(System.Xml.XmlTextWriter tw, string localName, bool saveFilterOnly)
+		{
+			tw.WriteStartElement(localName);
+			tw.WriteElementString("Path", this._FilePath);
+			if (!saveFilterOnly && null != this._DirectoryNode)
+			{
+				this._DirectoryNode.Save(tw, "DirectoryNode");
+			}
+			tw.WriteEndElement(); // Root1
+		}
 
-    public FileSystemRoot(string path, DirectoryNode dirnode)
-    {
-      PathUtil.Assert_Abspath(path);
-      _FilePath = path;
-      _DirectoryNode = dirnode;
-    }
+		public void Read(System.Xml.XmlTextReader tr)
+		{
+			_FilePath = tr.ReadElementString("Path");
 
-    public FileSystemRoot(System.Xml.XmlTextReader tr, string localName)
-    {
-      tr.ReadStartElement(localName);
-      Read(tr);
-      tr.ReadEndElement();
-    }
+			if (tr.LocalName == "DirectoryNode")
+			{
+				_DirectoryNode = new DirectoryNode(tr, this);
+			}
+			else
+			{
+				SetFilePath(_FilePath);
+			}
+		}
 
+		public bool IsValid
+		{
+			get { return _FilePath != null && _FilePath.Length > 0; }
+		}
 
-    public void Save(System.Xml.XmlTextWriter tw, string localName, bool saveFilterOnly)
-    {
-      tw.WriteStartElement(localName);
-      tw.WriteElementString("Path",this._FilePath);
-      if(!saveFilterOnly)
-      {
-        this._DirectoryNode.Save(tw,"DirectoryNode");
-      }
-      tw.WriteEndElement(); // Root1
-    }
+		public string FilePath
+		{
+			get { return _FilePath; }
+		}
 
-    public void Read(System.Xml.XmlTextReader tr)
-    {
-      _FilePath = tr.ReadElementString("Path");
+		public DirectoryNode DirectoryNode
+		{
+			get { return _DirectoryNode; }
+			set
+			{
+				if (null == _DirectoryNode)
+					_DirectoryNode = value;
+				else
+					throw new ApplicationException("Try to set an already existing DirectoryNode");
+			}
+		}
 
+		public void SetFilePath(string path)
+		{
+			this._FilePath = path;
 
-      if(tr.LocalName=="DirectoryNode")
-      {
-       
-        _DirectoryNode = new DirectoryNode(tr,this);
-        
-      }
-      else
-      {
-        SetFilePath(_FilePath);
-      }    
-    }
+			PathUtil.Assert_Abspath(_FilePath);
+			System.IO.DirectoryInfo dirinfo = new System.IO.DirectoryInfo(_FilePath);
+			if (dirinfo.Exists)
+				_DirectoryNode = DirectoryUpdater.NewEmptyDirectoryNode(dirinfo, this);
+			else
+				_DirectoryNode = null;
+		}
 
-    public bool IsValid
-    {
-      get { return _FilePath!=null && _FilePath.Length>0; }
-    }
+		// following the filter items
 
-    public string FilePath
-    {
-      get { return _FilePath; }
-    }
+		// Following the collection of file and directory nodes
 
-    public DirectoryNode DirectoryNode
-    {
-      get { return _DirectoryNode; }
-      set 
-      {
-        if(null==_DirectoryNode)
-          _DirectoryNode = value;
-        else
-          throw new ApplicationException("Try to set an already existing DirectoryNode");
-      }
-    }
-
-    public void SetFilePath(string path)
-    {
-      this._FilePath = path;
-
-      PathUtil.Assert_Abspath(_FilePath);
-      System.IO.DirectoryInfo dirinfo = new System.IO.DirectoryInfo(_FilePath);
-      if(dirinfo.Exists)
-        _DirectoryNode = DirectoryUpdater.NewEmptyDirectoryNode(dirinfo,this);
-      else
-        _DirectoryNode = null;
-    }
-    // following the filter items
-
-
-    // Following the collection of file and directory nodes
-
-
-    public FileNode GetFileNode(string pathname)
-    {
+		public FileNode GetFileNode(string pathname)
+		{
 #if DEBUG
-      PathUtil.Assert_RelpathFilename(pathname);
+			PathUtil.Assert_RelpathFilename(pathname);
 #endif
-      if(_DirectoryNode==null)
-        return null;
-      else
-        return _DirectoryNode.GetFileNodeFullPath(pathname);
-    }
+			if (_DirectoryNode == null)
+				return null;
+			else
+				return _DirectoryNode.GetFileNodeFullPath(pathname);
+		}
 
-    public DirectoryNode GetDirectoryNode(string pathname)
-    {
+		public DirectoryNode GetDirectoryNode(string pathname)
+		{
 #if DEBUG
-      PathUtil.Assert_Relpath(pathname);
+			PathUtil.Assert_Relpath(pathname);
 #endif
-      if(_DirectoryNode==null)
-        return null;
-      else
-        return _DirectoryNode.GetDirectoryNodeFullPath(pathname);
-    }
+			if (_DirectoryNode == null)
+				return null;
+			else
+				return _DirectoryNode.GetDirectoryNodeFullPath(pathname);
+		}
 
-    public void DeleteFileNode(string pathname)
-    {
+		public void DeleteFileNode(string pathname)
+		{
 #if DEBUG
-      PathUtil.Assert_RelpathFilename(pathname);
+			PathUtil.Assert_RelpathFilename(pathname);
 #endif
-      if(_DirectoryNode!=null)
-        _DirectoryNode.DeleteFileNodeFullPath(pathname);
-    }
+			if (_DirectoryNode != null)
+				_DirectoryNode.DeleteFileNodeFullPath(pathname);
+		}
 
-    /// <summary>
-    /// Deletes a special subdirectory node. Path must include a trailing DirectorySeparatorChar!
-    /// </summary>
-    /// <param name="path">The full path name (from the root dir) to the subdirectory including a trailing DirectorySeparatorChar.</param>
-    public void DeleteSubDirectoryNode(string path)
-    {
+		/// <summary>
+		/// Deletes a special subdirectory node. Path must include a trailing DirectorySeparatorChar!
+		/// </summary>
+		/// <param name="path">The full path name (from the root dir) to the subdirectory including a trailing DirectorySeparatorChar.</param>
+		public void DeleteSubDirectoryNode(string path)
+		{
 #if DEBUG
-      PathUtil.Assert_Relpath(path);
+			PathUtil.Assert_Relpath(path);
 #endif
-      if(_DirectoryNode!=null)
-        _DirectoryNode.DeleteSubDirectoryNodeFullPath(path);
-    }
+			if (_DirectoryNode != null)
+				_DirectoryNode.DeleteSubDirectoryNodeFullPath(path);
+		}
 
-  
+		#region IParentDirectory Members
 
+		public bool IsFileSystemRoot
+		{
+			get
+			{
+				return true;
+			}
+		}
 
-   
-    #region IParentDirectory Members
+		public string Name
+		{
+			get
+			{
+				return _FilePath;
+			}
+		}
 
-    public bool IsFileSystemRoot
-    {
-      get
-      {
-        return true;
-      }
-    }
+		public IParentDirectory ParentDirectory
+		{
+			get
+			{
+				return null;
+			}
+		}
 
-    public string Name
-    {
-      get
-      {
-        return _FilePath;
-      }
-    }
+		public void RestoreParentOfChildObjects()
+		{
+			if (_DirectoryNode != null)
+				_DirectoryNode.RestoreParentOfChildObjects(this);
+		}
 
-    public IParentDirectory ParentDirectory
-    {
-      get
-      {
-        return null;
-      }
-    }
-
-    public void RestoreParentOfChildObjects()
-    {
-      if(_DirectoryNode!=null)
-        _DirectoryNode.RestoreParentOfChildObjects(this);
-    }
-
-    #endregion
-  }
+		#endregion IParentDirectory Members
+	}
 }

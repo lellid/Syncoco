@@ -1,4 +1,5 @@
 #region Copyright
+
 /////////////////////////////////////////////////////////////////////////////
 //    Syncoco: offline file synchronization
 //    Copyright (C) 2004-2099 Dr. Dirk Lellinger
@@ -18,547 +19,512 @@
 //    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 /////////////////////////////////////////////////////////////////////////////
-#endregion
+
+#endregion Copyright
 
 using System;
 using System.Collections;
 
 namespace Syncoco
 {
-  using Traversing;
-  /// <summary>
-  /// Summary description for MainDocument.
-  /// </summary>
-  [Serializable]
-  public class MainDocument
-  {
-    [NonSerialized]
-    string _FileName;
-    [NonSerialized]
-    bool   _IsDirty;
-    [NonSerialized]
-    MD5SumFileNodesHashTable _allFilesHere;
+	using Traversing;
 
-    public event EventHandler DirtyChanged;
-    public event EventHandler FileNameChanged;
+	/// <summary>
+	/// Summary description for MainDocument.
+	/// </summary>
+	[Serializable]
+	public class MainDocument
+	{
+		[NonSerialized]
+		private string _FileName;
 
-    
-    public static string DefaultXmlExtension    = ".syncox";
-    public static string DefaultBinaryExtension = ".syncob";
-    public static string DefaultFilterExtension = ".syncof";
+		[NonSerialized]
+		private bool _IsDirty;
 
+		[NonSerialized]
+		private MD5SumFileNodesHashTable _allFilesHere;
 
-    //ArrayList _root1, _root2;
-    string    _root1ComputerName, _root2ComputerName;
-    ArrayList _rootPairs;
+		public event EventHandler DirtyChanged;
 
-    [NonSerialized]
-    bool _ExchangeRoots;
+		public event EventHandler FileNameChanged;
 
-    public MainDocument()
-    {
-      //_root1 = new ArrayList();
-      //_root2 = new ArrayList();
-      _rootPairs = new ArrayList();
-      _root1ComputerName = Current.ComputerName;
+		public static string DefaultXmlExtension = ".syncox";
+		public static string DefaultBinaryExtension = ".syncob";
+		public static string DefaultFilterExtension = ".syncof";
 
-    }
+		//ArrayList _root1, _root2;
+		private string _root1ComputerName, _root2ComputerName;
 
-    public void RestoreParentOfChildObjects()
-    {
-      for(int i=0;i<_rootPairs.Count;i++)
-        this.RootPair(i).RestoreParentOfChildObjects(this);
-    }
+		private ArrayList _rootPairs;
 
-    public void Save(string filename)
-    {
-      
-      if(!System.IO.Path.HasExtension(filename))
-        filename += DefaultXmlExtension;
+		[NonSerialized]
+		private bool _ExchangeRoots;
 
-      if(System.IO.Path.GetExtension(filename).ToLower()==DefaultBinaryExtension)
-        SaveBinary(filename);
-      else
-        SaveXML(filename);
-    }
+		public MainDocument()
+		{
+			//_root1 = new ArrayList();
+			//_root2 = new ArrayList();
+			_rootPairs = new ArrayList();
+			_root1ComputerName = Current.ComputerName;
+		}
 
+		public void RestoreParentOfChildObjects()
+		{
+			for (int i = 0; i < _rootPairs.Count; i++)
+				this.RootPair(i).RestoreParentOfChildObjects(this);
+		}
 
-    protected void SaveBinary(string filename)
-    {
-    
+		public void Save(string filename)
+		{
+			if (!System.IO.Path.HasExtension(filename))
+				filename += DefaultXmlExtension;
 
-      // first create a directory
-      string dirname = System.IO.Path.GetFileNameWithoutExtension(filename);
-      System.IO.Directory.CreateDirectory(dirname);
+			if (System.IO.Path.GetExtension(filename).ToLower() == DefaultBinaryExtension)
+				SaveBinary(filename);
+			else
+				SaveXML(filename);
+		}
 
-      string tempfilename=null;
-      Exception exception=null;
-      System.IO.FileStream stream=null;
-      try
-      {
+		protected void SaveBinary(string filename)
+		{
+			// first create a directory
+			string dirname = System.IO.Path.GetFileNameWithoutExtension(filename);
+			System.IO.Directory.CreateDirectory(dirname);
 
-        if(System.IO.File.Exists(filename))
-          tempfilename = System.IO.Path.GetTempFileName();
+			string tempfilename = null;
+			Exception exception = null;
+			System.IO.FileStream stream = null;
+			try
+			{
+				if (System.IO.File.Exists(filename))
+					tempfilename = System.IO.Path.GetTempFileName();
 
+				stream = new System.IO.FileStream(null != tempfilename ? tempfilename : filename, System.IO.FileMode.Create, System.IO.FileAccess.ReadWrite, System.IO.FileShare.None);
 
-        stream = new System.IO.FileStream(null!=tempfilename ? tempfilename : filename, System.IO.FileMode.Create,System.IO.FileAccess.ReadWrite,System.IO.FileShare.None);
-       
-        System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+				System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
 
-        formatter.Serialize(stream,Current.Document);
+				formatter.Serialize(stream, Current.Document);
 
-        stream.Close();
+				stream.Close();
 
-        if(null!=tempfilename)
-          System.IO.File.Copy(tempfilename,filename,true);
+				if (null != tempfilename)
+					System.IO.File.Copy(tempfilename, filename, true);
 
-        this.SetFileSavedFlag(filename);
+				this.SetFileSavedFlag(filename);
+			}
+			catch (Exception ex)
+			{
+				exception = ex;
+			}
+			finally
+			{
+				if (null != stream)
+					stream.Close();
+				if (null != tempfilename)
+					System.IO.File.Delete(tempfilename);
+			}
 
-      }
-      catch(Exception ex)
-      {
-        exception = ex;
-      }
-      finally
-      {
-        if(null!=stream)
-          stream.Close();
-        if(null!=tempfilename)
-          System.IO.File.Delete(tempfilename);
-      }
+			if (null != exception)
+				throw exception;
+		}
 
-      if(null!=exception)
-        throw exception;
+		protected void SaveXML(string filename)
+		{
+			// first create a directory
+			string pathname = System.IO.Path.GetDirectoryName(filename);
+			string dirname = System.IO.Path.Combine(pathname, System.IO.Path.GetFileNameWithoutExtension(filename));
+			System.IO.Directory.CreateDirectory(dirname);
 
-    }
+			string tempfilename = null;
+			Exception exception = null;
+			System.IO.FileStream stream = null;
+			try
+			{
+				if (System.IO.File.Exists(filename))
+					tempfilename = System.IO.Path.GetTempFileName();
 
-    protected void SaveXML(string filename)
-    {
-      // first create a directory
-      string dirname = System.IO.Path.GetFileNameWithoutExtension(filename);
-      System.IO.Directory.CreateDirectory(dirname);
-
-      string tempfilename=null;
-      Exception exception=null;
-      System.IO.FileStream stream=null;
-      try
-      {
-
-        if(System.IO.File.Exists(filename))
-          tempfilename = System.IO.Path.GetTempFileName();
-
-
-        stream = new System.IO.FileStream(null!=tempfilename ? tempfilename : filename, System.IO.FileMode.Create,System.IO.FileAccess.ReadWrite,System.IO.FileShare.None);
-        System.Xml.XmlTextWriter tw = new System.Xml.XmlTextWriter(stream,System.Text.Encoding.UTF8);
-        tw.WriteStartDocument();
-        tw.WriteStartElement("TwoPointSynchronizationByDataMedium");
+				stream = new System.IO.FileStream(null != tempfilename ? tempfilename : filename, System.IO.FileMode.Create, System.IO.FileAccess.ReadWrite, System.IO.FileShare.None);
+				System.Xml.XmlTextWriter tw = new System.Xml.XmlTextWriter(stream, System.Text.Encoding.UTF8);
+				tw.WriteStartDocument();
+				tw.WriteStartElement("TwoPointSynchronizationByDataMedium");
 
 #if WRITEDATEASTICKS
-        bool writeDateAsTicks=true;
+				bool writeDateAsTicks = true;
 #else
         bool writeDateAsTicks=false;
 #endif
-        tw.WriteAttributeString("FormatDateAsTicks",System.Xml.XmlConvert.ToString(writeDateAsTicks));
-        tw.WriteAttributeString("DirectorySeparatorChar",System.IO.Path.DirectorySeparatorChar.ToString());
+				tw.WriteAttributeString("FormatDateAsTicks", System.Xml.XmlConvert.ToString(writeDateAsTicks));
+				tw.WriteAttributeString("DirectorySeparatorChar", System.IO.Path.DirectorySeparatorChar.ToString());
 
-        Save(tw);
-        tw.WriteEndElement();
-        tw.WriteEndDocument();
-       
-        tw.Flush();
-        tw.Close();
+				Save(tw);
+				tw.WriteEndElement();
+				tw.WriteEndDocument();
 
-        if(null!=tempfilename)
-          System.IO.File.Copy(tempfilename,filename,true);
+				tw.Flush();
+				tw.Close();
 
-        SetFileSavedFlag(filename);
-      }
-      catch(Exception ex)
-      {
-        exception = ex;
-      }
-      finally
-      {
-        if(null!=stream)
-          stream.Close();
-        if(null!=tempfilename)
-          System.IO.File.Delete(tempfilename);
-      }
+				if (null != tempfilename)
+					System.IO.File.Copy(tempfilename, filename, true);
 
-      if(null!=exception)
-        throw exception;
+				SetFileSavedFlag(filename);
+			}
+			catch (Exception ex)
+			{
+				exception = ex;
+			}
+			finally
+			{
+				if (null != stream)
+					stream.Close();
+				if (null != tempfilename)
+					System.IO.File.Delete(tempfilename);
+			}
 
-    }
+			if (null != exception)
+				throw exception;
+		}
 
-    public void SaveFilterOnly(string filename)
-    {
-   
-      if(!System.IO.Path.HasExtension(filename))
-        filename += DefaultFilterExtension;
+		public void SaveFilterOnly(string filename)
+		{
+			if (!System.IO.Path.HasExtension(filename))
+				filename += DefaultFilterExtension;
 
-      string tempfilename=null;
-      Exception exception=null;
-      try
-      {
+			string tempfilename = null;
+			Exception exception = null;
+			try
+			{
+				if (System.IO.File.Exists(filename))
+					tempfilename = System.IO.Path.GetTempFileName();
 
-        if(System.IO.File.Exists(filename))
-          tempfilename = System.IO.Path.GetTempFileName();
+				System.IO.FileStream stream = new System.IO.FileStream(null != tempfilename ? tempfilename : filename, System.IO.FileMode.Create, System.IO.FileAccess.ReadWrite, System.IO.FileShare.None);
+				System.Xml.XmlTextWriter tw = new System.Xml.XmlTextWriter(stream, System.Text.Encoding.UTF8);
+				tw.WriteStartDocument();
+				tw.WriteStartElement("TwoPointSynchronizationByDataMedium");
+				SaveFilterOnly(tw);
+				tw.WriteEndElement();
+				tw.WriteEndDocument();
+				tw.Flush();
+				tw.Close();
 
+				if (null != tempfilename)
+					System.IO.File.Copy(tempfilename, filename, true);
+			}
+			catch (Exception ex)
+			{
+				exception = ex;
+			}
+			finally
+			{
+				if (null != tempfilename)
+					System.IO.File.Delete(tempfilename);
+			}
 
-        System.IO.FileStream stream = new System.IO.FileStream(null!=tempfilename ? tempfilename : filename,System.IO.FileMode.Create,System.IO.FileAccess.ReadWrite,System.IO.FileShare.None);
-        System.Xml.XmlTextWriter tw = new System.Xml.XmlTextWriter(stream,System.Text.Encoding.UTF8);
-        tw.WriteStartDocument();
-        tw.WriteStartElement("TwoPointSynchronizationByDataMedium");
-        SaveFilterOnly(tw);
-        tw.WriteEndElement();
-        tw.WriteEndDocument();
-        tw.Flush();
-        tw.Close();
-        
-        if(null!=tempfilename)
-          System.IO.File.Copy(tempfilename,filename,true);
+			if (null != exception)
+				throw exception;
+		}
 
-      }
-      catch(Exception ex)
-      {
-        exception = ex;
-      }
-      finally
-      {
-        if(null!=tempfilename)
-          System.IO.File.Delete(tempfilename);
-      }
+		public void Save(System.Xml.XmlTextWriter tw, bool saveFilterOnly)
+		{
+			tw.WriteElementString("ComputerName1", _root1ComputerName);
+			tw.WriteElementString("ComputerName2", _root2ComputerName);
+			tw.WriteStartElement("RootPairs");
 
-      if(null!=exception)
-        throw exception;
-    }
+			for (int i = 0; i < _rootPairs.Count; i++)
+			{
+				tw.WriteStartElement("RootPair");
+				RootPair(i).Save(tw, saveFilterOnly);
+				tw.WriteEndElement(); // RootPair
+			}
 
-    public void Save(System.Xml.XmlTextWriter tw, bool saveFilterOnly)
-    {
+			tw.WriteEndElement(); // RootPairs
+		}
 
-      tw.WriteElementString("ComputerName1",_root1ComputerName);
-      tw.WriteElementString("ComputerName2",_root2ComputerName);
-      tw.WriteStartElement("RootPairs");
+		public void Save(System.Xml.XmlTextWriter tw)
+		{
+			Save(tw, false);
+		}
 
-      for(int i=0;i<_rootPairs.Count;i++)
-      {
-        tw.WriteStartElement("RootPair");
-        RootPair(i).Save(tw, saveFilterOnly);
-        tw.WriteEndElement(); // RootPair
-      }
+		public void SaveFilterOnly(System.Xml.XmlTextWriter tw)
+		{
+			Save(tw, true);
+		}
 
-      tw.WriteEndElement(); // RootPairs
-    }
+		public void Save()
+		{
+			if (!HasFileName)
+				throw new ApplicationException("No file name for saving document (programming error)");
 
-    public void Save(System.Xml.XmlTextWriter tw)
-    {
-      Save(tw,false);
-    }
-    public void SaveFilterOnly(System.Xml.XmlTextWriter tw)
-    {
-      Save(tw,true);
-    }
-    public void Save()
-    {
-      if(!HasFileName)
-        throw new ApplicationException("No file name for saving document (programming error)");
+			Save(_FileName);
+		}
 
-      Save(_FileName);
-    }
+		public void Read(System.Xml.XmlTextReader tr)
+		{
+			string compu1 = tr.ReadElementString("ComputerName1");
+			string compu2 = tr.ReadElementString("ComputerName2");
 
-    
+			if (Current.ComputerName != compu1 && Current.ComputerName != compu2 && compu2 != string.Empty)
+			{
+				throw new DocumentNotForThisComputerException(string.Format("The file loaded is intended for synchronization between {0} and {1}, and not for your computer {2} !", compu1, compu2, Current.ComputerName));
+			}
 
+			_root1ComputerName = compu1;
+			_root2ComputerName = compu2;
 
-    public void Read(System.Xml.XmlTextReader tr)
-    {
-      string compu1 = tr.ReadElementString("ComputerName1");
-      string compu2 = tr.ReadElementString("ComputerName2");
+			tr.ReadStartElement("RootPairs");
+			while (tr.LocalName == "RootPair")
+			{
+				tr.ReadStartElement("RootPair");
+				_rootPairs.Add(new RootPair(this, tr));
+				tr.ReadEndElement(); // RootPair
+			}
+			tr.ReadEndElement(); // RootPairs
+		}
 
+		public void OpenAsXML(string filename)
+		{
+			System.IO.FileStream stream = new System.IO.FileStream(filename, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.None);
+			System.Xml.XmlTextReader tr = new System.Xml.XmlTextReader(stream);
+			tr.WhitespaceHandling = System.Xml.WhitespaceHandling.None;
 
-      if(Current.ComputerName!=compu1 && Current.ComputerName!=compu2 && compu2!=string.Empty)
-      {
-        throw new DocumentNotForThisComputerException(string.Format("The file loaded is intended for synchronization between {0} and {1}, and not for your computer {2} !",compu1,compu2, Current.ComputerName));
-      }
+			tr.MoveToContent();
 
-      _root1ComputerName = compu1;
-      _root2ComputerName = compu2;
+			tr.ReadStartElement("TwoPointSynchronizationByDataMedium");
+			Read(tr);
+			tr.ReadEndElement();
 
-      tr.ReadStartElement("RootPairs");
-      while(tr.LocalName=="RootPair")
-      {
-        tr.ReadStartElement("RootPair");
-        _rootPairs.Add(new RootPair(this,tr));
-        tr.ReadEndElement(); // RootPair
-      }
-      tr.ReadEndElement(); // RootPairs
-    }
+			tr.Close();
+			stream.Close();
 
-    
+			SetFileSavedFlag(filename);
+		}
 
-    public void OpenAsXML(string filename)
-    {
-      System.IO.FileStream stream = new System.IO.FileStream(filename,System.IO.FileMode.Open,System.IO.FileAccess.Read,System.IO.FileShare.None);
-      System.Xml.XmlTextReader tr = new System.Xml.XmlTextReader(stream);
-      tr.WhitespaceHandling = System.Xml.WhitespaceHandling.None;
+		public static MainDocument OpenAsBinary(string filename)
+		{
+			System.IO.FileStream stream = new System.IO.FileStream(filename, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.None);
 
-      tr.MoveToContent();
+			System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+			object o = formatter.Deserialize(stream);
+			MainDocument doc = (MainDocument)o;
+			stream.Close();
 
-      tr.ReadStartElement("TwoPointSynchronizationByDataMedium");
-      Read(tr);
-      tr.ReadEndElement();
+			doc.RestoreParentOfChildObjects();
+			doc.SetFileSavedFlag(filename);
 
-      tr.Close();
-      stream.Close();
+			return doc;
+		}
 
-      SetFileSavedFlag(filename);
-    }
+		protected void OnFileNameChanged()
+		{
+			if (FileNameChanged != null)
+				FileNameChanged(this, EventArgs.Empty);
+		}
 
+		protected void OnDirtyChanged()
+		{
+			if (DirtyChanged != null)
+				DirtyChanged(this, EventArgs.Empty);
+		}
 
-    public static MainDocument OpenAsBinary(string filename)
-    {
-      System.IO.FileStream stream = new System.IO.FileStream(filename,System.IO.FileMode.Open,System.IO.FileAccess.Read,System.IO.FileShare.None);
-   
-      System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-      object o = formatter.Deserialize(stream);
-      MainDocument doc = (MainDocument)o;
-      stream.Close();
+		public void SetFileSavedFlag(string filename)
+		{
+			bool oldDirty = _IsDirty;
+			string oldFileName = _FileName;
 
-      doc.RestoreParentOfChildObjects();
-      doc.SetFileSavedFlag(filename);
+			_FileName = filename;
+			_IsDirty = false;
 
-      return doc;
-    }
+			if (_FileName != oldFileName)
+				OnFileNameChanged();
+			if (oldDirty != _IsDirty)
+				OnDirtyChanged();
+		}
 
-  
-    protected void OnFileNameChanged()
-    {
-      if(FileNameChanged!=null)
-        FileNameChanged(this,EventArgs.Empty);
-    }
+		public void SetDirty()
+		{
+			bool oldDirty = _IsDirty;
+			_IsDirty = true;
 
-    protected void OnDirtyChanged()
-    {
-      if(DirtyChanged!=null)
-        DirtyChanged(this,EventArgs.Empty);
-    }
+			if (oldDirty != _IsDirty)
+				OnDirtyChanged();
+		}
 
+		public bool IsDirty
+		{
+			get { return _IsDirty; }
+		}
 
-    public void SetFileSavedFlag(string filename)
-    {
-      bool oldDirty = _IsDirty;
-      string oldFileName = _FileName;
+		public bool HasFileName
+		{
+			get
+			{
+				return _FileName != null && _FileName != string.Empty;
+			}
+		}
 
-      _FileName = filename;
-      _IsDirty = false;
+		public string FileName
+		{
+			get { return _FileName; }
+		}
 
-      if(_FileName!=oldFileName)
-        OnFileNameChanged();
-      if(oldDirty!=_IsDirty)
-        OnDirtyChanged();
-    }
+		protected void ExchangeRoots()
+		{
+			_ExchangeRoots = !_ExchangeRoots;
+		}
 
-    public void SetDirty()
-    {
-      bool oldDirty = _IsDirty;
-      _IsDirty = true;
+		/// <summary>
+		/// Change the roots so that the actual computer gets the first root
+		/// </summary>
+		public void Align()
+		{
+			if ((_root1ComputerName == null || _root1ComputerName == string.Empty) && _root2ComputerName != Current.ComputerName)
+				_root1ComputerName = Current.ComputerName;
+			else if ((_root2ComputerName == null || _root2ComputerName == string.Empty) && _root1ComputerName != Current.ComputerName)
+				_root2ComputerName = Current.ComputerName;
 
-      if(oldDirty!=_IsDirty)
-        OnDirtyChanged();
+			if (_root2ComputerName == Current.ComputerName)
+				_ExchangeRoots = true;
+		}
 
-    }
+		public void ExchangeRootPairPositions(int index1, int index2)
+		{
+			if (index1 < 0 || index2 < 0)
+				throw new ArgumentOutOfRangeException("Indizes have to be >=0");
+			if (index1 >= _rootPairs.Count || index2 >= _rootPairs.Count)
+				throw new ArgumentOutOfRangeException("Indizes have to be <Count");
 
+			object o = _rootPairs[index1];
+			_rootPairs[index1] = _rootPairs[index2];
+			_rootPairs[index2] = o;
+		}
 
-    public bool IsDirty
-    {
-      get { return _IsDirty; }
-    }
+		public int RootCount
+		{
+			get { return _rootPairs.Count; }
+		}
 
-    public bool  HasFileName 
-    { 
-      get 
-      { 
-        return _FileName != null && _FileName != string.Empty;
-      }
-    }
+		public FileSystemRoot MyRoot(int i)
+		{
+			return ((RootPair)_rootPairs[i]).MyRoot;
+		}
 
-    public string FileName
-    {
-      get { return _FileName; }
-    }
+		public FileSystemRoot ForeignRoot(int i)
+		{
+			return ((RootPair)_rootPairs[i]).ForeignRoot;
+		}
 
-    protected void ExchangeRoots()
-    {
-      _ExchangeRoots = !_ExchangeRoots;
-    }
+		public RootPair RootPair(int i)
+		{
+			return (RootPair)_rootPairs[i];
+		}
 
-    /// <summary>
-    /// Change the roots so that the actual computer gets the first root
-    /// </summary>
-    public void Align()
-    {
-      if((_root1ComputerName==null || _root1ComputerName==string.Empty) && _root2ComputerName != Current.ComputerName)
-        _root1ComputerName = Current.ComputerName;
-      else if((_root2ComputerName==null || _root2ComputerName==string.Empty) && _root1ComputerName != Current.ComputerName)
-        _root2ComputerName = Current.ComputerName;
+		public string MyRootComputerName
+		{
+			get
+			{
+				return _ExchangeRoots ? _root2ComputerName : _root1ComputerName;
+			}
+		}
 
-      if(_root2ComputerName == Current.ComputerName)
-        _ExchangeRoots = true;
+		public string ForeignRootComputerName
+		{
+			get
+			{
+				return _ExchangeRoots ? _root1ComputerName : _root2ComputerName;
+			}
+		}
 
-    }
+		public bool RootsExchanged
+		{
+			get { return _ExchangeRoots; }
+		}
 
-
-    public void ExchangeRootPairPositions(int index1, int index2)
-    {
-      if(index1<0 || index2<0)
-        throw new ArgumentOutOfRangeException("Indizes have to be >=0");
-      if(index1>=_rootPairs.Count || index2>=_rootPairs.Count)
-        throw new ArgumentOutOfRangeException("Indizes have to be <Count");
-
-      object o = _rootPairs[index1];
-      _rootPairs[index1] = _rootPairs[index2];
-      _rootPairs[index2] = o;
-    }
-
-    public int RootCount
-    {
-      get { return _rootPairs.Count; }
-    }
-
-    public FileSystemRoot MyRoot(int i)
-    {
-      return ((RootPair)_rootPairs[i]).MyRoot; 
-    }
-
-    public FileSystemRoot ForeignRoot(int i)
-    {
-      return ((RootPair)_rootPairs[i]).ForeignRoot; 
-    }
-
-    public RootPair RootPair(int i)
-    {
-      return (RootPair)_rootPairs[i];
-    }
-    public string MyRootComputerName 
-    { 
-      get
-      { 
-        return _ExchangeRoots ? _root2ComputerName : _root1ComputerName;
-      }
-    }
-    public string ForeignRootComputerName 
-    { 
-      get 
-      { 
-        return _ExchangeRoots ? _root1ComputerName : _root2ComputerName; 
-      }
-    }
-
-    public bool RootsExchanged
-    {
-      get { return _ExchangeRoots; }
-    }
-
-    public static string MediumDirectoryNameFromFileName(string fileName)
-    {
-      string result = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(fileName) , System.IO.Path.GetFileNameWithoutExtension(fileName));
-      result = PathUtil.NormalizeAbspath(result);
+		public static string MediumDirectoryNameFromFileName(string fileName)
+		{
+			string result = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(fileName), System.IO.Path.GetFileNameWithoutExtension(fileName));
+			result = PathUtil.NormalizeAbspath(result);
 #if DEBUG
-      PathUtil.Assert_Abspath(result);
+			PathUtil.Assert_Abspath(result);
 #endif
 
-      return result;
-    }
+			return result;
+		}
 
-    public string MediumDirectoryName
-    {
-      get 
-      {
-        string result = MediumDirectoryNameFromFileName(this._FileName);
+		public string MediumDirectoryName
+		{
+			get
+			{
+				string result = MediumDirectoryNameFromFileName(this._FileName);
 #if DEBUG
-        PathUtil.Assert_Abspath(result);
+				PathUtil.Assert_Abspath(result);
 #endif
-        return result;
-      }
-    }
+				return result;
+			}
+		}
 
-    public void EnsureAlignment()
-    {
-      if(Current.ComputerName==null || Current.ComputerName==string.Empty)
-        throw new ApplicationException("The current computer name is null or empty");
+		public void EnsureAlignment()
+		{
+			if (Current.ComputerName == null || Current.ComputerName == string.Empty)
+				throw new ApplicationException("The current computer name is null or empty");
 
-      Align();
- 
+			Align();
 
-      if(this.MyRootComputerName!=Current.ComputerName)
-        throw new ApplicationException("The current computer name is non of the computer names in this document");
-    }
+			if (this.MyRootComputerName != Current.ComputerName)
+				throw new ApplicationException("The current computer name is non of the computer names in this document");
+		}
 
+		public int Count
+		{
+			get
+			{
+				return _rootPairs.Count;
+			}
+		}
 
-    public int Count
-    {
-      get 
-      {
-        return _rootPairs.Count;
-      }
-    }
+		public void ClearCachedMyFiles()
+		{
+			this._allFilesHere = null;
+		}
 
-    public void ClearCachedMyFiles()
-    {
-      this._allFilesHere=null;
-    }
+		public MD5SumFileNodesHashTable CachedAllMyFiles
+		{
+			get { return _allFilesHere; }
+			set { _allFilesHere = value; }
+		}
 
-    public MD5SumFileNodesHashTable CachedAllMyFiles
-    {
-      get { return _allFilesHere; }
-      set { _allFilesHere = value; }
-    }
+		public void AddRoot(string basename)
+		{
+			PathUtil.Assert_Abspath(basename);
 
-    public void AddRoot(string basename)
-    {
-    
-      PathUtil.Assert_Abspath(basename);
+			SetDirty();
 
-      SetDirty();
+			ClearCachedMyFiles();
 
-      ClearCachedMyFiles();
+			EnsureAlignment();
 
-      EnsureAlignment();
+			RootPair added = new RootPair(this);
+			_rootPairs.Add(added);
+			added.MyRoot.SetFilePath(basename);
+		}
 
-      RootPair added = new RootPair(this);
-      _rootPairs.Add(added);
-      added.MyRoot.SetFilePath(basename);
-    }
+		public void DeleteRoot(int index)
+		{
+			SetDirty();
 
+			ClearCachedMyFiles();
 
-    public void DeleteRoot(int index)
-    {
+			EnsureAlignment();
 
-      SetDirty();
+			_rootPairs.RemoveAt(index);
+		}
 
-      ClearCachedMyFiles();
+		public void SetBasePath(int item, string path)
+		{
+			SetDirty();
 
-      EnsureAlignment();
+			PathUtil.Assert_Abspath(path);
 
-      _rootPairs.RemoveAt(index);
-    }
-
-    public void SetBasePath(int item, string path)
-    {
-      SetDirty();
-
-      PathUtil.Assert_Abspath(path);
-      
-      EnsureAlignment();
-      ((RootPair)_rootPairs[item]).MyRoot.SetFilePath(path);
-    }
-
-  
-
-   
-
-
-  
-
-  
-  }
+			EnsureAlignment();
+			((RootPair)_rootPairs[item]).MyRoot.SetFilePath(path);
+		}
+	}
 }
