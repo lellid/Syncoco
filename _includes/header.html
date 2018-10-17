@@ -1,0 +1,19 @@
+<header class="site-header" role="banner">
+  <img class="site-icon" src="{{site.logo | relative_url}}" width="48" alt="Logo" />
+  {%- assign default_paths = site.pages | map: "path" -%}
+  {%- assign page_paths = site.header_pages | default: default_paths -%}
+  <a class="site-title" rel="author" href="{{ "/" | relative_url }}">{{ site.title | escape }}</a>
+  <br />
+  <div class="wrapper">
+    <nav class="site-nav">
+      <div class="trigger">
+        <a class="page-link" href="{{ "/" | absolute_url }}">    Home    </a>
+        <a class="page-link" href="{{ "/features.html" | absolute_url }}">Features</a>
+        <a class="page-link" href="{{ "/typical_usage.html" | absolute_url }}">Typical usage</a>
+        <a class="page-link" href="{{ "/installation.html" | absolute_url }}">Installation</a>
+        <a class="page-link" href="{{ "/manual.html" | absolute_url }}">Manual</a>
+        <a class="page-link" href="{{ "/support.html" | absolute_url }}">Support</a>
+      </div>
+    </nav>
+  </div>
+</header>
