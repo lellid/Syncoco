@@ -37,7 +37,6 @@ exclude:
   - .vs/
   - bin/
   - obj/
-  - help/
   - SyncocoPages.sln
   - SyncocoPages.csproj
   - SyncocoPages.csproj.user
