@@ -533,7 +533,7 @@ namespace Syncoco.DocumentActions
       {
         try
         {
-          result = filehash == FileNode.CalculateHash(info);
+          result = filehash == FileNode.CalculateHash(info).Hash;
         }
         catch(HashCalculationException)
         {

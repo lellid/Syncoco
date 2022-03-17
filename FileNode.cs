@@ -245,28 +245,28 @@ namespace Syncoco
       
       _name = info.Name;
 
-      FileHash hashCalculatedBefore;
-      if(forceUpdateHash && info.Exists)
-        hashCalculatedBefore = CalculateHash(info);
-      else
-        hashCalculatedBefore = new FileHash();
+     HashResult? hashCalculatedBefore;
+            if (forceUpdateHash && info.Exists)
+                hashCalculatedBefore = CalculateHash(info);
+            else
+                hashCalculatedBefore = null;
         
 
-      if(IsDifferent(info) || (hashCalculatedBefore.Valid && !this.HasSameHashThan(hashCalculatedBefore)))
+      if(IsDifferent(info) || (hashCalculatedBefore.HasValue && !this.HasSameHashThan(hashCalculatedBefore.Value.Hash)))
       {
-        if(!hashCalculatedBefore.Valid)
+        if(hashCalculatedBefore is null)
           hashCalculatedBefore = CalculateHash(info);
 
         // only update the node when the hash is now valid
-        if(hashCalculatedBefore.Valid)
+        if(hashCalculatedBefore.HasValue)
         {
           if(createHint && !(_hint is FileChangedHint))
             _hint = new FileChangedHint(_creationTimeUtc,_lastWriteTimeUtc,_fileLength,_fileHash);
 
-          _lastWriteTimeUtc = info.LastWriteTimeUtc;
-          _creationTimeUtc = info.CreationTimeUtc;
-          _fileLength = info.Length;
-          _fileHash = hashCalculatedBefore;
+                    _lastWriteTimeUtc = hashCalculatedBefore.Value.LastWriteTimeUtc;
+                    _creationTimeUtc = hashCalculatedBefore.Value.CreationTimeUtc;
+                    _fileLength = hashCalculatedBefore.Value.Length;
+          _fileHash = hashCalculatedBefore.Value.Hash;
         }
       }
       else // it is not different

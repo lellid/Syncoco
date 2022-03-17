@@ -49,11 +49,10 @@ namespace Syncoco
       if(base.ContainsKey(arr))
       {
         PathAndFileNode existingNode = this[arr];
-        if(node.FileLength!=existingNode.Node.FileLength)
-          throw new ApplicationException(
-            string.Format("it should not happen, that two files with different length have the same hash, so rethink this" +
-            "The two nodes here are: {0}(length={1}) and {2}(length={3})",existingNode.Path,existingNode.Node.FileLength,
-            path,node.FileLength));
+                if (node.FileLength != existingNode.Node.FileLength)
+                {
+                    //throw new ApplicationException($"It should not happen, that two files with different length have the same hash, so rethink this: The two nodes here are: {existingNode.Path}(length={existingNode.Node.FileLength}) and {path}(length={node.FileLength})");
+                }
       }
       else
       {

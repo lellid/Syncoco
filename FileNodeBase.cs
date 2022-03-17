@@ -116,25 +116,27 @@ namespace Syncoco
     
       _name = info.Name;
 
-      FileHash hashCalculatedBefore;
-      if(forceUpdateHash && info.Exists)
-        hashCalculatedBefore = CalculateHash(info);
-      else
-        hashCalculatedBefore = new FileHash();
+      HashResult? hashCalculatedBefore;
+            if (forceUpdateHash && info.Exists)
+                hashCalculatedBefore = CalculateHash(info);
+            else
+                hashCalculatedBefore = null;
         
 
-      if(IsDifferent(info) || (hashCalculatedBefore.Valid && !this.HasSameHashThan(hashCalculatedBefore)))
+      if(IsDifferent(info) || (hashCalculatedBefore.HasValue && !this.HasSameHashThan(hashCalculatedBefore.Value.Hash)))
       {
-        _lastWriteTimeUtc = info.LastWriteTimeUtc;
-        _creationTimeUtc = info.CreationTimeUtc;
-        _fileLength = info.Length;
-        _fileHash = hashCalculatedBefore.Valid ? hashCalculatedBefore : CalculateHash(info);
-       
+                if(hashCalculatedBefore is null)
+                {
+                    hashCalculatedBefore = CalculateHash(info);
+                }
+
+                    _fileHash = hashCalculatedBefore.Value.Hash;
+                    _fileLength = hashCalculatedBefore.Value.Length;
+                    _creationTimeUtc = hashCalculatedBefore.Value.CreationTimeUtc;
+                    _lastWriteTimeUtc = hashCalculatedBefore.Value.LastWriteTimeUtc;
       }
 
       _attributes = info.Attributes;
-
-      
     }
    
 
@@ -167,24 +169,61 @@ namespace Syncoco
         this.HasSameHashThan(from._fileHash);
     }
 
-    public static FileHash CalculateHash(System.IO.FileInfo fileinfo)
-    {
-      try
-      {
-        byte[] result = null;
-        using (System.IO.FileStream stream = fileinfo.OpenRead())
+        public struct HashResult
         {
-          result = md5.ComputeHash(stream);
+            public FileHash Hash { get; }
+            public long Length { get; }
+            public DateTime CreationTimeUtc { get; }
+            public DateTime LastWriteTimeUtc { get; }
+            public HashResult(byte[] hash, long length, DateTime creationTime, DateTime lastWriteTime)
+            {
+                Hash =new FileHash(hash); 
+                Length =length;
+                CreationTimeUtc =creationTime;
+                LastWriteTimeUtc =lastWriteTime;
+            }
         }
-        return new FileHash(result);
-      }
-      catch (System.IO.IOException ex2)
-      {
-        throw new HashCalculationException(fileinfo.FullName, ex2.Message);
-      }
-    }
 
-    public FileHash FileHash 
+
+        public static HashResult CalculateHash(System.IO.FileInfo fileinfo)
+        {
+            try
+            {
+                byte[] result = null;
+                using (System.IO.FileStream stream = fileinfo.OpenRead())
+                //using (System.IO.FileStream stream = new System.IO.FileStream(fileinfo.FullName, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.Read))
+                {
+                    var lwtBefore = fileinfo.LastWriteTimeUtc;
+                    var ctBefore = fileinfo.CreationTimeUtc;
+                    var lengthBefore = fileinfo.Length;
+
+                    result = md5.ComputeHash(stream);
+
+                    var lengthStream = stream.Position;
+                    var lengthAfter = fileinfo.Length;
+                    var lwtAfter = fileinfo.LastWriteTimeUtc;
+                    var ctAfter = fileinfo.CreationTimeUtc;
+
+                    if (lengthBefore == lengthAfter && lengthBefore == lengthStream && lwtBefore == lwtAfter && ctBefore == ctAfter)
+                    {
+                        return new HashResult(result, lengthStream, ctAfter, lwtAfter);
+                    }
+                    else
+                    {
+                        if(lengthBefore == lengthAfter && lengthAfter != lengthStream)
+                            throw new HashCalculationException(fileinfo.FullName, "File corrupt! (stream length differs from length in file information)");
+                        else
+                            throw new HashCalculationException(fileinfo.FullName, "File changed during hash calculation!");
+                    }
+                }
+            }
+            catch (System.IO.IOException ex2)
+            {
+                throw new HashCalculationException(fileinfo.FullName, ex2.Message);
+            }
+        }
+
+        public FileHash FileHash 
     {
       get 
       { 
@@ -206,8 +245,8 @@ namespace Syncoco
     public bool HasSameHashThan(string fullFileName)
     {
       System.IO.FileInfo fileinfo = new System.IO.FileInfo(fullFileName);
-      FileHash otherFileHash = CalculateHash(fileinfo);
-      return HasSameHashThan(otherFileHash);
+      var otherFileHash = CalculateHash(fileinfo);
+      return HasSameHashThan(otherFileHash.Hash);
       
     }
 
