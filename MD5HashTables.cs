@@ -51,7 +51,7 @@ namespace Syncoco
         PathAndFileNode existingNode = this[arr];
                 if (node.FileLength != existingNode.Node.FileLength)
                 {
-                    //throw new ApplicationException($"It should not happen, that two files with different length have the same hash, so rethink this: The two nodes here are: {existingNode.Path}(length={existingNode.Node.FileLength}) and {path}(length={node.FileLength})");
+                    throw new ApplicationException($"It should not happen, that two files with different length have the same hash, so rethink this: The two nodes here are: {existingNode.Path}(length={existingNode.Node.FileLength}) and {path}(length={node.FileLength})");
                 }
       }
       else
