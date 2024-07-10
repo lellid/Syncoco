@@ -20,14 +20,7 @@
 /////////////////////////////////////////////////////////////////////////////
 #endregion
 
-using System;
-using System.Collections;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Windows.Forms;
-
-namespace Syncoco
+namespace Syncoco.GUI
 {
   using Filter;
   /// <summary>
@@ -78,16 +71,16 @@ namespace Syncoco
     /// <summary> 
     /// Clean up any resources being used.
     /// </summary>
-    protected override void Dispose( bool disposing )
+    protected override void Dispose(bool disposing)
     {
-      if( disposing )
+      if (disposing)
       {
-        if(components != null)
+        if (components != null)
         {
           components.Dispose();
         }
       }
-      base.Dispose( disposing );
+      base.Dispose(disposing);
     }
 
     #region Component Designer generated code
@@ -116,8 +109,8 @@ namespace Syncoco
       // 
       // lvPathNames
       // 
-      this.lvPathNames.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-        | System.Windows.Forms.AnchorStyles.Left) 
+      this.lvPathNames.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+        | System.Windows.Forms.AnchorStyles.Left)
         | System.Windows.Forms.AnchorStyles.Right)));
       this.lvPathNames.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
                                                                                   this.chFilterPath});
@@ -184,7 +177,7 @@ namespace Syncoco
       // 
       // cbDefaultAction
       // 
-      this.cbDefaultAction.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+      this.cbDefaultAction.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
         | System.Windows.Forms.AnchorStyles.Right)));
       this.cbDefaultAction.Location = new System.Drawing.Point(8, 384);
       this.cbDefaultAction.Name = "cbDefaultAction";
@@ -203,7 +196,7 @@ namespace Syncoco
       // 
       // edPathToAdd
       // 
-      this.edPathToAdd.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.edPathToAdd.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
         | System.Windows.Forms.AnchorStyles.Right)));
       this.edPathToAdd.Location = new System.Drawing.Point(8, 24);
       this.edPathToAdd.Name = "edPathToAdd";
@@ -276,15 +269,17 @@ namespace Syncoco
       this.lvPathNames.BeginUpdate();
 
       this.lvPathNames.Items.Clear();
-      foreach(FilterItem item in filterList)
+      foreach (FilterItem item in filterList)
       {
-        lvPathNames.Items.Add(" " + item.MatchString,(int)item.Action);
+        lvPathNames.Items.Add(" " + item.MatchString, (int)item.Action);
       }
 
-      if(selectedIndices!=null)
+      if (selectedIndices != null)
       {
-        for(int i=0;i<selectedIndices.Length;i++)
-          lvPathNames.Items[selectedIndices[i]].Selected=true;
+        for (int i = 0; i < selectedIndices.Length; i++)
+        {
+          lvPathNames.Items[selectedIndices[i]].Selected = true;
+        }
       }
 
       this.lvPathNames.EndUpdate();
@@ -303,65 +298,77 @@ namespace Syncoco
 
     private void btMoveDown_Click(object sender, System.EventArgs e)
     {
-      if(null!=Controller)
+      if (null != Controller)
+      {
         Controller.EhView_MoveDown(GetIndexArray(this.lvPathNames.SelectedIndices));
+      }
     }
 
     private void btMoveUp_Click(object sender, System.EventArgs e)
     {
-      if(null!=Controller)
+      if (null != Controller)
+      {
         Controller.EhView_MoveUp(GetIndexArray(this.lvPathNames.SelectedIndices));
+      }
     }
 
     private void rbPathInclude_CheckedChanged(object sender, System.EventArgs e)
     {
-    
+
     }
 
     private void rbPathExclude_CheckedChanged(object sender, System.EventArgs e)
     {
-    
+
     }
 
     private int[] GetIndexArray(System.Windows.Forms.ListView.SelectedIndexCollection coll)
     {
       int[] res = new int[coll.Count];
-      coll.CopyTo(res,0);
+      coll.CopyTo(res, 0);
       return res;
     }
 
-   
+
 
     private void btChangeAction_Click(object sender, System.EventArgs e)
     {
-      if(null!=Controller)
+      if (null != Controller)
+      {
         Controller.EhView_ChangeAction(GetIndexArray(this.lvPathNames.SelectedIndices));
+      }
     }
 
     private void btDeletePath_Click(object sender, System.EventArgs e)
     {
-      if(null!=Controller)
+      if (null != Controller)
+      {
         Controller.EhView_DeletePath(GetIndexArray(this.lvPathNames.SelectedIndices));
+      }
     }
 
     private void cbDefaultAction_SelectedIndexChanged(object sender, System.EventArgs e)
     {
-      if(null!=Controller)
+      if (null != Controller)
+      {
         Controller.EhView_DefaultActionChanged(cbDefaultAction.SelectedIndex);
-
+      }
     }
 
     private void btPathInclude_Click(object sender, System.EventArgs e)
     {
-      if(null!=Controller)
+      if (null != Controller)
+      {
         Controller.EhView_AddPath(this.edPathToAdd.Text, true);
-    
+      }
     }
 
     private void btPathExclude_Click(object sender, System.EventArgs e)
     {
-      if(null!=Controller)
+      if (null != Controller)
+      {
         Controller.EhView_AddPath(this.edPathToAdd.Text, false);
+      }
     }
   }
 }

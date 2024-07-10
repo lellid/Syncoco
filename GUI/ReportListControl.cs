@@ -20,14 +20,7 @@
 /////////////////////////////////////////////////////////////////////////////
 #endregion
 
-using System;
-using System.Collections;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Windows.Forms;
-
-namespace Syncoco
+namespace Syncoco.GUI
 {
   /// <summary>
   /// Summary description for ReportListControl.
@@ -35,7 +28,7 @@ namespace Syncoco
   public class ReportListControl : System.Windows.Forms.UserControl
   {
     private System.Windows.Forms.TextBox textBox1;
-    ReportListController _controller;
+    private ReportListController _controller;
     private System.Windows.Forms.Timer timer1;
     private System.ComponentModel.IContainer components;
 
@@ -52,16 +45,18 @@ namespace Syncoco
     {
       get { return _controller; }
       set
-      { 
+      {
         _controller = value;
-        if(_controller!=null)
+        if (_controller != null)
+        {
           timer1.Start();
+        }
       }
     }
 
     public void SetText(string msg)
     {
-      textBox1.Text= msg;
+      textBox1.Text = msg;
     }
 
     public string GetText()
@@ -71,16 +66,16 @@ namespace Syncoco
     /// <summary> 
     /// Clean up any resources being used.
     /// </summary>
-    protected override void Dispose( bool disposing )
+    protected override void Dispose(bool disposing)
     {
-      if( disposing )
+      if (disposing)
       {
-        if(components != null)
+        if (components != null)
         {
           components.Dispose();
         }
       }
-      base.Dispose( disposing );
+      base.Dispose(disposing);
     }
 
     #region Component Designer generated code
@@ -97,8 +92,8 @@ namespace Syncoco
       // 
       // textBox1
       // 
-      this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-        | System.Windows.Forms.AnchorStyles.Left) 
+      this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+        | System.Windows.Forms.AnchorStyles.Left)
         | System.Windows.Forms.AnchorStyles.Right)));
       this.textBox1.Location = new System.Drawing.Point(8, 8);
       this.textBox1.Multiline = true;
@@ -125,8 +120,10 @@ namespace Syncoco
 
     private void timer1_Tick(object sender, System.EventArgs e)
     {
-      if(null!=_controller)
+      if (null != _controller)
+      {
         _controller.EhView_TimerTick();
+      }
     }
   }
 }

@@ -22,12 +22,9 @@
 
 using System;
 using System.Collections;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 
-namespace Syncoco
+namespace Syncoco.GUI
 {
   /// <summary>
   /// Summary description for SyncList.
@@ -36,7 +33,7 @@ namespace Syncoco
   {
     private System.Windows.Forms.ListView lvSyncList;
     private System.Windows.Forms.ColumnHeader _chName;
-    
+
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -49,18 +46,18 @@ namespace Syncoco
 
       // TODO: Add any initialization after the InitializeComponent call
       ContextMenu contextMenu = new ContextMenu();
-      contextMenu.MenuItems.Add("Set remove manually to remove",new EventHandler(this.EhSetRemoveManuallyToRemove));
-      contextMenu.MenuItems.Add("Set remove to forced remove",new EventHandler(this.EhSetRemoveToForcedRemove));
-      contextMenu.MenuItems.Add("Set remove manually to rollback remove",new EventHandler(this.EhSetRemoveManuallyToRollback));
+      contextMenu.MenuItems.Add("Set remove manually to remove", new EventHandler(this.EhSetRemoveManuallyToRemove));
+      contextMenu.MenuItems.Add("Set remove to forced remove", new EventHandler(this.EhSetRemoveToForcedRemove));
+      contextMenu.MenuItems.Add("Set remove manually to rollback remove", new EventHandler(this.EhSetRemoveManuallyToRollback));
       contextMenu.MenuItems.Add("-");
-      
-      contextMenu.MenuItems.Add("Set resolve manually to overwrite",new EventHandler(this.EhSetResolveManuallyToOverwrite));
-      contextMenu.MenuItems.Add("Set resolve manually to ignore",new EventHandler(this.EhSetResolveManuallyToIgnore));
-      contextMenu.MenuItems.Add("Set resolve manually to rollback",new EventHandler(this.EhSetResolveManuallyToRollback));
+
+      contextMenu.MenuItems.Add("Set resolve manually to overwrite", new EventHandler(this.EhSetResolveManuallyToOverwrite));
+      contextMenu.MenuItems.Add("Set resolve manually to ignore", new EventHandler(this.EhSetResolveManuallyToIgnore));
+      contextMenu.MenuItems.Add("Set resolve manually to rollback", new EventHandler(this.EhSetResolveManuallyToRollback));
 
       contextMenu.MenuItems.Add("-");
-      contextMenu.MenuItems.Add("Set remove to rollback remove",new EventHandler(this.EhSetRemoveToRollbackRemove));
-      contextMenu.MenuItems.Add("Set overwrite to rollback overwrite",new EventHandler(this.EhSetOverwriteToRollbackOverwrite));
+      contextMenu.MenuItems.Add("Set remove to rollback remove", new EventHandler(this.EhSetRemoveToRollbackRemove));
+      contextMenu.MenuItems.Add("Set overwrite to rollback overwrite", new EventHandler(this.EhSetOverwriteToRollbackOverwrite));
 
       this.ContextMenu = contextMenu;
 
@@ -72,12 +69,12 @@ namespace Syncoco
     public void InitializeColumnHeaders()
     {
       lvSyncList.Clear();
-      lvSyncList.Columns.Add("Name",170,System.Windows.Forms.HorizontalAlignment.Center);
-      lvSyncList.Columns.Add("Action",70,System.Windows.Forms.HorizontalAlignment.Center);
-      lvSyncList.Columns.Add("Path",70,System.Windows.Forms.HorizontalAlignment.Center);
+      lvSyncList.Columns.Add("Name", 170, System.Windows.Forms.HorizontalAlignment.Center);
+      lvSyncList.Columns.Add("Action", 70, System.Windows.Forms.HorizontalAlignment.Center);
+      lvSyncList.Columns.Add("Path", 70, System.Windows.Forms.HorizontalAlignment.Center);
 
-      lvSyncList.Columns.Add("Length",70,System.Windows.Forms.HorizontalAlignment.Center);
-      lvSyncList.Columns.Add("WrTime",90,System.Windows.Forms.HorizontalAlignment.Center);
+      lvSyncList.Columns.Add("Length", 70, System.Windows.Forms.HorizontalAlignment.Center);
+      lvSyncList.Columns.Add("WrTime", 90, System.Windows.Forms.HorizontalAlignment.Center);
     }
 
     public void InitializeList(ArrayList list)
@@ -165,38 +162,41 @@ namespace Syncoco
 
     private void EhSyncList_ColumnClick(object sender, System.Windows.Forms.ColumnClickEventArgs e)
     {
-    _controller.EhView_ColumnClick(e.Column);
+      _controller.EhView_ColumnClick(e.Column);
     }
 
     protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
     {
-      if((Keys.A | Keys.Control)==keyData)
+      if ((Keys.A | Keys.Control) == keyData)
       {
         this.lvSyncList.BeginUpdate();
-        for(int i=0;i<lvSyncList.Items.Count;i++)
-          this.lvSyncList.Items[i].Selected=true;
+        for (int i = 0; i < lvSyncList.Items.Count; i++)
+        {
+          this.lvSyncList.Items[i].Selected = true;
+        }
+
         this.lvSyncList.EndUpdate();
-        
+
 
       }
 
-      return base.ProcessCmdKey (ref msg, keyData);
+      return base.ProcessCmdKey(ref msg, keyData);
     }
 
 
     /// <summary> 
     /// Clean up any resources being used.
     /// </summary>
-    protected override void Dispose( bool disposing )
+    protected override void Dispose(bool disposing)
     {
-      if( disposing )
+      if (disposing)
       {
-        if(components != null)
+        if (components != null)
         {
           components.Dispose();
         }
       }
-      base.Dispose( disposing );
+      base.Dispose(disposing);
     }
 
     #region Component Designer generated code
@@ -212,8 +212,8 @@ namespace Syncoco
       // 
       // lvSyncList
       // 
-      this.lvSyncList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-        | System.Windows.Forms.AnchorStyles.Left) 
+      this.lvSyncList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+        | System.Windows.Forms.AnchorStyles.Left)
         | System.Windows.Forms.AnchorStyles.Right)));
       this.lvSyncList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
                                                                                  this._chName});
@@ -240,6 +240,6 @@ namespace Syncoco
     }
     #endregion
 
-  
+
   }
 }

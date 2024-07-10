@@ -20,12 +20,10 @@
 /////////////////////////////////////////////////////////////////////////////
 #endregion
 
+using Syncoco.GUI;
+using Syncoco.Traversing;
 using System;
 using System.Collections;
-using System.Runtime.InteropServices;
-
-using Syncoco.Filter;
-using Syncoco.Traversing;
 using System.IO;
 
 
@@ -39,20 +37,20 @@ namespace Syncoco.DocumentActions
   /// </summary>
   public class SynchronizingCopyItem
   {
-    protected string _destination=null;
-    protected FileNode _foFileNode=null;
+    protected string _destination = null;
+    protected FileNode _foFileNode = null;
     protected FileHash _sourceContentHash;
     protected int _rootListIndex;
-    protected System.Collections.Specialized.StringCollection _sources=null;
-  
+    protected System.Collections.Specialized.StringCollection _sources = null;
+
     protected SynchronizingCopyItem()
     {
     }
 
     public SynchronizingCopyItem(SyncItemTag tag, MainDocument doc)
     {
-      System.Diagnostics.Debug.Assert(tag.Action==SyncAction.Copy);
-      System.Diagnostics.Debug.Assert(tag!=null);
+      System.Diagnostics.Debug.Assert(tag.Action == SyncAction.Copy);
+      System.Diagnostics.Debug.Assert(tag != null);
 
       string relPathFileName = tag.FileName;
       string absrootdir = doc.MyRoot(tag.RootListIndex).FilePath;
@@ -63,8 +61,8 @@ namespace Syncoco.DocumentActions
       PathUtil.Assert_Abspath(absrootdir);
 #endif
 
-      
-      _destination = PathUtil.Combine_Abspath_RelpathOrFilename(absrootdir,relPathFileName);
+
+      _destination = PathUtil.Combine_Abspath_RelpathOrFilename(absrootdir, relPathFileName);
 
       FileSystemRoot foRoot = doc.ForeignRoot(tag.RootListIndex);
       _foFileNode = foRoot.GetFileNode(relPathFileName);
@@ -77,7 +75,7 @@ namespace Syncoco.DocumentActions
     {
       get { return _destination; }
     }
-  
+
     public System.Collections.Specialized.StringCollection Sources
     {
       get { return _sources; }
@@ -122,14 +120,14 @@ namespace Syncoco.DocumentActions
   /// </summary>
   public class SynchronizingOverwriteItem : SynchronizingCopyItem
   {
-    protected FileNode _myFileNode=null;
+    protected FileNode _myFileNode = null;
     protected FileHash _destinationContentHash;
 
 
     public SynchronizingOverwriteItem(SyncItemTag tag, MainDocument doc)
     {
-      System.Diagnostics.Debug.Assert(tag.Action==SyncAction.Overwrite || tag.Action==SyncAction.ResolveManuallyOverwrite);
-      System.Diagnostics.Debug.Assert(tag!=null);
+      System.Diagnostics.Debug.Assert(tag.Action == SyncAction.Overwrite || tag.Action == SyncAction.ResolveManuallyOverwrite);
+      System.Diagnostics.Debug.Assert(tag != null);
 
       string relPathFileName = tag.FileName;
       string absrootdir = doc.MyRoot(tag.RootListIndex).FilePath;
@@ -140,8 +138,8 @@ namespace Syncoco.DocumentActions
       PathUtil.Assert_Abspath(absrootdir);
 #endif
 
-      
-      _destination = PathUtil.Combine_Abspath_RelpathOrFilename(absrootdir,relPathFileName);
+
+      _destination = PathUtil.Combine_Abspath_RelpathOrFilename(absrootdir, relPathFileName);
 
       FileSystemRoot foRoot = doc.ForeignRoot(tag.RootListIndex);
       _foFileNode = foRoot.GetFileNode(relPathFileName);
@@ -173,7 +171,7 @@ namespace Syncoco.DocumentActions
       this.InnerList.Add(item);
     }
 
-    
+
   }
 
   #endregion
@@ -182,13 +180,13 @@ namespace Syncoco.DocumentActions
   /// <summary>
   /// Stores the information about how to copy which item from which source.
   /// </summary>
-  public class SynchronizingDeleteItem 
+  public class SynchronizingDeleteItem
   {
-    protected string _destination=null;
+    protected string _destination = null;
     protected FileHash _destinationContentHash;
-    protected FileNode _myFileNode=null;
-    protected FileNode _foFileNode=null;
-    int _rootListIndex=-1;
+    protected FileNode _myFileNode = null;
+    protected FileNode _foFileNode = null;
+    private int _rootListIndex = -1;
 
     public SynchronizingDeleteItem(string path, FileHash hash)
     {
@@ -198,8 +196,8 @@ namespace Syncoco.DocumentActions
 
     public SynchronizingDeleteItem(SyncItemTag tag, MainDocument doc)
     {
-      System.Diagnostics.Debug.Assert(tag.Action==SyncAction.Remove || tag.Action==SyncAction.RemoveManually);
-      System.Diagnostics.Debug.Assert(tag!=null);
+      System.Diagnostics.Debug.Assert(tag.Action == SyncAction.Remove || tag.Action == SyncAction.RemoveManually);
+      System.Diagnostics.Debug.Assert(tag != null);
 
       string relPathFileName = tag.FileName;
       string absrootdir = doc.MyRoot(tag.RootListIndex).FilePath;
@@ -210,8 +208,8 @@ namespace Syncoco.DocumentActions
       PathUtil.Assert_Abspath(absrootdir);
 #endif
 
-      
-      _destination = PathUtil.Combine_Abspath_RelpathOrFilename(absrootdir,relPathFileName);
+
+      _destination = PathUtil.Combine_Abspath_RelpathOrFilename(absrootdir, relPathFileName);
 
       FileSystemRoot foRoot = doc.ForeignRoot(tag.RootListIndex);
       _foFileNode = foRoot.GetFileNode(relPathFileName);
@@ -272,7 +270,7 @@ namespace Syncoco.DocumentActions
 
     public int CompareTo(object obj)
     {
-      return string.Compare(this.Path, ((SourceItem)obj).Path,true);
+      return string.Compare(this.Path, ((SourceItem)obj).Path, true);
     }
 
     #endregion
@@ -284,9 +282,9 @@ namespace Syncoco.DocumentActions
 
     public SourceItem this[int i]
     {
-      get 
+      get
       {
-        return (SourceItem)this.InnerList[i]; 
+        return (SourceItem)this.InnerList[i];
       }
       set
       {
@@ -298,7 +296,7 @@ namespace Syncoco.DocumentActions
     public void Add(SourceItem item)
     {
       this.InnerList.Add(item);
-      _pathhash.Add(item.Path,null);
+      _pathhash.Add(item.Path, null);
     }
 
     public bool Contains(string fullpath)
@@ -318,11 +316,11 @@ namespace Syncoco.DocumentActions
   {
     public SourceItemArray this[FileHash key]
     {
-      get  
+      get
       {
-        return( (SourceItemArray)Dictionary[key] );
+        return ((SourceItemArray)Dictionary[key]);
       }
-      set  
+      set
       {
         Dictionary[key] = value;
       }
@@ -330,14 +328,16 @@ namespace Syncoco.DocumentActions
 
     protected void Add(FileHash key, string fullpath, SourceItemArray existingvalue)
     {
-      if(existingvalue==null)
+      if (existingvalue == null)
       {
         existingvalue = new SourceItemArray();
-        Dictionary.Add(key,existingvalue);
+        Dictionary.Add(key, existingvalue);
       }
-       
-      if(!existingvalue.Contains(fullpath))
+
+      if (!existingvalue.Contains(fullpath))
+      {
         existingvalue.Add(new SourceItem(fullpath));
+      }
     }
 
     /// <summary>
@@ -348,7 +348,7 @@ namespace Syncoco.DocumentActions
     public void Add(FileHash key, string fullfilename)
     {
       SourceItemArray existingvalue = this[key];
-      Add(key,fullfilename,existingvalue);
+      Add(key, fullfilename, existingvalue);
     }
     /// <summary>
     /// Adds a entry to this hash.
@@ -358,16 +358,16 @@ namespace Syncoco.DocumentActions
     public void Add(FileHash key, object val)
     {
       SourceItemArray existingvalue = this[key];
-      if(val is PathAndFileNode)
+      if (val is PathAndFileNode)
       {
-        Add(key,((PathAndFileNode)val).Path,existingvalue);
+        Add(key, ((PathAndFileNode)val).Path, existingvalue);
       }
-      else if(val is ArrayList)
+      else if (val is ArrayList)
       {
         ArrayList list = (ArrayList)val;
-        foreach(PathAndFileNode pafn in list)
+        foreach (PathAndFileNode pafn in list)
         {
-          Add(key,pafn.Path,existingvalue);
+          Add(key, pafn.Path, existingvalue);
           existingvalue = this[key];
         }
       }
@@ -376,12 +376,14 @@ namespace Syncoco.DocumentActions
     public void Remove(FileHash key, string path)
     {
       SourceItemArray existingvalue = this[key];
-      if(existingvalue!=null)
+      if (existingvalue != null)
       {
-        for(int i=existingvalue.Count-1;i>=0;i--)
+        for (int i = existingvalue.Count - 1; i >= 0; i--)
         {
-          if(PathUtil.ArePathsEqual(existingvalue[i].Path,path))
+          if (PathUtil.ArePathsEqual(existingvalue[i].Path, path))
+          {
             existingvalue.RemoveAt(i);
+          }
         }
       }
 
@@ -398,23 +400,31 @@ namespace Syncoco.DocumentActions
     public void Increment(FileHash hash)
     {
       object o = Dictionary[hash];
-      if(o!=null)
-        Dictionary[hash] = 1+(int)o;
+      if (o != null)
+      {
+        Dictionary[hash] = 1 + (int)o;
+      }
       else
-        Dictionary.Add(hash,1);
+      {
+        Dictionary.Add(hash, 1);
+      }
     }
 
     public void Decrement(FileHash hash)
     {
       object o = Dictionary[hash];
-      System.Diagnostics.Debug.Assert(o!=null);
+      System.Diagnostics.Debug.Assert(o != null);
       System.Diagnostics.Debug.Assert(o is int);
-      System.Diagnostics.Debug.Assert(((int)o)>0);
+      System.Diagnostics.Debug.Assert(((int)o) > 0);
       int oo = (int)o - 1;
-      if(oo>0)
+      if (oo > 0)
+      {
         Dictionary[hash] = oo;
+      }
       else
+      {
         Dictionary.Remove(hash);
+      }
     }
 
     public bool IsReferenced(FileHash hash)
@@ -422,62 +432,60 @@ namespace Syncoco.DocumentActions
       return Dictionary.Contains(hash);
     }
 
-  
+
   }
 
   #endregion
 
   #endregion
 
- 
+
   public class SynchronizingStrategy : AbstractDocumentAction
   {
     #region Member variables
 
 
-    SourceItemHash _sourceItemHash = new SourceItemHash();
-    SourceHashReferenceCounter _sourceReferenceConter = new SourceHashReferenceCounter();
+    private SourceItemHash _sourceItemHash = new SourceItemHash();
+    private SourceHashReferenceCounter _sourceReferenceConter = new SourceHashReferenceCounter();
 
     public SynchronizingCopyItemList _copyItems = new SynchronizingCopyItemList();
     public SynchronizingOverwriteItemList _overwriteItems = new SynchronizingOverwriteItemList();
     public SynchronizingDeleteItemList _deleteItems = new SynchronizingDeleteItemList();
-
-    SyncItemTagList _syncItemTagList;
-
-    bool _verbose=false;
+    private SyncItemTagList _syncItemTagList;
+    private bool _verbose = false;
 
     #endregion
 
     #region Constructors
 
     public SynchronizingStrategy(MainDocument doc, IBackgroundMonitor monitor, IErrorReporter reporter)
-      : base(doc,monitor,reporter)
+      : base(doc, monitor, reporter)
     {
     }
 
 
     public SynchronizingStrategy(MainDocument doc, SyncItemTagList list)
-      : this(doc,null,null)
+      : this(doc, null, null)
     {
       _syncItemTagList = list;
-      for(int i=_syncItemTagList.Count-1;i>=0;i--)
+      for (int i = _syncItemTagList.Count - 1; i >= 0; i--)
       {
         SyncItemTag item = _syncItemTagList[i];
-        switch(item.Action)
+        switch (item.Action)
         {
           case SyncAction.Copy:
-            _copyItems.Add(new SynchronizingCopyItem(item,_doc));
+            _copyItems.Add(new SynchronizingCopyItem(item, _doc));
             _syncItemTagList.RemoveAt(i);
             break;
           case SyncAction.Overwrite:
           case SyncAction.ResolveManuallyOverwrite:
-            _overwriteItems.Add(new SynchronizingOverwriteItem(item,_doc));
+            _overwriteItems.Add(new SynchronizingOverwriteItem(item, _doc));
             _syncItemTagList.RemoveAt(i);
             break;
           case SyncAction.Remove:
-            if(!PathUtil.IsDirectoryName(item.FileName))
+            if (!PathUtil.IsDirectoryName(item.FileName))
             {
-              _deleteItems.Add(new SynchronizingDeleteItem(item,_doc));
+              _deleteItems.Add(new SynchronizingDeleteItem(item, _doc));
               _syncItemTagList.RemoveAt(i);
             }
             break;
@@ -492,25 +500,29 @@ namespace Syncoco.DocumentActions
 
       // now we must collect all files that can be the sources to the copy and overwrite
       // items
-      for(int i=0;i<_copyItems.Count;i++)
+      for (int i = 0; i < _copyItems.Count; i++)
       {
         FileHash sourceContentHash = _copyItems[i].SourceContentHash;
         object o = doc.CachedAllMyFiles[sourceContentHash];
-        this._sourceItemHash.Add(sourceContentHash,o);
+        this._sourceItemHash.Add(sourceContentHash, o);
         this._sourceReferenceConter.Increment(sourceContentHash);
-        string mediumfilename = PathUtil.Combine_Abspath_Filename(_doc.MediumDirectoryName,sourceContentHash.MediumFileName);
-        if(System.IO.File.Exists(mediumfilename))
-          this._sourceItemHash.Add(sourceContentHash,mediumfilename);
+        string mediumfilename = PathUtil.Combine_Abspath_Filename(_doc.MediumDirectoryName, sourceContentHash.MediumFileName);
+        if (System.IO.File.Exists(mediumfilename))
+        {
+          this._sourceItemHash.Add(sourceContentHash, mediumfilename);
+        }
       }
-      for(int i=0;i<_overwriteItems.Count;i++)
+      for (int i = 0; i < _overwriteItems.Count; i++)
       {
         FileHash sourceContentHash = _overwriteItems[i].SourceContentHash;
         object o = doc.CachedAllMyFiles[sourceContentHash];
-        this._sourceItemHash.Add(sourceContentHash,o);
+        this._sourceItemHash.Add(sourceContentHash, o);
         this._sourceReferenceConter.Increment(sourceContentHash);
-        string mediumfilename = PathUtil.Combine_Abspath_Filename(_doc.MediumDirectoryName,sourceContentHash.MediumFileName);
-        if(System.IO.File.Exists(mediumfilename))
-          this._sourceItemHash.Add(sourceContentHash,mediumfilename);
+        string mediumfilename = PathUtil.Combine_Abspath_Filename(_doc.MediumDirectoryName, sourceContentHash.MediumFileName);
+        if (System.IO.File.Exists(mediumfilename))
+        {
+          this._sourceItemHash.Add(sourceContentHash, mediumfilename);
+        }
       }
     }
 
@@ -525,36 +537,36 @@ namespace Syncoco.DocumentActions
     /// <param name="filehash">The expected file hash.</param>
     /// <returns>True if the source file was verified sucessfully.</returns>
     /// <remarks>If the verify was successfull, the items Verify property will be set to true.</remarks>
-    bool VerifySourceItem(SourceItem item, FileHash filehash)
+    private bool VerifySourceItem(SourceItem item, FileHash filehash)
     {
       bool result = false;
       System.IO.FileInfo info = new System.IO.FileInfo(item.Path);
-      if(info.Exists)
+      if (info.Exists)
       {
         try
         {
           result = filehash == FileNode.CalculateHash(info).Hash;
         }
-        catch(HashCalculationException)
+        catch (HashCalculationException)
         {
         }
       }
       item.Verified = result;
       return result;
     }
-        
+
 
     /// <summary>
     /// Determines whether or not the given content (hash) is still needed for a copy or overwrite action.
     /// </summary>
     /// <param name="hash">The content hash.</param>
     /// <returns>True if this content, given by the hash, is needed in a copy or overwrite item.</returns>
-    bool IsReferencedSourceHash(FileHash hash)
+    private bool IsReferencedSourceHash(FileHash hash)
     {
       return this._sourceReferenceConter.IsReferenced(hash);
     }
 
-  
+
 
     /// <summary>
     /// Determines whether this file can be deleted. It can be if it is
@@ -565,37 +577,48 @@ namespace Syncoco.DocumentActions
     /// <param name="testReference">If true, it is tested, whether or not the filehash of this item is still needed in another copy or overwrite operation. If this
     /// is not the case, the item can be safely deleted (the return value is true then).</param>
     /// <returns>True if the file can be deleted.</returns>
-    public bool CanBeDeleted( string filename, FileHash filehash, bool testReference )
+    public bool CanBeDeleted(string filename, FileHash filehash, bool testReference)
     {
       SourceItemArray arr = this._sourceItemHash[filehash];
-      
-      if(arr==null)
+
+      if (arr == null)
+      {
         return true;
-      if(testReference && !IsReferencedSourceHash(filehash))  // make sure that this item is needed somewhere for a copy or overwrite
+      }
+
+      if (testReference && !IsReferencedSourceHash(filehash))  // make sure that this item is needed somewhere for a copy or overwrite
+      {
         return true;
+      }
       else // arr!=null)
       {
         // first look if there is already a file which is verified and is not the file
         // we consider here
-        foreach(SourceItem item in arr)
+        foreach (SourceItem item in arr)
         {
-          if(item.Verified && !PathUtil.ArePathsEqual(item.Path,filename))
+          if (item.Verified && !PathUtil.ArePathsEqual(item.Path, filename))
+          {
             return true;
+          }
         }
 
         // if this is not the case, then verify the first unverified item
         // which is not the file we consider here
-        for(int i=arr.Count-1;i>=0;i--)
+        for (int i = arr.Count - 1; i >= 0; i--)
         {
           SourceItem item = arr[i];
-          if(!PathUtil.ArePathsEqual(item.Path,filename))
+          if (!PathUtil.ArePathsEqual(item.Path, filename))
           {
-            System.Diagnostics.Debug.Assert(item.Verified==false);
+            System.Diagnostics.Debug.Assert(item.Verified == false);
             VerifySourceItem(item, filehash);
-            if(item.Verified==false) // if not verified delete this from the list of possible items afterwards
+            if (item.Verified == false) // if not verified delete this from the list of possible items afterwards
+            {
               arr.RemoveAt(i);
+            }
             else
+            {
               return true; // item is verified
+            }
           }
         }
       }
@@ -612,18 +635,22 @@ namespace Syncoco.DocumentActions
     public bool PreventsDeleteOrOverwrite(SynchronizingCopyItem copyitem)
     {
 
-      foreach(SynchronizingOverwriteItem item in _overwriteItems)
+      foreach (SynchronizingOverwriteItem item in _overwriteItems)
       {
-        if(copyitem.SourceContentHash==item.DestinationContentHash && 
+        if (copyitem.SourceContentHash == item.DestinationContentHash &&
           !CanBeDeleted(item.Destination, item.DestinationContentHash, false))
+        {
           return true;
+        }
       }
 
-      foreach(SynchronizingDeleteItem item in _deleteItems)
+      foreach (SynchronizingDeleteItem item in _deleteItems)
       {
-        if(copyitem.SourceContentHash==item.DestinationContentHash && 
+        if (copyitem.SourceContentHash == item.DestinationContentHash &&
           !CanBeDeleted(item.Destination, item.DestinationContentHash, false))
+        {
           return true;
+        }
       }
 
       return false;
@@ -636,18 +663,18 @@ namespace Syncoco.DocumentActions
     /// </summary>
     public void MoveSingleOverwriteItemToTemporaryLocation()
     {
-      SynchronizingOverwriteItem overwriteitem = _overwriteItems[0]; 
+      SynchronizingOverwriteItem overwriteitem = _overwriteItems[0];
 
       string tempfile = System.IO.Path.GetTempFileName();
 
-      System.IO.File.Copy(overwriteitem.Destination,tempfile,true);
+      System.IO.File.Copy(overwriteitem.Destination, tempfile, true);
 
       // now replace that file in the sourceItemHash by the newly created temporary file
       SourceItemArray arr = this._sourceItemHash[overwriteitem.DestinationContentHash];
-      System.Diagnostics.Debug.Assert(arr!=null);
-      foreach(SourceItem srcitem in arr)
+      System.Diagnostics.Debug.Assert(arr != null);
+      foreach (SourceItem srcitem in arr)
       {
-        if(PathUtil.ArePathsEqual(srcitem.Path,overwriteitem.Destination))
+        if (PathUtil.ArePathsEqual(srcitem.Path, overwriteitem.Destination))
         {
           srcitem.Path = tempfile;
         }
@@ -655,12 +682,12 @@ namespace Syncoco.DocumentActions
 
       // additionally, the temp file name is added to the collection of files that
       // should be deleted
-      _deleteItems.Add(new SynchronizingDeleteItem(tempfile,overwriteitem.DestinationContentHash));
+      _deleteItems.Add(new SynchronizingDeleteItem(tempfile, overwriteitem.DestinationContentHash));
     }
 
 
 
-   
+
 
     #endregion
 
@@ -670,18 +697,21 @@ namespace Syncoco.DocumentActions
 
     public void ExecuteDeleteOn(SynchronizingDeleteItem item)
     {
-      if(_monitor.ShouldReport)
+      if (_monitor.ShouldReport)
+      {
         _monitor.Report("Deleting file " + item.Destination);
-      
+      }
+
       FunctionResult functionResult = DeleteFileForced(item.Destination);
 
-      if(_verbose)
-        _reporter.ReportText(string.Format("Deleting file {0}, result: {1}\r\n",item.Destination,functionResult.ToString()));
-
-          
-      if(FunctionResult.Success==functionResult)
+      if (_verbose)
       {
-        if(item.RootListIndex>=0) // special case if RootListIndex<0 then that is a temporary item to delete
+        _reporter.ReportText(string.Format("Deleting file {0}, result: {1}\r\n", item.Destination, functionResult.ToString()));
+      }
+
+      if (FunctionResult.Success == functionResult)
+      {
+        if (item.RootListIndex >= 0) // special case if RootListIndex<0 then that is a temporary item to delete
         {
           FileSystemRoot myRoot = _doc.MyRoot(item.RootListIndex);
           FileSystemRoot foRoot = _doc.ForeignRoot(item.RootListIndex);
@@ -692,7 +722,7 @@ namespace Syncoco.DocumentActions
       }
     }
 
-    FunctionResult DeleteFileForced(string path)
+    private FunctionResult DeleteFileForced(string path)
     {
 #if DEBUG
       PathUtil.Assert_AbspathFilename(path);
@@ -703,7 +733,7 @@ namespace Syncoco.DocumentActions
         System.IO.File.Delete(path);
         return FunctionResult.Success;
       }
-      catch(Exception)
+      catch (Exception)
       {
       }
 
@@ -711,14 +741,14 @@ namespace Syncoco.DocumentActions
       System.IO.FileInfo info = new System.IO.FileInfo(path);
       info.Attributes &= ~(System.IO.FileAttributes.ReadOnly | System.IO.FileAttributes.Hidden | System.IO.FileAttributes.System);
       // this time we try to delete the file without catching the exception
-      
-      try 
+
+      try
       {
         System.IO.File.Delete(path);
       }
-      catch(Exception ex)
+      catch (Exception ex)
       {
-        _reporter.ReportError(string.Format("deleting file {0} : {1}",path,ex.Message));
+        _reporter.ReportError(string.Format("deleting file {0} : {1}", path, ex.Message));
         return FunctionResult.Failure;
       }
 
@@ -729,49 +759,56 @@ namespace Syncoco.DocumentActions
     public FunctionResult DeleteDirectory(string name, bool deleteForced)
     {
       DirectoryInfo dirInfo = new DirectoryInfo(name);
-      if(!dirInfo.Exists)
-        return FunctionResult.Success;
-
-      try 
+      if (!dirInfo.Exists)
       {
-        dirInfo.Delete(deleteForced); 
         return FunctionResult.Success;
       }
-      catch(System.IO.IOException exa ) 
-      {
-        if(!deleteForced)
-          _reporter.ReportWarning(string.Format("directory {0} could not be removed: {1}",dirInfo.FullName, exa.Message));
-      }
-      catch(System.UnauthorizedAccessException exb)
-      {
-        if(!deleteForced)
-          _reporter.ReportWarning(string.Format("directory {0} could not be removed: {1}",dirInfo.FullName, exb.Message));
 
+      try
+      {
+        dirInfo.Delete(deleteForced);
+        return FunctionResult.Success;
+      }
+      catch (System.IO.IOException exa)
+      {
+        if (!deleteForced)
+        {
+          _reporter.ReportWarning(string.Format("directory {0} could not be removed: {1}", dirInfo.FullName, exa.Message));
+        }
+      }
+      catch (System.UnauthorizedAccessException exb)
+      {
+        if (!deleteForced)
+        {
+          _reporter.ReportWarning(string.Format("directory {0} could not be removed: {1}", dirInfo.FullName, exb.Message));
+        }
       }
 
-      if(!deleteForced)
+      if (!deleteForced)
+      {
         return FunctionResult.Failure;
+      }
 
       // if forced then try to reset all attributes
-      try 
+      try
       {
         ResetAttributes(dirInfo);
-        dirInfo.Delete(deleteForced); 
+        dirInfo.Delete(deleteForced);
         return FunctionResult.Success;
       }
-      catch(System.IO.IOException exa) 
+      catch (System.IO.IOException exa)
       {
-        _reporter.ReportWarning(string.Format("directory {0} could not be removed: {1}",dirInfo.FullName, exa.Message));
+        _reporter.ReportWarning(string.Format("directory {0} could not be removed: {1}", dirInfo.FullName, exa.Message));
       }
-      catch(System.UnauthorizedAccessException exb)
+      catch (System.UnauthorizedAccessException exb)
       {
-        _reporter.ReportWarning(string.Format("directory {0} could not be removed: {1}",dirInfo.FullName, exb.Message));
+        _reporter.ReportWarning(string.Format("directory {0} could not be removed: {1}", dirInfo.FullName, exb.Message));
 
       }
 
       return FunctionResult.Failure;
 
-    
+
     }
 
     #endregion
@@ -780,44 +817,47 @@ namespace Syncoco.DocumentActions
 
     public void ExecuteOverwriteOn(SynchronizingOverwriteItem item)
     {
-      if(_monitor.ShouldReport)
+      if (_monitor.ShouldReport)
+      {
         _monitor.Report("Overwriting file " + item.Destination);
+      }
 
-      
       SourceItemArray arr = this._sourceItemHash[item.SourceContentHash];
-      if(arr==null)
+      if (arr == null)
       {
         // Whats this? There are no sources we can use.
         // TODO report an error here
         return;
       }
 
-      for(int i=arr.Count-1;i>=0;i--)
+      for (int i = arr.Count - 1; i >= 0; i--)
       {
-        FunctionResult functionResult = CopyWithDirectoryCreation(arr[i].Path,item.Destination,true,item.ForeignFileNode);
+        FunctionResult functionResult = CopyWithDirectoryCreation(arr[i].Path, item.Destination, true, item.ForeignFileNode);
 
-        if(_verbose)
-          _reporter.ReportText(string.Format("Overwriting file {0} with {1}, result: {2}\r\n",item.Destination,arr[i].Path,functionResult.ToString()));
+        if (_verbose)
+        {
+          _reporter.ReportText(string.Format("Overwriting file {0} with {1}, result: {2}\r\n", item.Destination, arr[i].Path, functionResult.ToString()));
+        }
 
-        if(FunctionResult.Success==functionResult)
+        if (FunctionResult.Success == functionResult)
         {
           FileSystemRoot myRoot = _doc.MyRoot(item.RootListIndex);
           FileSystemRoot foRoot = _doc.ForeignRoot(item.RootListIndex);
           string relPathFileName = PathUtil.GetRelpathFromAbspath(item.Destination, myRoot.FilePath);
-        
+
           // update the own FileNode (enforce (!) update the hash of this node also), only if the hash match, then set the own and the foreign
           // file node to unchanged
           System.IO.FileInfo myfileinfo = new System.IO.FileInfo(item.Destination);
-          FileNode myfilenode = UpdateMyFile(_doc.MyRoot(item.RootListIndex),myfileinfo,true);
+          FileNode myfilenode = UpdateMyFile(_doc.MyRoot(item.RootListIndex), myfileinfo, true);
           FileNode foFileNode = foRoot.GetFileNode(relPathFileName);
-          if(foFileNode.HasSameContentThan(myfilenode))
+          if (foFileNode.HasSameContentThan(myfilenode))
           {
             foFileNode.SetToUnchanged();
             myfilenode.SetToUnchanged();
           }
           return;
         }
-        else if(!VerifySourceItem(arr[i],item.SourceContentHash))
+        else if (!VerifySourceItem(arr[i], item.SourceContentHash))
         {
           arr.RemoveAt(i);
         }
@@ -826,18 +866,18 @@ namespace Syncoco.DocumentActions
 
     }
 
-    void ResetAttributes(DirectoryInfo dirInfo)
+    private void ResetAttributes(DirectoryInfo dirInfo)
     {
       dirInfo.Attributes &= ~(FileAttributes.ReadOnly | FileAttributes.System | FileAttributes.Hidden);
 
       FileInfo[] files = dirInfo.GetFiles();
-      foreach(FileInfo file in files)
+      foreach (FileInfo file in files)
       {
         file.Attributes &= ~(FileAttributes.ReadOnly | FileAttributes.System | FileAttributes.Hidden);
       }
 
       DirectoryInfo[] dirs = dirInfo.GetDirectories();
-      foreach(DirectoryInfo dir in dirs)
+      foreach (DirectoryInfo dir in dirs)
       {
         ResetAttributes(dir);
       }
@@ -849,24 +889,27 @@ namespace Syncoco.DocumentActions
 
     public void ExecuteCopyOn(SynchronizingCopyItem item)
     {
-      if(_monitor.ShouldReport)
+      if (_monitor.ShouldReport)
+      {
         _monitor.Report("Copying to file " + item.Destination);
+      }
 
       SourceItemArray arr = this._sourceItemHash[item.SourceContentHash];
-      if(arr==null)
+      if (arr == null)
       {
         // TODO report an error here
         return;
       }
 
-      for(int i=arr.Count-1;i>=0;i--)
+      for (int i = arr.Count - 1; i >= 0; i--)
       {
-        FunctionResult functionResult = CopyWithDirectoryCreation(arr[i].Path,item.Destination,false,item.ForeignFileNode);
-        if(_verbose)
-          _reporter.ReportText(string.Format("Copying file {0} from {1}, result: {2}\r\n",item.Destination,arr[i].Path,functionResult.ToString()));
+        FunctionResult functionResult = CopyWithDirectoryCreation(arr[i].Path, item.Destination, false, item.ForeignFileNode);
+        if (_verbose)
+        {
+          _reporter.ReportText(string.Format("Copying file {0} from {1}, result: {2}\r\n", item.Destination, arr[i].Path, functionResult.ToString()));
+        }
 
-
-        if(FunctionResult.Success==functionResult)
+        if (FunctionResult.Success == functionResult)
         {
           FileSystemRoot myRoot = _doc.MyRoot(item.RootListIndex);
           FileSystemRoot foRoot = _doc.ForeignRoot(item.RootListIndex);
@@ -875,17 +918,17 @@ namespace Syncoco.DocumentActions
           // update the own FileNode (enforce (!) update the hash of this node also), only if the hash match, then set the own and the foreign
           // file node to unchanged
           System.IO.FileInfo myfileinfo = new System.IO.FileInfo(item.Destination);
-          FileNode myfilenode = UpdateMyFile(_doc.MyRoot(item.RootListIndex),myfileinfo,true);
+          FileNode myfilenode = UpdateMyFile(_doc.MyRoot(item.RootListIndex), myfileinfo, true);
           FileNode foFileNode = foRoot.GetFileNode(relPathFileName);
 
-          if(foFileNode.HasSameContentThan(myfilenode))
+          if (foFileNode.HasSameContentThan(myfilenode))
           {
             foFileNode.SetToUnchanged();
             myfilenode.SetToUnchanged();
           }
           return;
         }
-        else if(!VerifySourceItem(arr[i],item.SourceContentHash))
+        else if (!VerifySourceItem(arr[i], item.SourceContentHash))
         {
           arr.RemoveAt(i);
         }
@@ -899,16 +942,16 @@ namespace Syncoco.DocumentActions
       PathUtil.Assert_Abspath(dirname);
 #endif
 
-      if(!System.IO.Directory.Exists(dirname))
+      if (!System.IO.Directory.Exists(dirname))
       {
         try { System.IO.Directory.CreateDirectory(dirname); }
-        catch( Exception ex)
+        catch (Exception ex)
         {
-          _reporter.ReportError(string.Format("unable to create directory {0} : {1}",dirname,ex.Message));
+          _reporter.ReportError(string.Format("unable to create directory {0} : {1}", dirname, ex.Message));
           return FunctionResult.Failure;
         }
       }
-    
+
       return FunctionResult.Success;
     }
 
@@ -920,64 +963,64 @@ namespace Syncoco.DocumentActions
 #endif
 
       string dirname = System.IO.Path.GetDirectoryName(destFileName);
-      if(!System.IO.Directory.Exists(dirname))
+      if (!System.IO.Directory.Exists(dirname))
       {
         try { System.IO.Directory.CreateDirectory(dirname); }
-        catch( Exception ex)
+        catch (Exception ex)
         {
-          _reporter.ReportError(string.Format("unable to create directory {0} : {1}",dirname,ex.Message));
+          _reporter.ReportError(string.Format("unable to create directory {0} : {1}", dirname, ex.Message));
           return FunctionResult.Failure;
         }
       }
 
-      
 
-      try 
+
+      try
       {
         // before we overwrite an existing file, make sure the read-only attribute of that file is not set
-        if(overwrite && System.IO.File.Exists(destFileName))
+        if (overwrite && System.IO.File.Exists(destFileName))
         {
           System.IO.FileInfo info = new System.IO.FileInfo(destFileName);
-          if(info.Exists)
+          if (info.Exists)
           {
             // first clear the readonly attribute
-            info.Attributes &= ~(System.IO.FileAttributes.ReadOnly | System.IO.FileAttributes.System | System.IO.FileAttributes.Hidden);       
+            info.Attributes &= ~(System.IO.FileAttributes.ReadOnly | System.IO.FileAttributes.System | System.IO.FileAttributes.Hidden);
           }
         }
 
         // now we can perform a copy
-        System.IO.File.Copy(sourceFileName,destFileName,overwrite); 
+        System.IO.File.Copy(sourceFileName, destFileName, overwrite);
       }
-      catch(Exception ex)
+      catch (Exception ex)
       {
-        _reporter.ReportError(string.Format("unable to copy from {0} to {1} : {2}",sourceFileName,destFileName,ex.Message));
+        _reporter.ReportError(string.Format("unable to copy from {0} to {1} : {2}", sourceFileName, destFileName, ex.Message));
         return FunctionResult.Failure;
       }
 
       try
       {
         System.IO.FileInfo info = new System.IO.FileInfo(destFileName);
-        if(info.Exists)
+        if (info.Exists)
         {
           // first clear the readonly attribute
           info.Attributes &= ~System.IO.FileAttributes.ReadOnly;
-       
+
           info.CreationTimeUtc = foFileNode.CreationTimeUtc;
           info.LastWriteTimeUtc = foFileNode.LastWriteTimeUtc;
           info.Attributes = foFileNode.Attributes;
         }
       }
-      catch(Exception ex)
+      catch (Exception ex)
       {
-        _reporter.ReportError(string.Format("setting attributes for file {0} : {1}",destFileName,ex.Message));
+        _reporter.ReportError(string.Format("setting attributes for file {0} : {1}", destFileName, ex.Message));
         return FunctionResult.Failure;
       }
 
       return FunctionResult.Success;
     }
 
-   
-   
+
+
     #endregion
 
     #endregion
@@ -989,19 +1032,23 @@ namespace Syncoco.DocumentActions
     /// <returns>False if no item could be deleted. True if at least one item could be deleted.</returns>
     public bool DeletePossibleItems()
     {
-      if(_verbose)
+      if (_verbose)
+      {
         _reporter.ReportText("Delete possible items\r\n");
+      }
 
       bool hasDeleted = false;
-      for(int i=_deleteItems.Count-1;i>=0;i--)
+      for (int i = _deleteItems.Count - 1; i >= 0; i--)
       {
-        if(_monitor.CancelledByUser)
+        if (_monitor.CancelledByUser)
+        {
           return hasDeleted;
+        }
 
-        if(CanBeDeleted(_deleteItems[i].Destination,_deleteItems[i].DestinationContentHash, true))
+        if (CanBeDeleted(_deleteItems[i].Destination, _deleteItems[i].DestinationContentHash, true))
         {
           ExecuteDeleteOn(_deleteItems[i]);
-          _sourceItemHash.Remove(_deleteItems[i].DestinationContentHash,_deleteItems[i].Destination);
+          _sourceItemHash.Remove(_deleteItems[i].DestinationContentHash, _deleteItems[i].Destination);
           _deleteItems.RemoveAt(i);
           hasDeleted = true;
         }
@@ -1017,19 +1064,23 @@ namespace Syncoco.DocumentActions
     /// <returns>False if no item could be overwritten. True if at least one item could be overwritten.</returns>
     public bool OverwritePossibleItems()
     {
-      if(_verbose)
-        _reporter.ReportText("Overwrite possible items\r\n");
-      
-      bool hasOverwritten = false;
-      for(int i=_overwriteItems.Count-1;i>=0;i--)
+      if (_verbose)
       {
-        if(_monitor.CancelledByUser)
-          return hasOverwritten;
+        _reporter.ReportText("Overwrite possible items\r\n");
+      }
 
-        if(CanBeDeleted(_overwriteItems[i].Destination,_overwriteItems[i].DestinationContentHash, true))
+      bool hasOverwritten = false;
+      for (int i = _overwriteItems.Count - 1; i >= 0; i--)
+      {
+        if (_monitor.CancelledByUser)
+        {
+          return hasOverwritten;
+        }
+
+        if (CanBeDeleted(_overwriteItems[i].Destination, _overwriteItems[i].DestinationContentHash, true))
         {
           ExecuteOverwriteOn(_overwriteItems[i]);
-          _sourceItemHash.Remove(_overwriteItems[i].DestinationContentHash,_overwriteItems[i].Destination);
+          _sourceItemHash.Remove(_overwriteItems[i].DestinationContentHash, _overwriteItems[i].Destination);
           _sourceReferenceConter.Decrement(_overwriteItems[i].SourceContentHash);
           _overwriteItems.RemoveAt(i);
           hasOverwritten = true;
@@ -1046,12 +1097,14 @@ namespace Syncoco.DocumentActions
     /// <returns>False if no such item could be found, true if an item was found.</returns>
     public bool CopySingleLockedItem()
     {
-      if(_verbose)
-        _reporter.ReportText("Copy single locked item\r\n");
-
-      for(int i=_copyItems.Count-1;i>=0;i--)
+      if (_verbose)
       {
-        if(PreventsDeleteOrOverwrite(_copyItems[i]))
+        _reporter.ReportText("Copy single locked item\r\n");
+      }
+
+      for (int i = _copyItems.Count - 1; i >= 0; i--)
+      {
+        if (PreventsDeleteOrOverwrite(_copyItems[i]))
         {
           ExecuteCopyOn(_copyItems[i]);
           _sourceReferenceConter.Decrement(_copyItems[i].SourceContentHash);
@@ -1068,58 +1121,68 @@ namespace Syncoco.DocumentActions
     /// </summary>
     public void CopyAllItems()
     {
-      if(_verbose)
+      if (_verbose)
+      {
         _reporter.ReportText("Copy all items\r\n");
+      }
 
-      for(int i=_copyItems.Count-1;i>=0;i--)
+      for (int i = _copyItems.Count - 1; i >= 0; i--)
       {
         ExecuteCopyOn(_copyItems[i]);
         _sourceReferenceConter.Decrement(_copyItems[i].SourceContentHash);
         _copyItems.RemoveAt(i);
       }
     }
-        
-      
+
+
     /// <summary>
     /// Try to delete items and then to overwriteitems. Then to copy files that prevent other files from
     /// being deleted or overwritten. This is repeated, until no more actions can be done.
     /// </summary>
     public void ExecuteUntilAllLockedUp()
     {
-      bool somethingDone=false;
+      bool somethingDone = false;
       do
       {
         do
         {
-          if(_monitor.CancelledByUser)
+          if (_monitor.CancelledByUser)
+          {
             return;
+          }
 
           somethingDone = false;
           DeletePossibleItems();
 
-          if(_monitor.CancelledByUser)
+          if (_monitor.CancelledByUser)
+          {
             return;
+          }
 
-        while(OverwritePossibleItems())
+          while (OverwritePossibleItems())
+          {
+            somethingDone = true;
+
+            if (_monitor.CancelledByUser)
+            {
+              return;
+            }
+          }
+
+        } while (somethingDone);
+
+        if (_monitor.CancelledByUser)
         {
-          somethingDone = true;
-
-          if(_monitor.CancelledByUser)
-            return;
-
-        }
-
-        } while(somethingDone);
-
-        if(_monitor.CancelledByUser)
           return;
+        }
 
         // if neither delete or overwrite can be done, try to copy those files, which are
         // destination files for delete or overwrite (which prevents deleteItems to be deleted)
-        if(CopySingleLockedItem())
+        if (CopySingleLockedItem())
+        {
           somethingDone = true;
-
-      } while(somethingDone);
+        }
+      } while (somethingDone);
     }
     #endregion
 
@@ -1133,7 +1196,7 @@ namespace Syncoco.DocumentActions
     /// <param name="tag">The item for which to perform the action.</param>
     public void PerformAction(SyncItemTag tag)
     {
-      System.Diagnostics.Debug.Assert(tag!=null);
+      System.Diagnostics.Debug.Assert(tag != null);
 
       string relPathFileName = tag.FileName;
       string absrootdir = _doc.MyRoot(tag.RootListIndex).FilePath;
@@ -1144,23 +1207,23 @@ namespace Syncoco.DocumentActions
       PathUtil.Assert_Abspath(absrootdir);
 #endif
 
-      
-      string myfilename = PathUtil.Combine_Abspath_RelpathOrFilename(absrootdir,relPathFileName);
+
+      string myfilename = PathUtil.Combine_Abspath_RelpathOrFilename(absrootdir, relPathFileName);
 
       FileSystemRoot myRoot = _doc.MyRoot(tag.RootListIndex);
       FileSystemRoot foRoot = _doc.ForeignRoot(tag.RootListIndex);
       FileNode foFileNode;
-     
+
       System.IO.FileInfo myfileinfo;
       FileNode myfilenode;
 
-      switch(tag.Action)
+      switch (tag.Action)
       {
         case SyncAction.Remove:
-         
-          if(PathUtil.IsDirectoryName(myfilename)) // delete subdir
+
+          if (PathUtil.IsDirectoryName(myfilename)) // delete subdir
           {
-            if(FunctionResult.Success==DeleteDirectory(myfilename,SyncAction.ForcedRemove==tag.Action)) 
+            if (FunctionResult.Success == DeleteDirectory(myfilename, SyncAction.ForcedRemove == tag.Action))
             {
               myRoot.DeleteSubDirectoryNode(relPathFileName);
               foRoot.DeleteSubDirectoryNode(relPathFileName);
@@ -1172,9 +1235,9 @@ namespace Syncoco.DocumentActions
           }
           break;
         case SyncAction.ForcedRemove:
-          if(PathUtil.IsDirectoryName(myfilename)) // delete subdir
+          if (PathUtil.IsDirectoryName(myfilename)) // delete subdir
           {
-            if(FunctionResult.Success==DeleteDirectory(myfilename,SyncAction.ForcedRemove==tag.Action)) 
+            if (FunctionResult.Success == DeleteDirectory(myfilename, SyncAction.ForcedRemove == tag.Action))
             {
               myRoot.DeleteSubDirectoryNode(relPathFileName);
               foRoot.DeleteSubDirectoryNode(relPathFileName);
@@ -1182,7 +1245,7 @@ namespace Syncoco.DocumentActions
           }
           else // Delete file
           {
-            if(FunctionResult.Success==DeleteFileForced(myfilename))
+            if (FunctionResult.Success == DeleteFileForced(myfilename))
             {
               myRoot.DeleteFileNode(relPathFileName);
               foRoot.DeleteFileNode(relPathFileName);
@@ -1191,64 +1254,71 @@ namespace Syncoco.DocumentActions
           break;
         case SyncAction.RemoveRollback:
         case SyncAction.RemoveManuallyRollback:
-        {
-          if(PathUtil.IsDirectoryName(relPathFileName))
-            foRoot.DeleteSubDirectoryNode(relPathFileName);
-          else
-            foRoot.DeleteFileNode(relPathFileName);
-        }
-          break;
-        case SyncAction.Copy:
-          throw new ApplicationException("Please report this exception to the bug list");
-          /*
-          foFileNode = foRoot.GetFileNode(relPathFileName);
-       
-          if(FunctionResult.Success==CopyWithDirectoryCreation(foFileNode,myfilename,false))
           {
-            // update the own FileNode (enforce (!) update the hash of this node also), only if the hash match, then set the own and the foreign
-            // file node to unchanged
-            myfileinfo = new System.IO.FileInfo(myfilename);
-            myfilenode = UpdateMyFile(_doc.MyRoot(tag.RootListIndex),myfileinfo,true);
-            if(foFileNode.HasSameContentThan(myfilenode))
+            if (PathUtil.IsDirectoryName(relPathFileName))
             {
-              foFileNode.SetToUnchanged();
-              myfilenode.SetToUnchanged();
+              foRoot.DeleteSubDirectoryNode(relPathFileName);
+            }
+            else
+            {
+              foRoot.DeleteFileNode(relPathFileName);
             }
           }
           break;
-          */
+        case SyncAction.Copy:
+          throw new ApplicationException("Please report this exception to the bug list");
+        /*
+        foFileNode = foRoot.GetFileNode(relPathFileName);
+
+        if(FunctionResult.Success==CopyWithDirectoryCreation(foFileNode,myfilename,false))
+        {
+          // update the own FileNode (enforce (!) update the hash of this node also), only if the hash match, then set the own and the foreign
+          // file node to unchanged
+          myfileinfo = new System.IO.FileInfo(myfilename);
+          myfilenode = UpdateMyFile(_doc.MyRoot(tag.RootListIndex),myfileinfo,true);
+          if(foFileNode.HasSameContentThan(myfilenode))
+          {
+            foFileNode.SetToUnchanged();
+            myfilenode.SetToUnchanged();
+          }
+        }
+        break;
+        */
         case SyncAction.CreateDirectory:
-          CreateDirectory(myfilename);          
+          CreateDirectory(myfilename);
           break;
         case SyncAction.Overwrite:
         case SyncAction.ResolveManuallyOverwrite:
           throw new ApplicationException("Please report this exception to the bug list");
-          /*
-          foFileNode = foRoot.GetFileNode(relPathFileName);
-          if(FunctionResult.Success==CopyWithDirectoryCreation(foFileNode,myfilename,true))
+        /*
+        foFileNode = foRoot.GetFileNode(relPathFileName);
+        if(FunctionResult.Success==CopyWithDirectoryCreation(foFileNode,myfilename,true))
+        {
+          // update the own FileNode (enforce (!) update the hash of this node also), only if the hash match, then set the own and the foreign
+          // file node to unchanged
+          myfileinfo = new System.IO.FileInfo(myfilename);
+          myfilenode = UpdateMyFile(_doc.MyRoot(tag.RootListIndex),myfileinfo,true);
+          if(foFileNode.HasSameContentThan(myfilenode))
           {
-            // update the own FileNode (enforce (!) update the hash of this node also), only if the hash match, then set the own and the foreign
-            // file node to unchanged
-            myfileinfo = new System.IO.FileInfo(myfilename);
-            myfilenode = UpdateMyFile(_doc.MyRoot(tag.RootListIndex),myfileinfo,true);
-            if(foFileNode.HasSameContentThan(myfilenode))
-            {
-              foFileNode.SetToUnchanged();
-              myfilenode.SetToUnchanged();
-            }
+            foFileNode.SetToUnchanged();
+            myfilenode.SetToUnchanged();
           }
-          break;
-          */
+        }
+        break;
+        */
         case SyncAction.ResolveManuallyRollback:
         case SyncAction.OverwriteRollback:
           foFileNode = foRoot.GetFileNode(relPathFileName);
           foFileNode.SetToUnchanged();
           myfileinfo = new System.IO.FileInfo(myfilename);
-          myfilenode = UpdateMyFile(_doc.MyRoot(tag.RootListIndex),myfileinfo,true);
-          if(myfilenode.IsUnchanged)
+          myfilenode = UpdateMyFile(_doc.MyRoot(tag.RootListIndex), myfileinfo, true);
+          if (myfilenode.IsUnchanged)
+          {
             myfilenode.SwitchFromUnchangedToChanged();
+          }
+
           break;
-       
+
 
       }
     }
@@ -1257,7 +1327,7 @@ namespace Syncoco.DocumentActions
     {
       DirectoryInfo dirinfo = new DirectoryInfo(fileSystemRoot.FilePath);
 
-      return DirectoryUpdater.UpdateFileNode(fileSystemRoot.DirectoryNode,dirinfo,fileinfo,forceUpdateHash,_reporter);
+      return DirectoryUpdater.UpdateFileNode(fileSystemRoot.DirectoryNode, dirinfo, fileinfo, forceUpdateHash, _reporter);
     }
 
 
@@ -1274,34 +1344,42 @@ namespace Syncoco.DocumentActions
       // we have a locked situation, from which we can only recover by saving some files
       // to a temporary location
 
-      while(_overwriteItems.Count>0)
+      while (_overwriteItems.Count > 0)
       {
-        if(_monitor.CancelledByUser)
+        if (_monitor.CancelledByUser)
+        {
           return;
+        }
 
         MoveSingleOverwriteItemToTemporaryLocation();
-        
-        if(_monitor.CancelledByUser)
+
+        if (_monitor.CancelledByUser)
+        {
           return;
-        
+        }
+
         ExecuteUntilAllLockedUp();
       }
 
       // now all files should be deleted
-      System.Diagnostics.Debug.Assert(_deleteItems.Count==0);
+      System.Diagnostics.Debug.Assert(_deleteItems.Count == 0);
 
       // the remaining are those files to copy, that have not locked up other files.
       CopyAllItems();
-      
-      if(_monitor.CancelledByUser)
+
+      if (_monitor.CancelledByUser)
+      {
         return;
+      }
 
 
       // now perform the rest of the actions
-      for(int i=_syncItemTagList.Count-1;i>=0;i--)
+      for (int i = _syncItemTagList.Count - 1; i >= 0; i--)
       {
-        if(_monitor.CancelledByUser)
+        if (_monitor.CancelledByUser)
+        {
           return;
+        }
 
         PerformAction(_syncItemTagList[i]);
       }

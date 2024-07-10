@@ -20,9 +20,7 @@
 /////////////////////////////////////////////////////////////////////////////
 #endregion
 
-using System;
-
-namespace Syncoco
+namespace Syncoco.GUI
 {
   /// <summary>
   /// Summary description for IApplyController.
@@ -30,6 +28,6 @@ namespace Syncoco
   public interface IApplyController
   {
     bool Apply();
-    
+
   }
 }

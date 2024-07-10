@@ -20,21 +20,17 @@
 /////////////////////////////////////////////////////////////////////////////
 #endregion
 
+using Syncoco.DocumentActions;
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
-using System.Data;
 
-using Syncoco.DocumentActions;
-
-namespace Syncoco
+namespace Syncoco.GUI
 {
   /// <summary>
   /// Summary description for Form1.
   /// </summary>
-  public class Syncoco : System.Windows.Forms.Form
+  public class MainForm : System.Windows.Forms.Form
   {
     private System.Windows.Forms.MainMenu mainMenu1;
 
@@ -73,7 +69,7 @@ namespace Syncoco
     /// </summary>
     private System.ComponentModel.Container components = null;
 
-    public Syncoco()
+    public MainForm()
     {
       //
       // Required for Windows Form Designer support
@@ -89,16 +85,16 @@ namespace Syncoco
     /// <summary>
     /// Clean up any resources being used.
     /// </summary>
-    protected override void Dispose( bool disposing )
+    protected override void Dispose(bool disposing)
     {
-      if( disposing )
+      if (disposing)
       {
-        if (components != null) 
+        if (components != null)
         {
           components.Dispose();
         }
       }
-      base.Dispose( disposing );
+      base.Dispose(disposing);
     }
 
     #region Windows Form Designer generated code
@@ -108,7 +104,7 @@ namespace Syncoco
     /// </summary>
     private void InitializeComponent()
     {
-      System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(Syncoco));
+      System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(MainForm));
       this.mainMenu1 = new System.Windows.Forms.MainMenu();
       this.menuFile = new System.Windows.Forms.MenuItem();
       this.menuFileNew = new System.Windows.Forms.MenuItem();
@@ -367,10 +363,10 @@ namespace Syncoco
     }
     #endregion
 
-  
-    RootListController _rootList = new RootListController(Current.Document);
-    SyncListController _syncList = new SyncListController();
-    ReportListController _reportList = new ReportListController();
+
+    private RootListController _rootList = new RootListController(Current.Document);
+    private SyncListController _syncList = new SyncListController();
+    private ReportListController _reportList = new ReportListController();
 
 
     public IErrorReporter ErrorReporter
@@ -384,17 +380,17 @@ namespace Syncoco
 
       // try to find appropriate tab page
 
-      TabPage tabpage =null;
-      for(int i=0;i<_tabControl.TabPages.Count;i++)
+      TabPage tabpage = null;
+      for (int i = 0; i < _tabControl.TabPages.Count; i++)
       {
-        if(_tabControl.TabPages[i].Controls[0]==ctrl)
+        if (_tabControl.TabPages[i].Controls[0] == ctrl)
         {
           tabpage = _tabControl.TabPages[i];
           break;
         }
       }
 
-      if(tabpage==null)
+      if (tabpage == null)
       {
         tabpage = new TabPage(caption);
         tabpage.Controls.Add(ctrl);
@@ -407,32 +403,38 @@ namespace Syncoco
 
     public void ShowSyncList()
     {
-      ShowControl("FilesToSync",_syncList.View);
+      ShowControl("FilesToSync", _syncList.View);
     }
 
     public void ShowReportList()
     {
-      ShowControl("Report",_reportList.View);
+      ShowControl("Report", _reportList.View);
     }
 
-    delegate void StringSetter(string val);
+    private delegate void StringSetter(string val);
 
-    void UpdateTitle()
+    private void UpdateTitle()
     {
-      string filename = Current.Document.HasFileName? Current.Document.FileName : "Unnamed";
-      string dirty = Current.Document.IsDirty?  "*" : string.Empty;
-      string newTitle = string.Format("{1}{2} - Syncoco@{0}",Current.ComputerName, filename, dirty);
-      
+      string filename = Current.Document.HasFileName ? Current.Document.FileName : "Unnamed";
+      string dirty = Current.Document.IsDirty ? "*" : string.Empty;
+      string newTitle = string.Format("{1}{2} - Syncoco@{0}", Current.ComputerName, filename, dirty);
+
       if (InvokeRequired)
-        this.Invoke((MethodInvoker)delegate{ this.Text = newTitle; });
+      {
+        this.Invoke((MethodInvoker)delegate { this.Text = newTitle; });
+      }
       else
+      {
         this.Text = newTitle;
+      }
     }
 
     public void ExchangeCurrentDocument(MainDocument newDoc)
     {
-      if(newDoc == null)
+      if (newDoc == null)
+      {
         return;
+      }
 
       this._tabControl.TabPages.Clear();
 
@@ -443,48 +445,50 @@ namespace Syncoco
       Current.Document.FileNameChanged += new EventHandler(EhDocumentFileNameChanged);
       this.UpdateTitle();
       _rootList = new RootListController(Current.Document);
-      ShowControl("RootPairs",_rootList.View);
+      ShowControl("RootPairs", _rootList.View);
 
-      if(this._reportList.ErrorText.Length>0)
+      if (this._reportList.ErrorText.Length > 0)
+      {
         this.ShowReportList();
+      }
     }
 
-    
+
 
     private void SaveCloseDocument(System.ComponentModel.CancelEventArgs e)
     {
-      while(Current.Document.IsDirty)
+      while (Current.Document.IsDirty)
       {
-        DialogResult boxresult = MessageBox.Show(this,"Your document is not saved yet. Do you want to save it now?","Document not saved",
+        DialogResult boxresult = MessageBox.Show(this, "Your document is not saved yet. Do you want to save it now?", "Document not saved",
           MessageBoxButtons.YesNoCancel,
           MessageBoxIcon.Question,
           MessageBoxDefaultButton.Button1);
 
-        if(boxresult==DialogResult.Cancel)
+        if (boxresult == DialogResult.Cancel)
         {
-          e.Cancel=true;
-          return; 
+          e.Cancel = true;
+          return;
         }
-        else if(boxresult==DialogResult.No)
+        else if (boxresult == DialogResult.No)
         {
           return;
         }
         else
         {
-          this.menuFileSave_Click(this,EventArgs.Empty);
+          this.menuFileSave_Click(this, EventArgs.Empty);
         }
       }
     }
 
 
-  
+
     #region Menu Handler
 
     #region File Menu
 
     private void menuFile_Popup(object sender, System.EventArgs e)
     {
-   
+
     }
 
     private void menuFileNew_Click(object sender, System.EventArgs e)
@@ -492,7 +496,7 @@ namespace Syncoco
       System.ComponentModel.CancelEventArgs ce = new CancelEventArgs();
       SaveCloseDocument(ce);
 
-      if(ce.Cancel==false)
+      if (ce.Cancel == false)
       {
         ExchangeCurrentDocument(new MainDocument());
       }
@@ -502,8 +506,8 @@ namespace Syncoco
     private void menuFileOpen_Click(object sender, System.EventArgs e)
     {
       System.Windows.Forms.OpenFileDialog dlg = new System.Windows.Forms.OpenFileDialog();
-      dlg.Filter = "Syncoco xml files (*.syncox)|*.syncox|All files (*.*)|*.*" ;
-      if(System.Windows.Forms.DialogResult.OK==dlg.ShowDialog(Current.MainForm))
+      dlg.Filter = "Syncoco xml files (*.syncox)|*.syncox|All files (*.*)|*.*";
+      if (System.Windows.Forms.DialogResult.OK == dlg.ShowDialog(Current.MainForm))
       {
         DocumentActions.OpenDocumentAction action = new OpenDocumentAction(dlg.FileName);
         action.BackgroundExecute();
@@ -512,31 +516,31 @@ namespace Syncoco
       }
     }
 
-  
+
 
     private void menuFileSave_Click(object sender, System.EventArgs e)
     {
-      if(Current.Document.HasFileName)
+      if (Current.Document.HasFileName)
       {
-        DocumentActions.SaveDocumentAction action = new SaveDocumentAction(Current.Document,Current.Document.FileName);
+        DocumentActions.SaveDocumentAction action = new SaveDocumentAction(Current.Document, Current.Document.FileName);
         action.BackgroundExecute();
         UpdateTitle();
       }
       else
       {
-        menuFileSaveAs_Click(sender,e);
+        menuFileSaveAs_Click(sender, e);
       }
-      
-    
+
+
     }
 
     private void menuFileSaveAs_Click(object sender, System.EventArgs e)
     {
       System.Windows.Forms.SaveFileDialog dlg = new System.Windows.Forms.SaveFileDialog();
-      dlg.Filter = "Syncoco xml files (*.syncox)|*.syncox|All files (*.*)|*.*" ;
-      if(System.Windows.Forms.DialogResult.OK==dlg.ShowDialog(Current.MainForm))
+      dlg.Filter = "Syncoco xml files (*.syncox)|*.syncox|All files (*.*)|*.*";
+      if (System.Windows.Forms.DialogResult.OK == dlg.ShowDialog(Current.MainForm))
       {
-        DocumentActions.SaveDocumentAction action = new SaveDocumentAction(Current.Document,dlg.FileName);
+        DocumentActions.SaveDocumentAction action = new SaveDocumentAction(Current.Document, dlg.FileName);
         action.BackgroundExecute();
         UpdateTitle();
       }
@@ -545,8 +549,8 @@ namespace Syncoco
     private void menuFileSaveFilterOnly_Click(object sender, System.EventArgs e)
     {
       System.Windows.Forms.SaveFileDialog dlg = new System.Windows.Forms.SaveFileDialog();
-      dlg.Filter = "Syncoco filter files (*.syncof)|*.syncof|All files (*.*)|*.*" ;
-      if(System.Windows.Forms.DialogResult.OK==dlg.ShowDialog(Current.MainForm))
+      dlg.Filter = "Syncoco filter files (*.syncof)|*.syncof|All files (*.*)|*.*";
+      if (System.Windows.Forms.DialogResult.OK == dlg.ShowDialog(Current.MainForm))
       {
         Current.Document.SaveFilterOnly(dlg.FileName);
       }
@@ -561,7 +565,7 @@ namespace Syncoco
     #endregion
 
     #region Action menu
-    
+
     private void menuActions_Popup(object sender, System.EventArgs e)
     {
       bool hasFileName = Current.Document.HasFileName;
@@ -574,13 +578,13 @@ namespace Syncoco
 
     private void menuEditUpdate_Click(object sender, System.EventArgs e)
     {
-      new DocumentActions.DocumentUpdateAction(Current.Document,false).BackgroundExecute();
+      new DocumentActions.DocumentUpdateAction(Current.Document, false).BackgroundExecute();
 
     }
 
     private void menuUpdateHash_Click(object sender, System.EventArgs e)
     {
-      new DocumentActions.DocumentUpdateAction(Current.Document,true).BackgroundExecute();
+      new DocumentActions.DocumentUpdateAction(Current.Document, true).BackgroundExecute();
     }
 
     private void menuEditCleanTransferDir_Click(object sender, System.EventArgs e)
@@ -595,15 +599,17 @@ namespace Syncoco
 
     private void menuEditCollect_Click(object sender, System.EventArgs e)
     {
-      if(_syncList==null)
+      if (_syncList == null)
+      {
         _syncList = new SyncListController();
+      }
 
       DocumentActions.CollectFilesToSynchronizeAction action = new CollectFilesToSynchronizeAction(Current.Document);
       action.BackgroundExecute();
       _syncList.SetCollectors(action.CollectedFiles);
 
       ShowSyncList();
-    
+
     }
 
 
@@ -632,32 +638,34 @@ namespace Syncoco
 
     private void menuBeginShowSyncFiles_Click(object sender, System.EventArgs e)
     {
-      menuEditCollect_Click(sender,e);
+      menuEditCollect_Click(sender, e);
     }
 
     private void menuBeginSyncSelected_Click(object sender, System.EventArgs e)
     {
-      menuEditSyncronize_Click(sender,e);
+      menuEditSyncronize_Click(sender, e);
     }
 
     private void menuBeginSaveCleanIfNeccessary_Click(object sender, System.EventArgs e)
     {
-      if(Current.Document.HasFileName)
-        new DocumentActions.SaveDocumentAndCleanIfNecessaryAction(Current.Document,Current.Document.FileName).BackgroundExecute();    
+      if (Current.Document.HasFileName)
+      {
+        new DocumentActions.SaveDocumentAndCleanIfNecessaryAction(Current.Document, Current.Document.FileName).BackgroundExecute();
+      }
     }
 
 
-    #endregion 
+    #endregion
 
     #region End work menu
 
-    
+
     private void menuEndWork_Popup(object sender, System.EventArgs e)
     {
       menuEndUpdateSaveCopy.Enabled = Current.Document.HasFileName;
     }
 
-   
+
     private void menuEndUpdateSaveCopy_Click(object sender, System.EventArgs e)
     {
       new DocumentActions.DocumentUpdateSaveAndCopyAction(Current.Document).BackgroundExecute();
@@ -673,14 +681,14 @@ namespace Syncoco
       try
       {
         string name = System.Reflection.Assembly.GetEntryAssembly().Location;
-        
-        name = System.IO.Path.ChangeExtension(name,".chm");
-        
+
+        name = System.IO.Path.ChangeExtension(name, ".chm");
+
         System.Diagnostics.Process.Start(name);
       }
-      catch(Exception ex)
+      catch (Exception ex)
       {
-        MessageBox.Show(this,ex.Message,"Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+        MessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
 
@@ -713,25 +721,25 @@ namespace Syncoco
       UpdateTitle();
     }
 
-  
+
     #endregion
 
     private void Syncoco_Load(object sender, System.EventArgs e)
     {
-      if(Current.InitialFileName!=null)
+      if (Current.InitialFileName != null)
       {
         DocumentActions.OpenDocumentAction action = new OpenDocumentAction(Current.InitialFileName);
         action.BackgroundExecute();
         ExchangeCurrentDocument(action.Doc);
-        Current.InitialFileName=null;
+        Current.InitialFileName = null;
       }
-    
+
     }
 
     private void _tabControl_SelectedIndexChanged(object sender, System.EventArgs e)
     {
       TabPage selected = _tabControl.SelectedTab;
-      if(selected!=null && selected.Controls.Count>0)
+      if (selected != null && selected.Controls.Count > 0)
       {
         selected.Controls[0].Focus();
       }

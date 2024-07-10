@@ -22,17 +22,17 @@
 
 using System;
 
-namespace Syncoco
+namespace Syncoco.GUI
 {
   /// <summary>
   /// Summary description for ReportListController.
   /// </summary>
   public class ReportListController : IErrorReporter
   {
-    ReportListControl _view;
-    System.Text.StringBuilder _text = new System.Text.StringBuilder();
+    private ReportListControl _view;
+    private System.Text.StringBuilder _text = new System.Text.StringBuilder();
 
-    public ReportListControl View { get { return _view; }}
+    public ReportListControl View { get { return _view; } }
 
     public ReportListController()
     {
@@ -41,11 +41,10 @@ namespace Syncoco
       _view.Controller = this;
     }
 
-
-    int _oldTextLength;
+    private int _oldTextLength;
     public void EhView_TimerTick()
     {
-      if(this.TextLength != _oldTextLength)
+      if (this.TextLength != _oldTextLength)
       {
         _oldTextLength = this.TextLength;
         _view.SetText(_text.ToString());
@@ -54,7 +53,7 @@ namespace Syncoco
 
     #region IErrorReporter Members
 
-    bool _newParagraphPending=true;
+    private bool _newParagraphPending = true;
     public void ReportBeginNewParagraph()
     {
       _newParagraphPending = true;
@@ -62,7 +61,7 @@ namespace Syncoco
 
     private void WriteNewParagraph()
     {
-      if(_newParagraphPending)
+      if (_newParagraphPending)
       {
         _newParagraphPending = false;
         Write("------- " + DateTime.Now.ToLongTimeString() + " ---------\r\n");
@@ -98,8 +97,8 @@ namespace Syncoco
       Write(msg);
     }
 
-    int _numberOfWarnings;
-    int _numberOfErrors;
+    private int _numberOfWarnings;
+    private int _numberOfErrors;
     public int NumberOfErrors
     {
       get
@@ -121,7 +120,7 @@ namespace Syncoco
       get { return _text.Length; }
     }
 
-    public string ErrorText 
+    public string ErrorText
     {
       get { return _text.ToString(); }
     }

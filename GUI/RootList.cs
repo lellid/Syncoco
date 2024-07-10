@@ -21,13 +21,9 @@
 #endregion
 
 using System;
-using System.Collections;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 
-namespace Syncoco
+namespace Syncoco.GUI
 {
   /// <summary>
   /// Summary description for RootList.
@@ -69,35 +65,37 @@ namespace Syncoco
     public void InitializeList(string[] list0, string[] list1)
     {
       lvRootList.Items.Clear();
-      System.Diagnostics.Debug.Assert(list0.Length==list1.Length);
-      int len = Math.Max(list0.Length,list1.Length);
+      System.Diagnostics.Debug.Assert(list0.Length == list1.Length);
+      int len = Math.Max(list0.Length, list1.Length);
 
-      for(int i=0;i<len;i++)
+      for (int i = 0; i < len; i++)
       {
-        ListViewItem item = new ListViewItem(new string[]{list0[i],list1[i]});
+        ListViewItem item = new ListViewItem(new string[] { list0[i], list1[i] });
         lvRootList.Items.Add(item);
       }
     }
 
     public void SelectListItems(int[] selectedIndices)
     {
-      for(int i=0;i<selectedIndices.Length;i++)
-        lvRootList.Items[selectedIndices[i]].Selected=true;
+      for (int i = 0; i < selectedIndices.Length; i++)
+      {
+        lvRootList.Items[selectedIndices[i]].Selected = true;
+      }
     }
 
     /// <summary> 
     /// Clean up any resources being used.
     /// </summary>
-    protected override void Dispose( bool disposing )
+    protected override void Dispose(bool disposing)
     {
-      if( disposing )
+      if (disposing)
       {
-        if(components != null)
+        if (components != null)
         {
           components.Dispose();
         }
       }
-      base.Dispose( disposing );
+      base.Dispose(disposing);
     }
 
     #region Component Designer generated code
@@ -123,8 +121,8 @@ namespace Syncoco
       // 
       // lvRootList
       // 
-      this.lvRootList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-        | System.Windows.Forms.AnchorStyles.Left) 
+      this.lvRootList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+        | System.Windows.Forms.AnchorStyles.Left)
         | System.Windows.Forms.AnchorStyles.Right)));
       this.lvRootList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
                                                                                  this.chComputer1,
@@ -237,26 +235,28 @@ namespace Syncoco
     }
     #endregion
 
-   
 
-    ListViewItem _lastMouseDownItem;
+
+    private ListViewItem _lastMouseDownItem;
     private void lvRootList_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
     {
-      _lastMouseDownItem = this.lvRootList.GetItemAt(e.X,e.Y);
+      _lastMouseDownItem = this.lvRootList.GetItemAt(e.X, e.Y);
     }
 
     private void btAddPath_Click(object sender, System.EventArgs e)
     {
-      if(null!=_controller)
+      if (null != _controller)
+      {
         _controller.EhView_AddPath();
+      }
     }
 
-   
+
     private void btEditPath_Click(object sender, System.EventArgs e)
     {
-      if(null!=_controller)
+      if (null != _controller)
       {
-        if(this.lvRootList.SelectedIndices.Count==1)
+        if (this.lvRootList.SelectedIndices.Count == 1)
         {
           _controller.EhView_EditPath(this.lvRootList.SelectedIndices[0]);
         }
@@ -265,9 +265,9 @@ namespace Syncoco
 
     private void btDeletePath_Click(object sender, System.EventArgs e)
     {
-      if(null!=_controller)
+      if (null != _controller)
       {
-        if(this.lvRootList.SelectedIndices.Count==1)
+        if (this.lvRootList.SelectedIndices.Count == 1)
         {
           _controller.EhView_DeletePath(this.lvRootList.SelectedIndices[0]);
         }
@@ -276,9 +276,9 @@ namespace Syncoco
 
     private void btEditFilterList_Click(object sender, System.EventArgs e)
     {
-      if(null!=_controller)
+      if (null != _controller)
       {
-        if(this.lvRootList.SelectedIndices.Count==1)
+        if (this.lvRootList.SelectedIndices.Count == 1)
         {
           _controller.EhView_EditFilterList(this.lvRootList.SelectedIndices[0]);
         }
@@ -288,44 +288,44 @@ namespace Syncoco
     private int[] GetIndexArray(System.Windows.Forms.ListView.SelectedIndexCollection coll)
     {
       int[] res = new int[coll.Count];
-      coll.CopyTo(res,0);
+      coll.CopyTo(res, 0);
       return res;
     }
 
     private void bt_MoveUp_Click(object sender, System.EventArgs e)
     {
-      if(null!=_controller)
+      if (null != _controller)
       {
-        if(this.lvRootList.SelectedIndices.Count>=1)
+        if (this.lvRootList.SelectedIndices.Count >= 1)
         {
           _controller.EhView_MoveUp(GetIndexArray(this.lvRootList.SelectedIndices));
           lvRootList.Focus();
         }
       }
-    
+
     }
 
     private void btMoveDown_Click(object sender, System.EventArgs e)
     {
-      if(null!=_controller)
+      if (null != _controller)
       {
-        if(this.lvRootList.SelectedIndices.Count>=1)
+        if (this.lvRootList.SelectedIndices.Count >= 1)
         {
           _controller.EhView_MoveDown(GetIndexArray(this.lvRootList.SelectedIndices));
           lvRootList.Focus();
         }
       }
-    
+
     }
     private void listContextMenu_Popup(object sender, System.EventArgs e)
     {
       listContextMenu.MenuItems.Clear();
 
-      if(this.lvRootList.SelectedIndices.Count==0)
+      if (this.lvRootList.SelectedIndices.Count == 0)
       {
         listContextMenu.MenuItems.Add(new MenuItem("Add new Path", new EventHandler(btAddPath_Click)));
       }
-      if(this.lvRootList.SelectedIndices.Count==1)
+      if (this.lvRootList.SelectedIndices.Count == 1)
       {
         listContextMenu.MenuItems.Add(new MenuItem("Edit filter", new EventHandler(btEditFilterList_Click)));
         listContextMenu.MenuItems.Add(new MenuItem("-"));
@@ -333,19 +333,19 @@ namespace Syncoco
         listContextMenu.MenuItems.Add(new MenuItem("Delete root pair", new EventHandler(btDeletePath_Click)));
       }
 
-      if(this.lvRootList.SelectedIndices.Count>=1)
+      if (this.lvRootList.SelectedIndices.Count >= 1)
       {
         listContextMenu.MenuItems.Add(new MenuItem("-"));
         listContextMenu.MenuItems.Add(new MenuItem("Move up", new EventHandler(bt_MoveUp_Click)));
         listContextMenu.MenuItems.Add(new MenuItem("Move down", new EventHandler(btMoveDown_Click)));
 
       }
-    
+
     }
 
-  
 
-   
-   
+
+
+
   }
 }

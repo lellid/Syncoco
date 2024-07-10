@@ -22,8 +22,6 @@
 
 
 using System;
-using Syncoco.Filter;
-using Syncoco.Traversing;
 namespace Syncoco.DocumentActions
 {
   /// <summary>
@@ -36,12 +34,12 @@ namespace Syncoco.DocumentActions
     protected MainDocument _doc;
 
     public AbstractDocumentAction(MainDocument doc)
-      : this(doc,null,null)
+      : this(doc, null, null)
     {
     }
 
     public AbstractDocumentAction(MainDocument doc, IBackgroundMonitor monitor)
-      : this(doc,monitor,null)
+      : this(doc, monitor, null)
     {
     }
 
@@ -49,8 +47,8 @@ namespace Syncoco.DocumentActions
     public AbstractDocumentAction(MainDocument doc, IBackgroundMonitor monitor, IErrorReporter reporter)
     {
       _doc = doc;
-      _monitor = monitor!=null ? monitor : new DummyBackgroundMonitor();
-      _reporter = reporter!=null ? reporter : Current.ErrorReporter;
+      _monitor = monitor != null ? monitor : new DummyBackgroundMonitor();
+      _reporter = reporter != null ? reporter : Current.ErrorReporter;
     }
 
 
@@ -74,32 +72,36 @@ namespace Syncoco.DocumentActions
       thread.Name = this.GetType().Name;
       thread.IsBackground = true;
       thread.Start();
-     
-      if(!(_monitor is ExternalDrivenBackgroundMonitor))
-        _monitor = new ExternalDrivenBackgroundMonitor();
 
-      GUI.BackgroundCancelDialog dlg = new GUI.BackgroundCancelDialog(thread,(ExternalDrivenBackgroundMonitor)_monitor);
+      if (!(_monitor is ExternalDrivenBackgroundMonitor))
+      {
+        _monitor = new ExternalDrivenBackgroundMonitor();
+      }
+
+      GUI.BackgroundCancelDialog dlg = new GUI.BackgroundCancelDialog(thread, (ExternalDrivenBackgroundMonitor)_monitor);
       dlg.ShowDialog(Current.MainForm);
 
-      int nErrors =   _reporter.NumberOfErrors - oldErrors;
+      int nErrors = _reporter.NumberOfErrors - oldErrors;
       int nWarnings = _reporter.NumberOfWarnings - oldWarnings;
 
-      if(_reporter.TextLength != oldTextLength)
-        ShowErrorsAndWarnings(nErrors,nWarnings);
+      if (_reporter.TextLength != oldTextLength)
+      {
+        ShowErrorsAndWarnings(nErrors, nWarnings);
+      }
     }
 
 
     protected virtual void ShowErrorsAndWarnings(int nErrors, int nWarnings)
     {
-      if(nErrors!=0 || nWarnings!=0)
+      if (nErrors != 0 || nWarnings != 0)
       {
         System.Windows.Forms.MessageBox.Show(Current.MainForm,
-          string.Format("Task {0} finished, {1} error(s), {2} warning(s). Please refer to the report for details!",this.GetType().Name,nErrors,nWarnings),
+          string.Format("Task {0} finished, {1} error(s), {2} warning(s). Please refer to the report for details!", this.GetType().Name, nErrors, nWarnings),
           "Errors & Warnings",
           System.Windows.Forms.MessageBoxButtons.OK,
           System.Windows.Forms.MessageBoxIcon.Exclamation);
       }
-      ((Syncoco)Current.MainForm).ShowReportList();
+      ((Syncoco.GUI.MainForm)Current.MainForm).ShowReportList();
     }
 
     protected virtual void CatchedDirectExecute()
@@ -108,12 +110,12 @@ namespace Syncoco.DocumentActions
       {
         DirectExecute();
       }
-      catch(Exception ex)
+      catch (Exception ex)
       {
-        _reporter.ReportError(string.Format("Unexpeced exception occured during action {0}: {1}",this.GetType().ToString(),ex.ToString()));
+        _reporter.ReportError(string.Format("Unexpeced exception occured during action {0}: {1}", this.GetType().ToString(), ex.ToString()));
       }
     }
-   
+
     public abstract void DirectExecute();
 
   }

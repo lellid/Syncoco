@@ -21,13 +21,9 @@
 #endregion
 
 
-using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace Syncoco
+namespace Syncoco.GUI
 {
   /// <summary>
   /// This view is intended to be used as Dialog. It hosts an arbitrary UserControl in its client area,
@@ -60,8 +56,8 @@ namespace Syncoco
       this.m_HostedControl.ResumeLayout(true);
 
       this.ClientSize = new System.Drawing.Size(m_HostedControl.Size.Width, m_HostedControl.Size.Height + this.m_ButtonPanel.Size.Height);
-      this.m_HostedControl.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Top  | System.Windows.Forms.AnchorStyles.Left  | System.Windows.Forms.AnchorStyles.Right ;
-      
+      this.m_HostedControl.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+
       this.Controls.Add(hostedControl);
       this.m_HostedControl.ResumeLayout(false);
       this.ResumeLayout(false);
@@ -70,16 +66,16 @@ namespace Syncoco
     /// <summary>
     /// Clean up any resources being used.
     /// </summary>
-    protected override void Dispose( bool disposing )
+    protected override void Dispose(bool disposing)
     {
-      if( disposing )
+      if (disposing)
       {
-        if(components != null)
+        if (components != null)
         {
           components.Dispose();
         }
       }
-      base.Dispose( disposing );
+      base.Dispose(disposing);
     }
 
     #region Windows Form Designer generated code
@@ -148,24 +144,29 @@ namespace Syncoco
     }
     #endregion
 
-  
+
     private void EhButtonOK_Click(object sender, System.EventArgs e)
     {
-      if(null!=m_Controller)
+      if (null != m_Controller)
+      {
         m_Controller.EhOK();
+      }
     }
 
     private void EhButtonCancel_Click(object sender, System.EventArgs e)
     {
-      if(null!=m_Controller)
+      if (null != m_Controller)
+      {
         m_Controller.EhCancel();
+      }
     }
 
     private void EhButtonApply_Click(object sender, System.EventArgs e)
     {
-      if(null!=m_Controller)
+      if (null != m_Controller)
+      {
         m_Controller.EhApply();
-
+      }
     }
 
     private void EhView_Load(object sender, System.EventArgs e)

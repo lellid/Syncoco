@@ -23,7 +23,7 @@
 
 using System;
 
-namespace Syncoco
+namespace Syncoco.GUI
 {
   #region Interfaces
 
@@ -53,7 +53,7 @@ namespace Syncoco
     string Title { set; }
   }
 
-  
+
 
   /// <summary>
   /// Interface to the DialogShellController.
@@ -64,12 +64,12 @@ namespace Syncoco
     /// Called when the user presses the OK button. 
     /// </summary>
     void EhOK();
-    
+
     /// <summary>
     /// Called when the user presses the Cancel button.
     /// </summary>
     void EhCancel();
-    
+
     /// <summary>
     /// Called when the user presses the Apply button.
     /// </summary>
@@ -87,7 +87,7 @@ namespace Syncoco
     private IApplyController m_HostedController;
 
     private string m_Title = String.Empty;
-    private bool   m_ApplyVisible = true;
+    private bool m_ApplyVisible = true;
 
     /// <summary>
     /// Creates the controller.
@@ -109,10 +109,10 @@ namespace Syncoco
     /// <param name="title">Title of the dialog.</param>
     /// <param name="applyvisible">Indicates if the Apply button is visible or not.</param>
     public DialogShellController(
-      IDialogShellView view, 
+      IDialogShellView view,
       IApplyController hostedController,
       string title,
-      bool   applyvisible)
+      bool applyvisible)
     {
       View = view;
       m_HostedController = hostedController;
@@ -121,20 +121,23 @@ namespace Syncoco
 
       SetElements(true);
     }
+
     /// <summary>
     /// Get / sets the view of this controller.
     /// </summary>
-    IDialogShellView View
+    private IDialogShellView View
     {
       get { return m_View; }
       set
       {
-        if(null!=m_View)
+        if (null != m_View)
+        {
           m_View.Controller = null;
+        }
 
         m_View = value;
-        
-        if(null!=m_View)
+
+        if (null != m_View)
         {
           m_View.Controller = this;
           SetElements(false);
@@ -142,10 +145,10 @@ namespace Syncoco
       }
     }
 
-    void SetElements(bool bInit)
+    private void SetElements(bool bInit)
     {
 
-      if(null!=View)
+      if (null != View)
       {
         View.Title = m_Title;
         View.ApplyVisible = m_ApplyVisible;
@@ -159,7 +162,7 @@ namespace Syncoco
     /// <returns>True onto success (the user presses OK).</returns>
     public bool ShowDialog(System.Windows.Forms.Form owner)
     {
-      return System.Windows.Forms.DialogResult.OK==m_View.Form.ShowDialog(owner);
+      return System.Windows.Forms.DialogResult.OK == m_View.Form.ShowDialog(owner);
     }
 
 
@@ -172,10 +175,12 @@ namespace Syncoco
     public void EhOK()
     {
       bool bSuccess = true;
-      if(null!=m_HostedController)
+      if (null != m_HostedController)
+      {
         bSuccess = m_HostedController.Apply();
+      }
 
-      if(bSuccess) // if successfull applied, close the form
+      if (bSuccess) // if successfull applied, close the form
       {
         View.Form.DialogResult = System.Windows.Forms.DialogResult.OK;
         View.Form.Close();
@@ -198,8 +203,10 @@ namespace Syncoco
     public void EhApply()
     {
       bool bSuccess = true;
-      if(null!=m_HostedController)
+      if (null != m_HostedController)
+      {
         bSuccess = m_HostedController.Apply();
+      }
     }
 
     #endregion

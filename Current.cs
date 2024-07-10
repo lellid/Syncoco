@@ -36,7 +36,7 @@ namespace Syncoco
 
     public static IErrorReporter ErrorReporter
     {
-      get { return ((Syncoco)MainForm).ErrorReporter; }
+      get { return ((Syncoco.GUI.MainForm)MainForm).ErrorReporter; }
     }
 
 
@@ -44,15 +44,15 @@ namespace Syncoco
     /// The main entry point for the application.
     /// </summary>
     [STAThread]
-    static void Main(string[] argv) 
+    public static void Main(string[] argv)
     {
-      for(int i=0;i<argv.Length;i++)
+      for (int i = 0; i < argv.Length; i++)
       {
-        if(argv[i].ToLower()=="/m" || argv[i].ToLower()=="-m")
+        if (argv[i].ToLower() == "/m" || argv[i].ToLower() == "-m")
         {
-          if((i+1)<argv.Length)
+          if ((i + 1) < argv.Length)
           {
-            Current.ComputerName = argv[i+1];
+            Current.ComputerName = argv[i + 1];
             i++;
           }
         }
@@ -63,8 +63,14 @@ namespace Syncoco
         }
       }
 
-      MainForm = new Syncoco();
-      MainForm.Icon = new System.Drawing.Icon(typeof(Current),"App.ico");
+      // To customize application configuration such as set high DPI settings or default font,
+      // see https://aka.ms/applicationconfiguration.
+#if !NETFRAMEWORK
+      ApplicationConfiguration.Initialize();
+#endif
+
+      MainForm = new Syncoco.GUI.MainForm();
+      //MainForm.Icon = new System.Drawing.Icon(typeof(Current), "App.ico");
       System.Windows.Forms.Application.Run(MainForm);
     }
   }

@@ -20,13 +20,7 @@
 /////////////////////////////////////////////////////////////////////////////
 #endregion
 
-using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
-using System.Windows.Forms;
-
-namespace Syncoco
+namespace Syncoco.GUI
 {
   /// <summary>
   /// Summary description for AboutDialog.
@@ -54,7 +48,7 @@ namespace Syncoco
       // Create a new link using the Add method of the LinkCollection class.
       int len = m_LinkLabel.Text.Length;
       int pos = m_LinkLabel.Text.IndexOf("http://");
-      m_LinkLabel.Links.Add(pos,len-pos,"http://sourceforge.net/projects/syncoco");
+      m_LinkLabel.Links.Add(pos, len - pos, "http://sourceforge.net/projects/syncoco");
 
 
     }
@@ -62,16 +56,16 @@ namespace Syncoco
     /// <summary>
     /// Clean up any resources being used.
     /// </summary>
-    protected override void Dispose( bool disposing )
+    protected override void Dispose(bool disposing)
     {
-      if( disposing )
+      if (disposing)
       {
-        if(components != null)
+        if (components != null)
         {
           components.Dispose();
         }
       }
-      base.Dispose( disposing );
+      base.Dispose(disposing);
     }
 
     #region Windows Form Designer generated code
@@ -92,7 +86,7 @@ namespace Syncoco
       // 
       // m_btOK
       // 
-      this.m_btOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+      this.m_btOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
         | System.Windows.Forms.AnchorStyles.Right)));
       this.m_btOK.DialogResult = System.Windows.Forms.DialogResult.OK;
       this.m_btOK.Location = new System.Drawing.Point(216, 432);
@@ -102,7 +96,7 @@ namespace Syncoco
       // 
       // label1
       // 
-      this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
         | System.Windows.Forms.AnchorStyles.Right)));
       this.label1.Font = new System.Drawing.Font("Times New Roman", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
       this.label1.Location = new System.Drawing.Point(168, 8);
@@ -113,7 +107,7 @@ namespace Syncoco
       // 
       // label2
       // 
-      this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
         | System.Windows.Forms.AnchorStyles.Right)));
       this.label2.Font = new System.Drawing.Font("Times New Roman", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
       this.label2.Location = new System.Drawing.Point(64, 48);
@@ -124,8 +118,8 @@ namespace Syncoco
       // 
       // textBox1
       // 
-      this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-        | System.Windows.Forms.AnchorStyles.Left) 
+      this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+        | System.Windows.Forms.AnchorStyles.Left)
         | System.Windows.Forms.AnchorStyles.Right)));
       this.textBox1.Location = new System.Drawing.Point(8, 112);
       this.textBox1.Multiline = true;
@@ -368,7 +362,7 @@ namespace Syncoco
       // 
       // label3
       // 
-      this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
         | System.Windows.Forms.AnchorStyles.Right)));
       this.label3.Location = new System.Drawing.Point(312, 16);
       this.label3.Name = "label3";
