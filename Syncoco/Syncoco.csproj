@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Syncoco</RootNamespace>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>App.ico</ApplicationIcon>
+   <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+   <PlatformTarget>AnyCPU</PlatformTarget>
+   <DefineConstants>READDATEASTICKS</DefineConstants>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <Compile Remove="AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="AssemblyInfo.cs" />
+  </ItemGroup>
+
+</Project>
