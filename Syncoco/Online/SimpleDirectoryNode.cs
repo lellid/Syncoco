@@ -36,21 +36,21 @@ namespace Syncoco.Online
     #region Member variables
 
     // Directory name
-    string _name;
+    private string _name;
 
     /// <summary>
     /// Hashtable of subdirectory name as key and SimpleDirectoryNode as value. Note that the
     /// name is stored as it is, i.e. without directory separator char.
     /// </summary>
-    SimpleDirectoryNodeList _subDirectories = new SimpleDirectoryNodeList();
+    private SimpleDirectoryNodeList _subDirectories = new SimpleDirectoryNodeList();
 
     /// <summary>
     /// Hashtable of file name as key and SimpleFileNode as value
     /// </summary>
-    SimpleFileNodeList _files = new SimpleFileNodeList();
+    private SimpleFileNodeList _files = new SimpleFileNodeList();
 
     [NonSerialized]
-    bool _IsUpdated;
+    private bool _IsUpdated;
 
     public bool IsUpdated
     {
@@ -60,10 +60,10 @@ namespace Syncoco.Online
 
     #endregion
 
-   
+
 
     #region Constructors
-  
+
 
     public SimpleDirectoryNode(string name)
     {
@@ -79,17 +79,17 @@ namespace Syncoco.Online
     {
       _name = from.Name;
 
-      foreach(FileNode file in from.Files)
+      foreach (FileNode file in from.Files)
       {
         _files.Add(new SimpleFileNode(file));
       }
 
-      foreach(DirectoryNode dir in from.Directories)
+      foreach (DirectoryNode dir in from.Directories)
       {
         _subDirectories.Add(new SimpleDirectoryNode(dir));
       }
     }
-    
+
 
     /// <summary>
     /// Creates a dir node. If pathFilter is set (not null), then the dir node is also updated.
@@ -99,11 +99,11 @@ namespace Syncoco.Online
     /// <param name="pathFilter">The path filter.</param>
     public SimpleDirectoryNode(System.IO.DirectoryInfo dirinfo, PathFilter pathFilter)
     {
-      if(dirinfo!=null)
+      if (dirinfo != null)
         _name = dirinfo.Name;
-           
-      if(pathFilter!=null)
-        Update(dirinfo,pathFilter,true);
+
+      if (pathFilter != null)
+        Update(dirinfo, pathFilter, true);
     }
 
 
@@ -116,9 +116,9 @@ namespace Syncoco.Online
     /// </summary>
     /// <param name="name">The name of the file.</param>
     /// <returns>True if the directory node contains the file.</returns>
-    public bool ContainsFile(string name) 
+    public bool ContainsFile(string name)
     {
-      return _files.Contains(name); 
+      return _files.Contains(name);
     }
 
     /// <summary>
@@ -128,14 +128,14 @@ namespace Syncoco.Online
     /// <returns>The file node with name 'name', or null if it doesn't exists.</returns>
     public SimpleFileNode File(string name)
     {
-      return (SimpleFileNode)_files[name]; 
+      return (SimpleFileNode)_files[name];
     }
-    
+
     public void AddFile(SimpleFileNode node)
     {
-      System.Diagnostics.Debug.Assert(node!=null,"File node must not be null!");
-      System.Diagnostics.Debug.Assert(node.Name!=null,"File name must not be null!");
-      System.Diagnostics.Debug.Assert(node.Name.Length>0,"File name length must greater than zero!");
+      System.Diagnostics.Debug.Assert(node != null, "File node must not be null!");
+      System.Diagnostics.Debug.Assert(node.Name != null, "File name must not be null!");
+      System.Diagnostics.Debug.Assert(node.Name.Length > 0, "File name length must greater than zero!");
 
       this._files.Add(node);
     }
@@ -145,9 +145,9 @@ namespace Syncoco.Online
     /// </summary>
     /// <param name="name">The name of the subdirectory.</param>
     /// <returns>True if the directory node contains the subdirectory.</returns>
-    public bool ContainsDirectory(string name) 
+    public bool ContainsDirectory(string name)
     {
-      return _subDirectories.Contains(name); 
+      return _subDirectories.Contains(name);
     }
 
     /// <summary>
@@ -155,32 +155,32 @@ namespace Syncoco.Online
     /// </summary>
     /// <param name="name">Name of the subdirectory.</param>
     /// <returns>The subdirectory node with name 'name', or null if it doesn't exists.</returns>
-    public SimpleDirectoryNode Directory(string name) 
-    { 
-      return (SimpleDirectoryNode)_subDirectories[name]; 
+    public SimpleDirectoryNode Directory(string name)
+    {
+      return (SimpleDirectoryNode)_subDirectories[name];
     }
 
     public void AddSubDirectory(SimpleDirectoryNode node)
     {
-      System.Diagnostics.Debug.Assert(node!=null,"Directory node must not be null!");
-      System.Diagnostics.Debug.Assert(node.Name!=null,"Directory name must not be null!");
-      System.Diagnostics.Debug.Assert(node.Name.Length>0,"Directory name must not be empty!");
-   
+      System.Diagnostics.Debug.Assert(node != null, "Directory node must not be null!");
+      System.Diagnostics.Debug.Assert(node.Name != null, "Directory name must not be null!");
+      System.Diagnostics.Debug.Assert(node.Name.Length > 0, "Directory name must not be empty!");
+
       this._subDirectories.Add(node);
-     
+
     }
 
 
     #endregion
-   
-    
+
+
 
     #region Access by full path strings
 
     public SimpleFileNode GetFileNodeFullPath(string path)
     {
       SimpleDirectoryNode dirnode = GetDirectoryNodeFullPath(path);
-      if(dirnode!=null)
+      if (dirnode != null)
         return dirnode.File(System.IO.Path.GetFileName(path));
       else
         return null;
@@ -189,10 +189,10 @@ namespace Syncoco.Online
     public void DeleteFileNodeFullPath(string path)
     {
       SimpleDirectoryNode dirnode = GetDirectoryNodeFullPath(path);
-      if(dirnode!=null)
+      if (dirnode != null)
       {
         string filename = System.IO.Path.GetFileName(path);
-        if(dirnode.ContainsFile(filename))
+        if (dirnode.ContainsFile(filename))
           dirnode._files.Remove(filename);
       }
     }
@@ -203,17 +203,17 @@ namespace Syncoco.Online
     /// <param name="pathname">The full path name (from the root dir) to the subdirectory including a trailing DirectorySeparatorChar.</param>
     public void DeleteSubDirectoryNodeFullPath(string path)
     {
-      System.Diagnostics.Debug.Assert(path[path.Length-1]==Path.DirectorySeparatorChar);
+      System.Diagnostics.Debug.Assert(path[path.Length - 1] == Path.DirectorySeparatorChar);
 
-      int baseidx = path.LastIndexOf(Path.DirectorySeparatorChar,path.Length-2);
-      if(baseidx<0)
+      int baseidx = path.LastIndexOf(Path.DirectorySeparatorChar, path.Length - 2);
+      if (baseidx < 0)
         throw new Exception("This must be a programming error, the variable path was: " + path);
-      
-      SimpleDirectoryNode dirnode = GetDirectoryNodeFullPath(path.Substring(0,baseidx+1));
-      if(dirnode!=null)
+
+      SimpleDirectoryNode dirnode = GetDirectoryNodeFullPath(path.Substring(0, baseidx + 1));
+      if (dirnode != null)
       {
-        string name = path.Substring(baseidx+1,path.Length-baseidx-2);
-        if(dirnode.ContainsDirectory(name))
+        string name = path.Substring(baseidx + 1, path.Length - baseidx - 2);
+        if (dirnode.ContainsDirectory(name))
           dirnode._subDirectories.Remove(name);
       }
     }
@@ -223,17 +223,17 @@ namespace Syncoco.Online
       string dirname = System.IO.Path.GetDirectoryName(path);
       string filename = System.IO.Path.GetFileName(path);
 
-      if(dirname==null || dirname==string.Empty)
+      if (dirname == null || dirname == string.Empty)
       {
         return this;
       }
       else
       {
-        string[] roots = dirname.Split(new char[]{System.IO.Path.DirectorySeparatorChar},2);
-        if(this.ContainsDirectory(roots[0]))
+        string[] roots = dirname.Split(new char[] { System.IO.Path.DirectorySeparatorChar }, 2);
+        if (this.ContainsDirectory(roots[0]))
         {
-          if(roots.Length==2)
-            return this.Directory(roots[0]).GetDirectoryNodeFullPath(path.Substring(roots[0].Length+1));
+          if (roots.Length == 2)
+            return this.Directory(roots[0]).GetDirectoryNodeFullPath(path.Substring(roots[0].Length + 1));
           else
             return this.Directory(roots[0]);
         }
@@ -257,31 +257,31 @@ namespace Syncoco.Online
     /// <param name="forceUpdateHash">If true, the MD5 hash for the file is recalculated.</param>
     public static SimpleFileNode UpdateFileNode(SimpleDirectoryNode dirnode, DirectoryInfo dirinfo, FileInfo fileinfo, bool forceUpdateHash)
     {
-      System.Diagnostics.Debug.Assert(fileinfo.Exists,"This function is only intended for existing files after copy operations");
-      System.Diagnostics.Debug.Assert(dirinfo.Exists,"The root directory must exist");
+      System.Diagnostics.Debug.Assert(fileinfo.Exists, "This function is only intended for existing files after copy operations");
+      System.Diagnostics.Debug.Assert(dirinfo.Exists, "The root directory must exist");
 
       string relativefullname;
-      bool isRooted = PathUtil.HasRootPath(dirinfo.FullName,fileinfo.FullName,out relativefullname);
+      bool isRooted = PathUtil.HasRootPath(dirinfo.FullName, fileinfo.FullName, out relativefullname);
 
       string[] subdirs = PathUtil.GetDirectories(relativefullname);
 
-      for(int i=0;i<subdirs.Length;i++)
+      for (int i = 0; i < subdirs.Length; i++)
       {
-        if(subdirs[i]==string.Empty)
+        if (subdirs[i] == string.Empty)
           continue; // if path accidentally contains more than one DirectorySeparatorChar consecutively
-        
-        dirinfo = new DirectoryInfo(Path.Combine(dirinfo.FullName,subdirs[i]));
-        if(!dirinfo.Exists)
-          throw new System.IO.IOException(string.Format("The directory {0} should exist, since it should be a root directory of the file {1}", dirinfo.FullName,fileinfo.FullName));
 
-        if(!dirnode.ContainsDirectory(subdirs[i]))
+        dirinfo = new DirectoryInfo(Path.Combine(dirinfo.FullName, subdirs[i]));
+        if (!dirinfo.Exists)
+          throw new System.IO.IOException(string.Format("The directory {0} should exist, since it should be a root directory of the file {1}", dirinfo.FullName, fileinfo.FullName));
+
+        if (!dirnode.ContainsDirectory(subdirs[i]))
           dirnode.AddSubDirectory(new SimpleDirectoryNode(subdirs[i]));
 
         dirnode = dirnode.Directory(subdirs[i]);
       }
 
       // now we have the final directory node to which the file belongs
-      dirnode.UpdateFile(fileinfo,forceUpdateHash);
+      dirnode.UpdateFile(fileinfo, forceUpdateHash);
 
       return dirnode.File(fileinfo.Name);
     }
@@ -295,11 +295,11 @@ namespace Syncoco.Online
     /// <param name="pathFilter">The path filter.</param>
     public void Update(System.IO.DirectoryInfo dirinfo, PathFilter pathFilter, bool forceUpdateHash)
     {
-      if(dirinfo!=null)
+      if (dirinfo != null)
         _name = dirinfo.Name;
 
-      UpdateFiles(dirinfo,pathFilter,forceUpdateHash);
-      UpdateDirectories(dirinfo,pathFilter,forceUpdateHash);
+      UpdateFiles(dirinfo, pathFilter, forceUpdateHash);
+      UpdateDirectories(dirinfo, pathFilter, forceUpdateHash);
     }
 
     /// <summary>
@@ -309,20 +309,20 @@ namespace Syncoco.Online
     /// <param name="forceUpdateHash">If true, the hash is recalculated if the file exists.</param>
     public void UpdateFile(System.IO.FileInfo fileinfo, bool forceUpdateHash)
     {
-      if(this.ContainsFile(fileinfo.Name))
+      if (this.ContainsFile(fileinfo.Name))
       {
-        if(fileinfo.Exists)
+        if (fileinfo.Exists)
           File(fileinfo.Name).Update(fileinfo, forceUpdateHash);
         else
           this._files.Remove(fileinfo.Name);
       }
-      else if(fileinfo.Exists)
+      else if (fileinfo.Exists)
       {
         AddFile(new SimpleFileNode(fileinfo));
       }
     }
 
-    
+
 
     /// <summary>
     /// Updates all files and subdirectory nodes in an existing(!) directory of the own system. 
@@ -336,16 +336,16 @@ namespace Syncoco.Online
       System.IO.FileInfo[] fileinfos = dirinfo.GetFiles();
       // create a hash table of the actual
       Hashtable actualFiles = new Hashtable();
-      foreach(System.IO.FileInfo inf in fileinfos)
-        actualFiles.Add(inf.Name,inf);
+      foreach (System.IO.FileInfo inf in fileinfos)
+        actualFiles.Add(inf.Name, inf);
 
       // first look for the removed files
       System.Collections.Specialized.StringCollection filesToRemoveSilently = new System.Collections.Specialized.StringCollection();
-      foreach(SimpleFileNode file in _files)
+      foreach (SimpleFileNode file in _files)
       {
-        if(pathFilter.IsFileIncluded(file.Name))
+        if (pathFilter.IsFileIncluded(file.Name))
         {
-          if(!actualFiles.ContainsKey(file.Name))
+          if (!actualFiles.ContainsKey(file.Name))
             filesToRemoveSilently.Add(file.Name); // remove it silently from the list
         }
         else // pathFilter (now) rejects this file
@@ -353,19 +353,19 @@ namespace Syncoco.Online
           filesToRemoveSilently.Add(file.Name); // remove it silently from the list
         }
       }
-      foreach(string file in filesToRemoveSilently)
+      foreach (string file in filesToRemoveSilently)
         _files.Remove(file);
-      
+
 
       // now look for the new or the changed files
-      foreach(string file in actualFiles.Keys)
+      foreach (string file in actualFiles.Keys)
       {
-        if(!pathFilter.IsFileIncluded(file))
+        if (!pathFilter.IsFileIncluded(file))
           continue;
 
-        if(_files.Contains(file))
+        if (_files.Contains(file))
         {
-          File(file).Update((System.IO.FileInfo)actualFiles[file],forceUpdateHash);
+          File(file).Update((System.IO.FileInfo)actualFiles[file], forceUpdateHash);
           // this file was here before, we look if it was changed
         }
         else
@@ -391,36 +391,36 @@ namespace Syncoco.Online
       System.IO.DirectoryInfo[] dirinfos = dirinfo.GetDirectories();
       // create a hash table of the actual
       Hashtable actualDirs = new Hashtable();
-      foreach(System.IO.DirectoryInfo inf in dirinfos)
-        actualDirs.Add(inf.Name,inf);
+      foreach (System.IO.DirectoryInfo inf in dirinfos)
+        actualDirs.Add(inf.Name, inf);
 
       // first look for the removed dirs
       System.Collections.Specialized.StringCollection subDirsToRemoveSilently = new System.Collections.Specialized.StringCollection();
-      foreach(SimpleDirectoryNode subdir in _subDirectories)
+      foreach (SimpleDirectoryNode subdir in _subDirectories)
       {
-        if(!pathFilter.IsDirectoryIncluded(subdir.Name) || !actualDirs.ContainsKey(subdir.Name))
+        if (!pathFilter.IsDirectoryIncluded(subdir.Name) || !actualDirs.ContainsKey(subdir.Name))
           subDirsToRemoveSilently.Add(subdir.Name);
       }
-      foreach(string name in subDirsToRemoveSilently)
+      foreach (string name in subDirsToRemoveSilently)
         _subDirectories.Remove(name);
 
 
       // now look for the new or the changed files
-      foreach(string name in actualDirs.Keys)
+      foreach (string name in actualDirs.Keys)
       {
-        if(!pathFilter.IsDirectoryIncluded(name))
+        if (!pathFilter.IsDirectoryIncluded(name))
           continue;
 
         pathFilter.EnterSubDirectory(name);
-        if(_subDirectories.Contains(name))
+        if (_subDirectories.Contains(name))
         {
-          Directory(name).Update((System.IO.DirectoryInfo)actualDirs[name],pathFilter,forceUpdateHash);
+          Directory(name).Update((System.IO.DirectoryInfo)actualDirs[name], pathFilter, forceUpdateHash);
           // this file was here before, we look if it was changed
         }
         else
         {
           // this is a new file, we create a new file node for this
-          AddSubDirectory(new SimpleDirectoryNode((System.IO.DirectoryInfo)actualDirs[name],pathFilter));
+          AddSubDirectory(new SimpleDirectoryNode((System.IO.DirectoryInfo)actualDirs[name], pathFilter));
         }
         pathFilter.LeaveSubDirectory(name);
       }
@@ -430,18 +430,18 @@ namespace Syncoco.Online
 
     #endregion
 
- 
 
 
-   
+
+
     #region IComparable Members
 
     public int CompareTo(object obj)
     {
-      if(obj is string)
-        return string.Compare(this._name,(string)obj,true);
-      else if(obj is SimpleDirectoryNode)
-        return string.Compare(this._name,((SimpleDirectoryNode)obj)._name,true);
+      if (obj is string)
+        return string.Compare(this._name, (string)obj, true);
+      else if (obj is SimpleDirectoryNode)
+        return string.Compare(this._name, ((SimpleDirectoryNode)obj)._name, true);
       else
         throw new ArgumentException("Cannot compare a SimpleFileNode with a object of type " + obj.GetType().ToString());
     }
@@ -450,15 +450,15 @@ namespace Syncoco.Online
 
     #region IParentDirectory Members
 
-   
-  
+
+
 
     /// <summary>
     /// File name.
     /// </summary>
     public string Name
     {
-      get 
+      get
       {
         return _name;
       }
@@ -466,7 +466,7 @@ namespace Syncoco.Online
 
     public override string ToString()
     {
-      return _name==null || _name==string.Empty ? base.ToString() : _name;
+      return _name == null || _name == string.Empty ? base.ToString() : _name;
     }
 
     #endregion

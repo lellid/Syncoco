@@ -22,7 +22,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.Specialized;
 
 namespace Syncoco.Traversing
 {
@@ -31,16 +30,11 @@ namespace Syncoco.Traversing
   /// </summary>
   public class DifferenceCollector
   {
-    DirectoryNode _myDirRoot;
-    DirectoryNode _foreignDirRoot;
-
-    bool _reportCreationTimeDifferences= false;
-
-   
-    bool _reportWriteTimeDifferences= false;
-
-
-    System.IO.StringWriter report = new System.IO.StringWriter();
+    private DirectoryNode _myDirRoot;
+    private DirectoryNode _foreignDirRoot;
+    private bool _reportCreationTimeDifferences = false;
+    private bool _reportWriteTimeDifferences = false;
+    private System.IO.StringWriter report = new System.IO.StringWriter();
 
     public DifferenceCollector(DirectoryNode myDir, DirectoryNode foreignDir)
     {
@@ -79,7 +73,7 @@ namespace Syncoco.Traversing
 
     public void Traverse()
     {
-      VisitDirectory(_myDirRoot,_foreignDirRoot);
+      VisitDirectory(_myDirRoot, _foreignDirRoot);
     }
 
 
@@ -90,107 +84,107 @@ namespace Syncoco.Traversing
       names.Clear();
 
       // add all filenames of myDir
-      if(myDir!=null)
+      if (myDir != null)
       {
-        foreach(FileNode node in myDir.Files)
-          if(!names.ContainsKey(node.Name))
-            names.Add(node.Name,null);
+        foreach (FileNode node in myDir.Files)
+          if (!names.ContainsKey(node.Name))
+            names.Add(node.Name, null);
       }
       // and add all filenames of foDir
-      if(foDir!=null)
+      if (foDir != null)
       {
-        foreach(FileNode node in foDir.Files)
-          if(!names.ContainsKey(node.Name))
-            names.Add(node.Name,null);
+        foreach (FileNode node in foDir.Files)
+          if (!names.ContainsKey(node.Name))
+            names.Add(node.Name, null);
       }
 
-      ReportOnFiles(myDir,foDir,names);
+      ReportOnFiles(myDir, foDir, names);
 
       // now the same for all directories
       names.Clear();
       // add all dirnames of myDir
-      if(myDir!=null)
+      if (myDir != null)
       {
-        foreach(DirectoryNode node in myDir.Directories)
-          if(!names.ContainsKey(node.Name))
-            names.Add(node.Name,null);
+        foreach (DirectoryNode node in myDir.Directories)
+          if (!names.ContainsKey(node.Name))
+            names.Add(node.Name, null);
       }
       // and add all dirnames of foDir
-      if(foDir!=null)
+      if (foDir != null)
       {
-        foreach(DirectoryNode node in foDir.Directories)
-          if(!names.ContainsKey(node.Name))
-            names.Add(node.Name,null);
+        foreach (DirectoryNode node in foDir.Directories)
+          if (!names.ContainsKey(node.Name))
+            names.Add(node.Name, null);
       }
 
-      ReportOnSubdirectories(myDir,foDir,names);
+      ReportOnSubdirectories(myDir, foDir, names);
 
 
       // and now Repeat it for all subdirectories
-      foreach(string subdirname in names.Keys)
+      foreach (string subdirname in names.Keys)
       {
-        DirectoryNode mySub = myDir==null ? null : myDir.Directory(subdirname);
-        DirectoryNode foSub = foDir==null ? null : foDir.Directory(subdirname);
-        VisitDirectory(mySub,foSub);
+        DirectoryNode mySub = myDir == null ? null : myDir.Directory(subdirname);
+        DirectoryNode foSub = foDir == null ? null : foDir.Directory(subdirname);
+        VisitDirectory(mySub, foSub);
       }
     }
 
 
     protected void ReportOnFiles(DirectoryNode myDir, DirectoryNode foDir, SortedList names)
     {
-      foreach(string name in names.Keys)
+      foreach (string name in names.Keys)
       {
-        FileNode myFile = myDir==null ? null : myDir.File(name);
-        FileNode foFile = foDir==null ? null : foDir.File(name);
-        ReportOnSingleFile(myFile,foFile);
+        FileNode myFile = myDir == null ? null : myDir.File(name);
+        FileNode foFile = foDir == null ? null : foDir.File(name);
+        ReportOnSingleFile(myFile, foFile);
       }
     }
     protected void ReportOnSubdirectories(DirectoryNode myDir, DirectoryNode foDir, SortedList names)
     {
-      foreach(string name in names.Keys)
+      foreach (string name in names.Keys)
       {
-        DirectoryNode mySub = myDir==null ? null : myDir.Directory(name);
-        DirectoryNode foSub = foDir==null ? null : foDir.Directory(name);
-        ReportOnSingleDirectory(mySub,foSub);
+        DirectoryNode mySub = myDir == null ? null : myDir.Directory(name);
+        DirectoryNode foSub = foDir == null ? null : foDir.Directory(name);
+        ReportOnSingleDirectory(mySub, foSub);
       }
     }
 
 
     protected void ReportOnSingleFile(FileNode myFile, FileNode foFile)
     {
-      if(myFile!=null && foFile==null)
+      if (myFile != null && foFile == null)
       {
-        report.WriteLine("File {0} here only",GetFullName(myFile));
+        report.WriteLine("File {0} here only", GetFullName(myFile));
       }
-      else if(myFile==null && foFile!=null)
+      else if (myFile == null && foFile != null)
       {
-        report.WriteLine("File {0} there only",GetFullName(foFile));
+        report.WriteLine("File {0} there only", GetFullName(foFile));
       }
-      else if (myFile!=null && foFile!=null)
+      else if (myFile != null && foFile != null)
       {
         bool isLengthDifferent = myFile.FileLength != foFile.FileLength;
         bool isHashDifferent = !(myFile.HasSameHashThan(foFile));
-        bool isCreationTimeDifferent = IsTimeDifferent(myFile.CreationTimeUtc,foFile.CreationTimeUtc);
+        bool isCreationTimeDifferent = IsTimeDifferent(myFile.CreationTimeUtc, foFile.CreationTimeUtc);
         bool isWriteTimeDifferent = IsTimeDifferent(myFile.LastWriteTimeUtc, foFile.LastWriteTimeUtc);
         bool isUnchanged = myFile.IsUnchanged && foFile.IsUnchanged;
 
-        if(isLengthDifferent ||
-          isHashDifferent || 
-          (isCreationTimeDifferent && _reportCreationTimeDifferences) || 
+        if (isLengthDifferent ||
+          isHashDifferent ||
+          (isCreationTimeDifferent && _reportCreationTimeDifferences) ||
           (isWriteTimeDifferent && _reportWriteTimeDifferences) ||
           (!isUnchanged))
         {
           report.Write("File {0}: ", GetFullName(myFile));
-          if(isLengthDifferent)
-            report.Write("differs in length ({0}::{1}); ",myFile.FileLength,foFile.FileLength);
-          if(isHashDifferent)
+          if (isLengthDifferent)
+            report.Write("differs in length ({0}::{1}); ", myFile.FileLength, foFile.FileLength);
+          if (isHashDifferent)
             report.Write("differs in hash; ");
-          if(isCreationTimeDifferent && _reportCreationTimeDifferences)
-            report.Write("differs in creation time ({0}::{1}); ",myFile.CreationTimeUtc,foFile.CreationTimeUtc);
-          if(isWriteTimeDifferent && _reportWriteTimeDifferences)
-            report.Write("differs in last write time ({0}::{1}); ",myFile.LastWriteTimeUtc,foFile.LastWriteTimeUtc);
-          if(!isUnchanged)
-            report.Write("has at least a hint set ({0}::{1}); ", myFile.HintAsString,foFile.HintAsString);
+          if (isCreationTimeDifferent && _reportCreationTimeDifferences)
+            report.Write("differs in creation time ({0}::{1}); ", myFile.CreationTimeUtc, foFile.CreationTimeUtc);
+          if (isWriteTimeDifferent && _reportWriteTimeDifferences)
+            report.Write("differs in last write time ({0}::{1}); ", myFile.LastWriteTimeUtc, foFile.LastWriteTimeUtc);
+          if (!isUnchanged)
+            report.Write("has at least a hint set ({0}::{1}); ", myFile.HintAsString, foFile.HintAsString);
           report.WriteLine();
         }
 
@@ -203,24 +197,24 @@ namespace Syncoco.Traversing
 
     protected void ReportOnSingleDirectory(DirectoryNode myDir, DirectoryNode foDir)
     {
-      if(myDir!=null && foDir==null)
+      if (myDir != null && foDir == null)
       {
-        report.WriteLine("Dir {0} here only",GetFullName(myDir));
+        report.WriteLine("Dir {0} here only", GetFullName(myDir));
       }
-      else if(myDir==null && foDir!=null)
+      else if (myDir == null && foDir != null)
       {
-        report.WriteLine("Dir {0} there only",GetFullName(foDir));
+        report.WriteLine("Dir {0} there only", GetFullName(foDir));
       }
-      else if (myDir!=null && foDir!=null)
+      else if (myDir != null && foDir != null)
       {
         bool isRemoved = myDir.IsRemoved || foDir.IsRemoved;
 
-        if(isRemoved)
+        if (isRemoved)
         {
           report.Write("Dir {0}: ", GetFullName(myDir));
-          if(isRemoved)
-            report.Write("at least one is removed ({0}::{1}); ",myDir.IsRemoved,foDir.IsRemoved);
-          
+          if (isRemoved)
+            report.Write("at least one is removed ({0}::{1}); ", myDir.IsRemoved, foDir.IsRemoved);
+
           report.WriteLine();
         }
       }
@@ -233,25 +227,25 @@ namespace Syncoco.Traversing
     #region Utility functions
 
 
-    bool IsTimeDifferent(DateTime time1, DateTime time2)
+    private bool IsTimeDifferent(DateTime time1, DateTime time2)
     {
-      TimeSpan span = (time1-time2);
-      return span.TotalSeconds>1;
+      TimeSpan span = (time1 - time2);
+      return span.TotalSeconds > 1;
     }
 
-    string GetFullName(DirectoryNode node)
+    private string GetFullName(DirectoryNode node)
     {
       IParentDirectory parent;
-      for(parent = node;parent.ParentDirectory!=null;parent=parent.ParentDirectory)
+      for (parent = node; parent.ParentDirectory != null; parent = parent.ParentDirectory)
       {
       }
 
-      return PathUtil.Combine_Abspath_RelPath(parent.Name,node.FullRelativePath);
+      return PathUtil.Combine_Abspath_RelPath(parent.Name, node.FullRelativePath);
     }
 
-    string GetFullName(FileNode node)
+    private string GetFullName(FileNode node)
     {
-      return GetFullName(node.Parent)+node.Name;
+      return GetFullName(node.Parent) + node.Name;
     }
     #endregion
   }

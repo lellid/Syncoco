@@ -36,21 +36,18 @@ namespace Syncoco.Online
   [Serializable]
   public class SimpleFileSystemRoot : IParentDirectory
   {
-
-    string _FilePath;
-
-    SimpleDirectoryNode _DirectoryNode;
-
-    PathFilter _pathFilter;
+    private string _FilePath;
+    private SimpleDirectoryNode _DirectoryNode;
+    private PathFilter _pathFilter;
 
     [NonSerialized]
-    FileSystemWatcher _watcher;
+    private FileSystemWatcher _watcher;
 
     [NonSerialized]
-    Hashtable _changedFiles = new Hashtable();
+    private Hashtable _changedFiles = new Hashtable();
 
 
-   
+
 
     public SimpleFileSystemRoot(string path)
     {
@@ -67,12 +64,12 @@ namespace Syncoco.Online
       SetFilePath(fsroot.FilePath);
     }
 
-   
 
-    
+
+
     public bool IsValid
     {
-      get { return _FilePath!=null && _FilePath.Length>0; }
+      get { return _FilePath != null && _FilePath.Length > 0; }
     }
 
     public string FilePath
@@ -89,9 +86,9 @@ namespace Syncoco.Online
     {
       _FilePath = NormalizePath(path);
       System.IO.DirectoryInfo dirinfo = new System.IO.DirectoryInfo(_FilePath);
-      if(dirinfo.Exists)
+      if (dirinfo.Exists)
       {
-        _DirectoryNode = new SimpleDirectoryNode(dirinfo,null);
+        _DirectoryNode = new SimpleDirectoryNode(dirinfo, null);
         _watcher = new FileSystemWatcher(dirinfo.FullName);
         _watcher.NotifyFilter = NotifyFilters.Attributes | NotifyFilters.CreationTime | NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Size;
         _watcher.IncludeSubdirectories = true;
@@ -108,7 +105,7 @@ namespace Syncoco.Online
       }
       else
       {
-        if(_watcher!=null)
+        if (_watcher != null)
         {
           // Begin watching.
           _watcher.EnableRaisingEvents = false;
@@ -119,7 +116,7 @@ namespace Syncoco.Online
           _watcher.Deleted -= new FileSystemEventHandler(OnChanged);
           _watcher.Renamed -= new RenamedEventHandler(OnRenamed);
 
-         
+
 
         }
         _DirectoryNode = null;
@@ -133,7 +130,7 @@ namespace Syncoco.Online
 
     public SimpleFileNode GetFileNode(string pathname)
     {
-      if(_DirectoryNode==null)
+      if (_DirectoryNode == null)
         return null;
       else
         return _DirectoryNode.GetFileNodeFullPath(pathname);
@@ -141,7 +138,7 @@ namespace Syncoco.Online
 
     public void DeleteFileNode(string pathname)
     {
-      if(_DirectoryNode!=null)
+      if (_DirectoryNode != null)
         _DirectoryNode.DeleteFileNodeFullPath(pathname);
     }
 
@@ -151,9 +148,9 @@ namespace Syncoco.Online
     /// <param name="path">The full path name (from the root dir) to the subdirectory including a trailing DirectorySeparatorChar.</param>
     public void DeleteSubDirectoryNode(string path)
     {
-      System.Diagnostics.Debug.Assert(path[path.Length-1]==Path.DirectorySeparatorChar);
+      System.Diagnostics.Debug.Assert(path[path.Length - 1] == Path.DirectorySeparatorChar);
 
-      if(_DirectoryNode!=null)
+      if (_DirectoryNode != null)
         _DirectoryNode.DeleteSubDirectoryNodeFullPath(path);
     }
 
@@ -161,21 +158,21 @@ namespace Syncoco.Online
     {
       System.IO.DirectoryInfo dirinfo = new System.IO.DirectoryInfo(_FilePath);
 
-      if(null!=_DirectoryNode)
-        _DirectoryNode.Update(dirinfo,pathFilter, forceUpdateHash);
+      if (null != _DirectoryNode)
+        _DirectoryNode.Update(dirinfo, pathFilter, forceUpdateHash);
       else
-        _DirectoryNode = new SimpleDirectoryNode(dirinfo,pathFilter);
+        _DirectoryNode = new SimpleDirectoryNode(dirinfo, pathFilter);
     }
 
     public SimpleFileNode UpdateMyFile(FileInfo fileinfo, bool forceUpdateHash)
     {
       DirectoryInfo dirinfo = new DirectoryInfo(this._FilePath);
 
-      return SimpleDirectoryNode.UpdateFileNode(_DirectoryNode,dirinfo,fileinfo,forceUpdateHash);
+      return SimpleDirectoryNode.UpdateFileNode(_DirectoryNode, dirinfo, fileinfo, forceUpdateHash);
     }
 
-    
-   
+
+
     /// <summary>
     /// Returns a path with is forced to end with a DirectorySeparatorChar
     /// </summary>
@@ -183,10 +180,10 @@ namespace Syncoco.Online
     /// <returns>The normalized path.</returns>
     public static string NormalizePath(string path)
     {
-      if(path.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
+      if (path.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
         return path;
       else
-        return path+System.IO.Path.DirectorySeparatorChar;
+        return path + System.IO.Path.DirectorySeparatorChar;
     }
     #region IParentDirectory Members
 
@@ -217,13 +214,13 @@ namespace Syncoco.Online
     #endregion
 
     // Define the event handlers.
-    private  void OnChanged(object source, FileSystemEventArgs e)
+    private void OnChanged(object source, FileSystemEventArgs e)
     {
       string path = e.FullPath.Substring(this._FilePath.Length);
       _changedFiles[path] = DateTime.Now;
     }
 
-    private  void OnRenamed(object source, RenamedEventArgs e)
+    private void OnRenamed(object source, RenamedEventArgs e)
     {
       string path;
 

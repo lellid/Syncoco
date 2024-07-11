@@ -24,7 +24,7 @@ using System;
 
 namespace Syncoco.Filter
 {
-  
+
 
 
   /// <summary>
@@ -79,7 +79,7 @@ namespace Syncoco.Filter
     public void CopyFrom(FilterList from)
     {
       this.Clear();
-      for(int i=0;i<from.Count;i++)
+      for (int i = 0; i < from.Count; i++)
         this.InnerList.Add(new FilterItem(from[i]));
 
       this.DefaultAction = from.DefaultAction;
@@ -96,10 +96,10 @@ namespace Syncoco.Filter
     {
       name = name.ToLower();
 
-      for(int i=0;i<Count;i++)
+      for (int i = 0; i < Count; i++)
       {
         FilterAction action = this[i].Match(name);
-        if(FilterAction.Ignore!=action)
+        if (FilterAction.Ignore != action)
         {
           return action;
         }
@@ -111,8 +111,8 @@ namespace Syncoco.Filter
 
     public void Save(System.Xml.XmlTextWriter tw)
     {
-      tw.WriteElementString("DefaultAction",DefaultAction.ToString());
-      for(int i=0;i<Count;i++)
+      tw.WriteElementString("DefaultAction", DefaultAction.ToString());
+      for (int i = 0; i < Count; i++)
       {
         tw.WriteStartElement("FilterItem");
         this[i].Save(tw);
@@ -122,15 +122,15 @@ namespace Syncoco.Filter
 
     public void Open(System.Xml.XmlTextReader tr)
     {
-      DefaultAction = (FilterAction)System.Enum.Parse(typeof(FilterAction),tr.ReadElementString("DefaultAction"));
+      DefaultAction = (FilterAction)System.Enum.Parse(typeof(FilterAction), tr.ReadElementString("DefaultAction"));
 
-      while(tr.Name=="FilterItem")
+      while (tr.Name == "FilterItem")
       {
         tr.ReadStartElement("FilterItem");
         this.Add(new FilterItem(tr));
         tr.ReadEndElement();
       }
-    
+
     }
 
     public FilterList(System.Xml.XmlTextReader tr)
@@ -148,15 +148,15 @@ namespace Syncoco.Filter
     /// <param name="fn">The file name.</param>
     /// <param name="fni">First index into the file name that is used for comparism.</param>
     /// <returns>True if the two strings match, false otherwise.</returns>
-    static bool Match( string ms, int msi,  string fn, int fni) // ms==Matchstring, fn=filename;
+    private static bool Match(string ms, int msi, string fn, int fni) // ms==Matchstring, fn=filename;
     {
-      if(msi==ms.Length) return fni==fn.Length;
-      if(fni==fn.Length) return (ms[msi]=='*')&&(Match(ms,msi+1,fn,fni));  // Matchfrage wenn ein String am Ende
-      if(ms[msi]=='?') return Match(ms,msi+1,fn,fni+1); // bei ? tut ein Zeichen nichts zur Sache
-      if(ms[msi]!='*') return (char.ToUpper(ms[msi])==char.ToUpper(fn[fni])) && Match(ms,msi+1,fn,fni+1); // stimmen Buchstaben und Reststring
-      if((msi+1)<ms.Length && ms[msi+1]=='*') return Match(ms,msi+1,fn,fni); // Fix gegen mehrere Stern-Joker hintereinander
-      return Match(ms,msi+1,fn,fni) || Match(ms,msi,fn,fni+1); // Stern ersetzt kein Zeichen oder  Stern ersetzt zunächst ein Zeichen
-      
+      if (msi == ms.Length) return fni == fn.Length;
+      if (fni == fn.Length) return (ms[msi] == '*') && (Match(ms, msi + 1, fn, fni));  // Matchfrage wenn ein String am Ende
+      if (ms[msi] == '?') return Match(ms, msi + 1, fn, fni + 1); // bei ? tut ein Zeichen nichts zur Sache
+      if (ms[msi] != '*') return (char.ToUpper(ms[msi]) == char.ToUpper(fn[fni])) && Match(ms, msi + 1, fn, fni + 1); // stimmen Buchstaben und Reststring
+      if ((msi + 1) < ms.Length && ms[msi + 1] == '*') return Match(ms, msi + 1, fn, fni); // Fix gegen mehrere Stern-Joker hintereinander
+      return Match(ms, msi + 1, fn, fni) || Match(ms, msi, fn, fni + 1); // Stern ersetzt kein Zeichen oder  Stern ersetzt zunächst ein Zeichen
+
     }
   }
 }

@@ -20,23 +20,20 @@
 /////////////////////////////////////////////////////////////////////////////
 #endregion
 
-using System;
-using System.Collections;
-
 namespace Syncoco.DocumentActions
 {
   /// <summary>
   /// Summary description for DifferenceReportAction.
   /// </summary>
-  public class DifferenceReportAction  : AbstractDocumentAction
+  public class DifferenceReportAction : AbstractDocumentAction
   {
     public DifferenceReportAction(MainDocument doc, IBackgroundMonitor monitor, IErrorReporter reporter)
-      : base(doc,monitor,reporter)
+      : base(doc, monitor, reporter)
     {
     }
 
     public DifferenceReportAction(MainDocument doc)
-      : this(doc,null,null)
+      : this(doc, null, null)
     {
     }
 
@@ -44,9 +41,9 @@ namespace Syncoco.DocumentActions
     public override void DirectExecute()
     {
       _reporter.ReportBeginNewParagraph();
-      for(int i=0;i<_doc.Count;i++)
+      for (int i = 0; i < _doc.Count; i++)
       {
-        Traversing.DifferenceCollector coll = 
+        Traversing.DifferenceCollector coll =
           new Traversing.DifferenceCollector(_doc.RootPair(i).MyRoot.DirectoryNode,
           _doc.RootPair(i).ForeignRoot.DirectoryNode);
 

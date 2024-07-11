@@ -29,7 +29,7 @@ namespace Syncoco.Online
   {
     public override int Add(object value)
     {
-      if(value is SimpleDirectoryNode)
+      if (value is SimpleDirectoryNode)
         return base.Add(value);
       else
         throw new ArgumentException("Item to add is not of expected type");
@@ -43,15 +43,15 @@ namespace Syncoco.Online
 
     public SimpleDirectoryNode this[string name]
     {
-      get 
+      get
       {
-        int idx = Array.BinarySearch(_items,0,_size,name); 
-        if(idx>=0)
+        int idx = Array.BinarySearch(_items, 0, _size, name);
+        if (idx >= 0)
           return (SimpleDirectoryNode)base[idx];
         else
           return null;
       }
     }
-  
+
   }
 }

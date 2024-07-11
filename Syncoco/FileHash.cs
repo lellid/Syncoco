@@ -31,52 +31,52 @@ namespace Syncoco
     public ulong Hi;
 
     public FileHash(byte[] hash)
-      : this(hash,hash.Length)
+      : this(hash, hash.Length)
     {
     }
     public FileHash(byte[] hash, int len)
     {
-      if(hash==null)
+      if (hash == null)
       {
-        Lo=0;
-        Hi=0;
+        Lo = 0;
+        Hi = 0;
       }
-      else if(len==16)
+      else if (len == 16)
       {
-        Lo = System.BitConverter.ToUInt64(hash,0);
-        Hi = System.BitConverter.ToUInt64(hash,8);
+        Lo = System.BitConverter.ToUInt64(hash, 0);
+        Hi = System.BitConverter.ToUInt64(hash, 8);
       }
       else
       {
         throw new ArgumentException("Unexpected hash length of " + hash.Length);
       }
-      
+
     }
 
 
     public static FileHash FromBinHexRepresentation(string binhex)
     {
-      if(binhex.Length!=32)
+      if (binhex.Length != 32)
         throw new ArgumentException("BinHexRepresentation must have a length of 32");
 
       FileHash hash;
-      hash.Hi = ulong.Parse(binhex.Substring( 0,16),System.Globalization.NumberStyles.AllowHexSpecifier);
-      hash.Lo = ulong.Parse(binhex.Substring(16,16),System.Globalization.NumberStyles.AllowHexSpecifier);
+      hash.Hi = ulong.Parse(binhex.Substring(0, 16), System.Globalization.NumberStyles.AllowHexSpecifier);
+      hash.Lo = ulong.Parse(binhex.Substring(16, 16), System.Globalization.NumberStyles.AllowHexSpecifier);
       return hash;
     }
 
 
-    public bool Valid 
+    public bool Valid
     {
-      get 
-      { 
-        return Lo!=0 || Hi!=0;
+      get
+      {
+        return Lo != 0 || Hi != 0;
       }
     }
 
     public override bool Equals(object obj)
     {
-      return (obj is FileHash) && (this==(FileHash)obj);
+      return (obj is FileHash) && (this == (FileHash)obj);
     }
 
     public override int GetHashCode()
@@ -89,7 +89,7 @@ namespace Syncoco
     {
       get
       {
-        return Hi.ToString("X16")+Lo.ToString("X16");
+        return Hi.ToString("X16") + Lo.ToString("X16");
       }
     }
     public string MediumFileName
@@ -101,32 +101,32 @@ namespace Syncoco
     }
     public static bool operator ==(FileHash a, FileHash b)
     {
-      return  a.Hi==b.Hi && a.Lo==b.Lo ;
+      return a.Hi == b.Hi && a.Lo == b.Lo;
     }
 
     public static bool operator !=(FileHash a, FileHash b)
     {
-      return a.Hi!=b.Hi || a.Lo!=b.Lo;
+      return a.Hi != b.Hi || a.Lo != b.Lo;
     }
 
     public static bool operator <(FileHash a, FileHash b)
     {
-      return a.Hi<b.Hi || a.Lo<b.Lo;
+      return a.Hi < b.Hi || a.Lo < b.Lo;
     }
 
     public static bool operator >(FileHash a, FileHash b)
     {
-      return a.Hi>b.Hi || a.Lo>b.Lo;
+      return a.Hi > b.Hi || a.Lo > b.Lo;
     }
     #region IComparable Members
 
     public int CompareTo(object obj)
     {
-      if(obj is FileHash)
+      if (obj is FileHash)
       {
-        return this==(FileHash)obj ? 0 : (this>(FileHash)obj ? 1 : -1);
+        return this == (FileHash)obj ? 0 : (this > (FileHash)obj ? 1 : -1);
       }
-      else if(obj==null)
+      else if (obj == null)
       {
         return 0;
       }

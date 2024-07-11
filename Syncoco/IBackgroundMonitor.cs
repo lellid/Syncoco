@@ -44,7 +44,7 @@ namespace Syncoco
     /// Returns true if the activity was cancelled by the user
     /// </summary>
     bool CancelledByUser { get; }
-    
+
   }
 
 
@@ -62,14 +62,14 @@ namespace Syncoco
 
     public void Report(string text)
     {
-      
+
     }
 
     public bool CancelledByUser
     {
       get
       {
-        
+
         return false;
       }
     }
@@ -81,8 +81,8 @@ namespace Syncoco
   public class ExternalDrivenBackgroundMonitor : IBackgroundMonitor
   {
     protected bool _shouldReport;
-    string _reportText;
-    bool _cancelledByUser;
+    private string _reportText;
+    private bool _cancelledByUser;
 
     #region IBackgroundMonitor Members
 
@@ -115,7 +115,7 @@ namespace Syncoco
       {
         return _cancelledByUser;
       }
-      set 
+      set
       {
         _cancelledByUser |= value;
       }
@@ -127,7 +127,7 @@ namespace Syncoco
 
   public class ExternalDrivenTimeReportMonitor : ExternalDrivenBackgroundMonitor
   {
-    DateTime _timeBegin = DateTime.Now;
+    private DateTime _timeBegin = DateTime.Now;
 
     public override bool ShouldReport
     {
@@ -139,7 +139,7 @@ namespace Syncoco
       {
         _shouldReport |= value;
 
-        if(_shouldReport)
+        if (_shouldReport)
           Report("Busy ... " + (DateTime.Now - _timeBegin).ToString());
       }
     }
@@ -147,10 +147,10 @@ namespace Syncoco
 
   public class TimedBackgroundMonitor : IBackgroundMonitor
   {
-    System.Timers.Timer _timer = new System.Timers.Timer(200);
-    bool _shouldReport;
-    bool _cancelledByUser;
-    string _reportText;
+    private System.Timers.Timer _timer = new System.Timers.Timer(200);
+    private bool _shouldReport;
+    private bool _cancelledByUser;
+    private string _reportText;
 
     public event System.Timers.ElapsedEventHandler Elapsed;
 
@@ -189,7 +189,7 @@ namespace Syncoco
     {
       _shouldReport = false;
       _reportText = text;
-      
+
     }
 
     public string ReportText
@@ -214,8 +214,8 @@ namespace Syncoco
     private void _timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
     {
       _shouldReport = true;
-      if(this.Elapsed!=null)
-        this.Elapsed(sender,e);
+      if (this.Elapsed != null)
+        this.Elapsed(sender, e);
     }
   }
 

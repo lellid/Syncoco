@@ -20,7 +20,6 @@
 /////////////////////////////////////////////////////////////////////////////
 #endregion
 
-using System;
 using Syncoco.Filter;
 using Syncoco.Traversing;
 
@@ -31,19 +30,19 @@ namespace Syncoco.DocumentActions
   /// </summary>
   public class DocumentUpdateAction : AbstractDocumentAction
   {
-    bool _forceUpdateHash=false;
-    
+    private bool _forceUpdateHash = false;
+
 
     public DocumentUpdateAction(MainDocument doc, bool forceUpdateHash)
-      : this(doc,forceUpdateHash,null,null)
+      : this(doc, forceUpdateHash, null, null)
     {
     }
 
-    public DocumentUpdateAction(MainDocument doc, bool forceUpdateHash, IBackgroundMonitor monitor,IErrorReporter reporter)
-      : base(doc,monitor,reporter)
+    public DocumentUpdateAction(MainDocument doc, bool forceUpdateHash, IBackgroundMonitor monitor, IErrorReporter reporter)
+      : base(doc, monitor, reporter)
     {
       _forceUpdateHash = forceUpdateHash;
-      
+
     }
 
     public override void BackgroundExecute()
@@ -51,7 +50,7 @@ namespace Syncoco.DocumentActions
       base.BackgroundExecute();
     }
 
-   
+
     public override void DirectExecute()
     {
       _doc.SetDirty();
@@ -60,21 +59,21 @@ namespace Syncoco.DocumentActions
 
       _doc.EnsureAlignment();
 
-      for(int i=0;i<_doc.Count;i++)
+      for (int i = 0; i < _doc.Count; i++)
       {
-        if(_monitor.CancelledByUser)
+        if (_monitor.CancelledByUser)
           return;
 
-        if(_doc.RootPair(i).MyRoot.IsValid)
+        if (_doc.RootPair(i).MyRoot.IsValid)
         {
-          if(System.IO.Directory.Exists(_doc.RootPair(i).MyRoot.FilePath))
+          if (System.IO.Directory.Exists(_doc.RootPair(i).MyRoot.FilePath))
             Update(_doc.RootPair(i));
           else
             _reporter.ReportWarning(string.Format("RootPair[{0}] not updated because the path is unavailable.", i));
         }
         else
         {
-          _reporter.ReportWarning(string.Format("RootPair[{0}] not updated because the path is invalid.",i));
+          _reporter.ReportWarning(string.Format("RootPair[{0}] not updated because the path is invalid.", i));
         }
       }
     }
@@ -91,10 +90,10 @@ namespace Syncoco.DocumentActions
     {
       System.IO.DirectoryInfo dirinfo = new System.IO.DirectoryInfo(fileSystemRoot.FilePath);
 
-      if(null!=fileSystemRoot.DirectoryNode)
-        new DirectoryUpdater(pathFilter,_monitor,_reporter).Update(fileSystemRoot.DirectoryNode, dirinfo, _forceUpdateHash);
+      if (null != fileSystemRoot.DirectoryNode)
+        new DirectoryUpdater(pathFilter, _monitor, _reporter).Update(fileSystemRoot.DirectoryNode, dirinfo, _forceUpdateHash);
       else
-        fileSystemRoot.DirectoryNode = new DirectoryUpdater(pathFilter,_monitor,_reporter).NewDirectoryNode(dirinfo,fileSystemRoot);
+        fileSystemRoot.DirectoryNode = new DirectoryUpdater(pathFilter, _monitor, _reporter).NewDirectoryNode(dirinfo, fileSystemRoot);
     }
   }
 }

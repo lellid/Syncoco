@@ -20,8 +20,6 @@
 /////////////////////////////////////////////////////////////////////////////
 #endregion
 
-using System;
-
 namespace Syncoco
 {
   /// <summary>
@@ -29,7 +27,7 @@ namespace Syncoco
   /// </summary>
   public enum FunctionResult
   {
-    Success=0,
-    Failure=1
+    Success = 0,
+    Failure = 1
   }
 }

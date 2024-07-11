@@ -20,8 +20,6 @@
 /////////////////////////////////////////////////////////////////////////////
 #endregion
 
-using System;
-
 namespace Syncoco.DocumentActions
 {
   /// <summary>
@@ -29,28 +27,28 @@ namespace Syncoco.DocumentActions
   /// </summary>
   public class SaveDocumentAction : AbstractDocumentAction
   {
-    string _filename;
+    private string _filename;
 
     public SaveDocumentAction(MainDocument doc, IBackgroundMonitor monitor, IErrorReporter reporter, string filename)
-      : base(doc,monitor,reporter)
+      : base(doc, monitor, reporter)
     {
       _filename = filename;
       _monitor = new ExternalDrivenTimeReportMonitor();
     }
-    public SaveDocumentAction(MainDocument doc,string filename)
-      : this(doc,null,null,filename)
+    public SaveDocumentAction(MainDocument doc, string filename)
+      : this(doc, null, null, filename)
     {
     }
-  
-   
-    
+
+
+
     public override void DirectExecute()
-    
+
     {
-      
+
       _doc.Save(_filename);
 
-      CheckParentHierarchyAction checkHierarchy = new CheckParentHierarchyAction(_doc,_monitor,_reporter);
+      CheckParentHierarchyAction checkHierarchy = new CheckParentHierarchyAction(_doc, _monitor, _reporter);
       checkHierarchy.DirectExecute();
     }
 

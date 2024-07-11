@@ -27,7 +27,7 @@ namespace Syncoco.Filter
   /// <summary>
   /// Summary description for FilterListItemList.
   /// </summary>
-  
+
   [Serializable]
   public class FilterListItemList : System.Collections.CollectionBase
   {
@@ -54,15 +54,15 @@ namespace Syncoco.Filter
     public void CopyFrom(FilterListItemList from)
     {
       this.Clear();
-      for(int i=0;i<from.Count;i++)
+      for (int i = 0; i < from.Count; i++)
         this.Add(new FilterListItem(from[i]));
     }
 
 
     public void Save(System.Xml.XmlTextWriter tw)
     {
-     
-      for(int i=0;i<Count;i++)
+
+      for (int i = 0; i < Count; i++)
       {
         tw.WriteStartElement("FilterList");
         this[i].Save(tw);
@@ -72,13 +72,13 @@ namespace Syncoco.Filter
 
     public void Open(System.Xml.XmlTextReader tr)
     {
-      while(tr.LocalName=="FilterList")
+      while (tr.LocalName == "FilterList")
       {
         tr.ReadStartElement("FilterList");
         this.Add(new FilterListItem(tr));
         tr.ReadEndElement();
       }
-    
+
     }
 
     public FilterListItemList(System.Xml.XmlTextReader tr)
@@ -88,9 +88,9 @@ namespace Syncoco.Filter
 
     public void ExchangeItemPositions(int index1, int index2)
     {
-      if(index1<0 || index2<0)
+      if (index1 < 0 || index2 < 0)
         throw new ArgumentOutOfRangeException("Indizes have to be >=0");
-      if(index1>=Count || index2>=Count)
+      if (index1 >= Count || index2 >= Count)
         throw new ArgumentOutOfRangeException("Indizes have to be <Count");
 
       object o = InnerList[index1];

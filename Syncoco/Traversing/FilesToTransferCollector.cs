@@ -20,9 +20,7 @@
 /////////////////////////////////////////////////////////////////////////////
 #endregion
 
-using System;
 using System.Collections;
-using Syncoco;
 namespace Syncoco.Traversing
 {
   /// <summary>
@@ -30,10 +28,9 @@ namespace Syncoco.Traversing
   /// </summary>
   public class FilesToTransferCollector
   {
-    DirectoryNode _myDirRoot;
-    DirectoryNode _foreignDirRoot;
-
-    SortedList list;
+    private DirectoryNode _myDirRoot;
+    private DirectoryNode _foreignDirRoot;
+    private SortedList list;
 
     public FilesToTransferCollector(DirectoryNode myDir, DirectoryNode foreignDir)
     {
@@ -44,7 +41,7 @@ namespace Syncoco.Traversing
     public void Traverse()
     {
       list = new SortedList();
-      GetNewOrChangedFiles(_myDirRoot,_foreignDirRoot,System.IO.Path.DirectorySeparatorChar.ToString());
+      GetNewOrChangedFiles(_myDirRoot, _foreignDirRoot, System.IO.Path.DirectorySeparatorChar.ToString());
     }
 
     public SortedList Result
@@ -66,37 +63,37 @@ namespace Syncoco.Traversing
       PathUtil.Assert_Relpath(nameroot);
 #endif
 
-      foreach(FileNode myFileNode in myDir.Files)
+      foreach (FileNode myFileNode in myDir.Files)
       {
-        string   myFileName = myFileNode.Name;
-        
-        if(myFileNode.IsDataContentNewOrChanged)
+        string myFileName = myFileNode.Name;
+
+        if (myFileNode.IsDataContentNewOrChanged)
         {
           // before adding them to the list, make sure that our node don't
           // have the same content as the foreign node
-          if(foreignDir!=null && foreignDir.ContainsFile(myFileName) && myFileNode.HasSameHashThan(foreignDir.File(myFileName)))
+          if (foreignDir != null && foreignDir.ContainsFile(myFileName) && myFileNode.HasSameHashThan(foreignDir.File(myFileName)))
           {
             // Do nothing here, don't change the nodes, since this is done during the sync stage
           }
           else
           {
-            list.Add(PathUtil.Combine_Relpath_Filename(nameroot,myFileName),myFileNode);
+            list.Add(PathUtil.Combine_Relpath_Filename(nameroot, myFileName), myFileNode);
           }
         }
-        else if(myFileNode.IsUnchanged && (foreignDir==null || !foreignDir.ContainsFile(myFileName)))
+        else if (myFileNode.IsUnchanged && (foreignDir == null || !foreignDir.ContainsFile(myFileName)))
         {
-          list.Add(PathUtil.Combine_Relpath_Filename(nameroot,myFileName),myFileNode);
+          list.Add(PathUtil.Combine_Relpath_Filename(nameroot, myFileName), myFileNode);
         }
       }
 
-      foreach(DirectoryNode mySubDirNode in myDir.Directories)
+      foreach (DirectoryNode mySubDirNode in myDir.Directories)
       {
         string mySubDirName = mySubDirNode.Name;
 
         GetNewOrChangedFiles(
           mySubDirNode,
-          foreignDir==null ? null : foreignDir.Directory(mySubDirName),
-          PathUtil.Combine_Relpath_Dirname(nameroot,mySubDirName));
+          foreignDir == null ? null : foreignDir.Directory(mySubDirName),
+          PathUtil.Combine_Relpath_Dirname(nameroot, mySubDirName));
       }
     }
   }

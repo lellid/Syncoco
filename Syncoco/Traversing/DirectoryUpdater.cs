@@ -20,9 +20,8 @@
 /////////////////////////////////////////////////////////////////////////////
 #endregion
 
-using System;
-using System.IO;
 using System.Collections;
+using System.IO;
 using Syncoco.Filter;
 
 namespace Syncoco.Traversing
@@ -32,9 +31,9 @@ namespace Syncoco.Traversing
   /// </summary>
   public class DirectoryUpdater
   {
-    PathFilter pathFilter;
-    IBackgroundMonitor _monitor = new DummyBackgroundMonitor();
-    IErrorReporter _reporter = new DefaultErrorReporter();
+    private PathFilter pathFilter;
+    private IBackgroundMonitor _monitor = new DummyBackgroundMonitor();
+    private IErrorReporter _reporter = new DefaultErrorReporter();
 
     public DirectoryUpdater(PathFilter filt)
     {
@@ -48,7 +47,7 @@ namespace Syncoco.Traversing
       _reporter = reporter;
     }
 
-   
+
 
     /// <summary>
     /// This updates a file node for an existing (!) file. The intermediate subdirectory nodes that lie between dirinfo and fileinfo are created if neccessary.
@@ -59,31 +58,31 @@ namespace Syncoco.Traversing
     /// <param name="forceUpdateHash">If true, the MD5 hash for the file is recalculated.</param>
     public static FileNode UpdateFileNode(DirectoryNode dirnode, DirectoryInfo dirinfo, FileInfo fileinfo, bool forceUpdateHash, IErrorReporter reporter)
     {
-      System.Diagnostics.Debug.Assert(fileinfo.Exists,"This function is only intended for existing files after copy operations");
-      System.Diagnostics.Debug.Assert(dirinfo.Exists,"The root directory must exist");
+      System.Diagnostics.Debug.Assert(fileinfo.Exists, "This function is only intended for existing files after copy operations");
+      System.Diagnostics.Debug.Assert(dirinfo.Exists, "The root directory must exist");
 
       string relativefullname;
-      bool isRooted = PathUtil.HasRootPath(dirinfo.FullName,fileinfo.FullName,out relativefullname);
+      bool isRooted = PathUtil.HasRootPath(dirinfo.FullName, fileinfo.FullName, out relativefullname);
 
       string[] subdirs = PathUtil.GetDirectories(relativefullname);
 
-      for(int i=0;i<subdirs.Length;i++)
+      for (int i = 0; i < subdirs.Length; i++)
       {
-        if(subdirs[i]==string.Empty)
+        if (subdirs[i] == string.Empty)
           continue; // if path accidentally contains more than one DirectorySeparatorChar consecutively
-        
-        dirinfo = new DirectoryInfo(Path.Combine(dirinfo.FullName,subdirs[i]));
-        if(!dirinfo.Exists)
-          throw new System.IO.IOException(string.Format("The directory {0} should exist, since it should be a root directory of the file {1}", dirinfo.FullName,fileinfo.FullName));
 
-        if(!dirnode.ContainsDirectory(subdirs[i]))
-          dirnode.AddSubDirectory(subdirs[i],new DirectoryNode(subdirs[i],dirnode));
+        dirinfo = new DirectoryInfo(Path.Combine(dirinfo.FullName, subdirs[i]));
+        if (!dirinfo.Exists)
+          throw new System.IO.IOException(string.Format("The directory {0} should exist, since it should be a root directory of the file {1}", dirinfo.FullName, fileinfo.FullName));
+
+        if (!dirnode.ContainsDirectory(subdirs[i]))
+          dirnode.AddSubDirectory(subdirs[i], new DirectoryNode(subdirs[i], dirnode));
 
         dirnode = dirnode.Directory(subdirs[i]);
       }
 
       // now we have the final directory node to which the file belongs
-      UpdateFile(dirnode,fileinfo,forceUpdateHash,reporter);
+      UpdateFile(dirnode, fileinfo, forceUpdateHash, reporter);
 
       return dirnode.File(fileinfo.Name);
     }
@@ -97,20 +96,20 @@ namespace Syncoco.Traversing
     {
       try
       {
-        if(dirNode.ContainsFile(fileinfo.Name))
+        if (dirNode.ContainsFile(fileinfo.Name))
         {
-          if(fileinfo.Exists)
+          if (fileinfo.Exists)
             dirNode.File(fileinfo.Name).Update(fileinfo, forceUpdateHash);
           else
             dirNode.File(fileinfo.Name).SetToRemoved();
         }
-        else if(fileinfo.Exists) // if file was not in the database yet
+        else if (fileinfo.Exists) // if file was not in the database yet
         {
-          dirNode.AddFile(fileinfo.Name,new FileNode(fileinfo,dirNode));
+          dirNode.AddFile(fileinfo.Name, new FileNode(fileinfo, dirNode));
         }
 
       }
-      catch(HashCalculationException ex)
+      catch (HashCalculationException ex)
       {
         reporter.ReportError(ex.Message);
         return;
@@ -125,21 +124,21 @@ namespace Syncoco.Traversing
     /// <param name="pathFilter">The path filter.</param>
     public void Update(DirectoryNode dirNode, System.IO.DirectoryInfo dirinfo, bool forceUpdateHash)
     {
-      System.Diagnostics.Debug.Assert(dirinfo!=null);
-      System.Diagnostics.Debug.Assert(dirNode.ParentDirectory==null || dirNode.ParentDirectory.IsFileSystemRoot || PathUtil.ArePathsEqual(dirNode.Name,dirinfo.Name));
+      System.Diagnostics.Debug.Assert(dirinfo != null);
+      System.Diagnostics.Debug.Assert(dirNode.ParentDirectory == null || dirNode.ParentDirectory.IsFileSystemRoot || PathUtil.ArePathsEqual(dirNode.Name, dirinfo.Name));
 
       dirNode.IsRemoved = false; // obviously this directory exist, if it was deleted previously, make it existent again
-      
+
       //if(dirinfo!=null)
       //  dirNode.SetName( dirinfo.Name );
 
-      UpdateFiles(dirNode, dirinfo,forceUpdateHash);
-      UpdateDirectories(dirNode, dirinfo,forceUpdateHash);
+      UpdateFiles(dirNode, dirinfo, forceUpdateHash);
+      UpdateDirectories(dirNode, dirinfo, forceUpdateHash);
     }
 
-   
 
-    
+
+
 
     /// <summary>
     /// Updates all files and subdirectory nodes in an existing(!) directory of the own system. 
@@ -150,22 +149,22 @@ namespace Syncoco.Traversing
     /// <param name="pathFilter">The path filter.</param>
     protected void UpdateFiles(DirectoryNode dirNode, System.IO.DirectoryInfo dirinfo, bool forceUpdateHash)
     {
-      if(_monitor.ShouldReport)
+      if (_monitor.ShouldReport)
         _monitor.Report("Visiting directory " + dirinfo.FullName);
 
       System.IO.FileInfo[] fileinfos = dirinfo.GetFiles();
       // create a hash table of the actual
       Hashtable actualFiles = new Hashtable();
-      foreach(System.IO.FileInfo inf in fileinfos)
-        actualFiles.Add(inf.Name,inf);
+      foreach (System.IO.FileInfo inf in fileinfos)
+        actualFiles.Add(inf.Name, inf);
 
       // first look for the removed files
       System.Collections.Specialized.StringCollection filesToRemoveSilently = new System.Collections.Specialized.StringCollection();
-      foreach(FileNode file in dirNode.Files)
+      foreach (FileNode file in dirNode.Files)
       {
-        if(pathFilter.IsFileIncluded(file.Name))
+        if (pathFilter.IsFileIncluded(file.Name))
         {
-          if(!actualFiles.ContainsKey(file.Name))
+          if (!actualFiles.ContainsKey(file.Name))
             dirNode.File(file.Name).SetToRemoved();
         }
         else // pathFilter (now) rejects this file
@@ -173,41 +172,41 @@ namespace Syncoco.Traversing
           filesToRemoveSilently.Add(file.Name); // remove it silently from the list
         }
       }
-      foreach(string file in filesToRemoveSilently)
+      foreach (string file in filesToRemoveSilently)
         dirNode.Files.Remove(file);
-      
+
 
       // now look for the new or the changed files
-      foreach(string file in actualFiles.Keys)
+      foreach (string file in actualFiles.Keys)
       {
-        if(!pathFilter.IsFileIncluded(file))
+        if (!pathFilter.IsFileIncluded(file))
           continue;
 
-        if(_monitor.CancelledByUser)
+        if (_monitor.CancelledByUser)
           break;
 
 
 
-				try
-				{
-					System.IO.FileInfo fileinfo = (System.IO.FileInfo)actualFiles[file];
+        try
+        {
+          System.IO.FileInfo fileinfo = (System.IO.FileInfo)actualFiles[file];
 
-					if (_monitor.ShouldReport)
-						_monitor.Report("Visiting file " + fileinfo.FullName);
+          if (_monitor.ShouldReport)
+            _monitor.Report("Visiting file " + fileinfo.FullName);
 
-					if (dirNode.ContainsFile(file))
-						dirNode.File(file).Update(fileinfo, forceUpdateHash);  // this file was here before, we look if it was changed
-					else
-						dirNode.AddFile(file, new FileNode(fileinfo, dirNode));           // this is a new file, we create a new file node for this
-				}
-				catch (HashCalculationException hce)
-				{
-					_reporter.ReportWarning(string.Format("File {0} could not be updated: {1}", file, hce.Message));
-				}
-				catch (System.IO.PathTooLongException)
-				{
-					_reporter.ReportError(string.Format("Path too long: file: {0} in path: {1}", file, dirinfo.FullName));
-				}
+          if (dirNode.ContainsFile(file))
+            dirNode.File(file).Update(fileinfo, forceUpdateHash);  // this file was here before, we look if it was changed
+          else
+            dirNode.AddFile(file, new FileNode(fileinfo, dirNode));           // this is a new file, we create a new file node for this
+        }
+        catch (HashCalculationException hce)
+        {
+          _reporter.ReportWarning(string.Format("File {0} could not be updated: {1}", file, hce.Message));
+        }
+        catch (System.IO.PathTooLongException)
+        {
+          _reporter.ReportError(string.Format("Path too long: file: {0} in path: {1}", file, dirinfo.FullName));
+        }
       }
     }
 
@@ -223,16 +222,16 @@ namespace Syncoco.Traversing
       System.IO.DirectoryInfo[] dirinfos = dirinfo.GetDirectories();
       // create a hash table of the actual
       Hashtable actualDirs = new Hashtable();
-      foreach(System.IO.DirectoryInfo inf in dirinfos)
-        actualDirs.Add(inf.Name,inf);
+      foreach (System.IO.DirectoryInfo inf in dirinfos)
+        actualDirs.Add(inf.Name, inf);
 
       // first look for the removed dirs
       System.Collections.Specialized.StringCollection subDirsToRemoveSilently = new System.Collections.Specialized.StringCollection();
-      foreach(DirectoryNode subdir in dirNode.Directories)
+      foreach (DirectoryNode subdir in dirNode.Directories)
       {
-        if(pathFilter.IsDirectoryIncluded(subdir.Name))
+        if (pathFilter.IsDirectoryIncluded(subdir.Name))
         {
-          if(!actualDirs.ContainsKey(subdir.Name))
+          if (!actualDirs.ContainsKey(subdir.Name))
             dirNode.Directory(subdir.Name).SetToRemoved();
           else
             dirNode.Directory(subdir.Name).IsRemoved = false;
@@ -242,51 +241,51 @@ namespace Syncoco.Traversing
           subDirsToRemoveSilently.Add(subdir.Name);
         }
       }
-      foreach(string name in subDirsToRemoveSilently)
+      foreach (string name in subDirsToRemoveSilently)
         dirNode.Directories.Remove(name);
 
 
       // now look for the new or the changed files
-      foreach(string name in actualDirs.Keys)
+      foreach (string name in actualDirs.Keys)
       {
-        if(!pathFilter.IsDirectoryIncluded(name))
+        if (!pathFilter.IsDirectoryIncluded(name))
           continue;
 
-        if(_monitor.CancelledByUser)
+        if (_monitor.CancelledByUser)
           break;
 
         pathFilter.EnterSubDirectory(name);
-        if(dirNode.Directories.Contains(name))
+        if (dirNode.Directories.Contains(name))
         {
-          Update(dirNode.Directory(name),(System.IO.DirectoryInfo)actualDirs[name],forceUpdateHash);
+          Update(dirNode.Directory(name), (System.IO.DirectoryInfo)actualDirs[name], forceUpdateHash);
           // this file was here before, we look if it was changed
         }
         else
         {
           // this is a new file, we create a new file node for this
-          dirNode.AddSubDirectory(name, NewDirectoryNode((System.IO.DirectoryInfo)actualDirs[name],dirNode));
+          dirNode.AddSubDirectory(name, NewDirectoryNode((System.IO.DirectoryInfo)actualDirs[name], dirNode));
         }
         pathFilter.LeaveSubDirectory(name);
       }
     }
 
- 
+
     /// <summary>
     /// Creates a dir node. Tthe dir node is also updated.
     /// The current directory in pathFilter has to match the directory given by dirinfo.
     /// </summary>
     /// <param name="dirinfo">Directory info for the dir node.</param>
     /// <param name="pathFilter">The path filter.</param>
-    public  DirectoryNode NewDirectoryNode(System.IO.DirectoryInfo dirinfo, IParentDirectory parentDirectory)
+    public DirectoryNode NewDirectoryNode(System.IO.DirectoryInfo dirinfo, IParentDirectory parentDirectory)
     {
-      System.Diagnostics.Debug.Assert(null!=pathFilter);
-      DirectoryNode dirNode = new DirectoryNode(dirinfo.Name,parentDirectory);
-      Update(dirNode,dirinfo,true);
+      System.Diagnostics.Debug.Assert(null != pathFilter);
+      DirectoryNode dirNode = new DirectoryNode(dirinfo.Name, parentDirectory);
+      Update(dirNode, dirinfo, true);
 
       return dirNode;
     }
 
-  /// <summary>
+    /// <summary>
     /// Creates a dir node with the right name. Files and subdirectories in this dir are not (!) created.
     /// </summary>
     /// <param name="dirinfo">Directory info for the dir node.</param>
@@ -294,6 +293,6 @@ namespace Syncoco.Traversing
     {
       DirectoryNode dirNode = new DirectoryNode(dirinfo.Name, parentDirectory);
       return dirNode;
-    }   
+    }
   }
 }

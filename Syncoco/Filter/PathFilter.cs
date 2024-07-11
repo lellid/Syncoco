@@ -21,7 +21,6 @@
 #endregion
 
 using System;
-using System.Collections;
 
 namespace Syncoco.Filter
 {
@@ -32,30 +31,30 @@ namespace Syncoco.Filter
   [Serializable]
   public class PathFilter : CurrentDirectoryService
   {
-    
+
     /// <summary>The collection of filter lists.</summary>
-    FilterListItemList _filterList = new FilterListItemList();
-    
+    private FilterListItemList _filterList = new FilterListItemList();
+
     /// <summary>This is the default list that is applied if no other list matches.</summary>
-    FilterList         _defaultList = new FilterList();
+    private FilterList _defaultList = new FilterList();
 
     /// <summary>
     /// Cached index to this lists which are active.
     /// </summary>
     [NonSerialized]
-    int[] _activeList=new int[0];
+    private int[] _activeList = new int[0];
     [NonSerialized]
-    int   _activeListCount;
+    private int _activeListCount;
     /// <summary>Indicates if the active list is valid. After a directory change, this list
     /// can become invalid.</summary>
     [NonSerialized]
-    bool  _activeListValid;
+    private bool _activeListValid;
 
 
 
     public override void ResetCurrentDirectory()
     {
-      base.ResetCurrentDirectory ();
+      base.ResetCurrentDirectory();
       this._activeListValid = false;
     }
 
@@ -65,7 +64,7 @@ namespace Syncoco.Filter
       PathUtil.Assert_Dirname(name);
 #endif
 
-      base.EnterSubDirectory (name);
+      base.EnterSubDirectory(name);
       this._activeListValid = false;
     }
 
@@ -75,7 +74,7 @@ namespace Syncoco.Filter
       PathUtil.Assert_Dirname(name);
 #endif
 
-      base.LeaveSubDirectory (name);
+      base.LeaveSubDirectory(name);
       this._activeListValid = false;
     }
 
@@ -111,9 +110,9 @@ namespace Syncoco.Filter
       bool isEmpty = tr.IsEmptyElement;
       tr.ReadStartElement("FilterListItemList");
       this._filterList = new FilterListItemList(tr);
-      if(!isEmpty)
+      if (!isEmpty)
         tr.ReadEndElement();
-    
+
       tr.ReadStartElement("DefaultList");
       this._defaultList = new FilterList(tr);
       tr.ReadEndElement();
@@ -125,12 +124,12 @@ namespace Syncoco.Filter
       Open(tr);
     }
 
-   
 
 
 
-    public FilterList DefaultList { get { return _defaultList; }}
-    public FilterListItemList FilterList { get { return _filterList; }}
+
+    public FilterList DefaultList { get { return _defaultList; } }
+    public FilterListItemList FilterList { get { return _filterList; } }
 
     /// <summary>
     /// Match the filter list path the current subdirectory? The filterListPath must have lesser or equal elements
@@ -141,30 +140,30 @@ namespace Syncoco.Filter
     /// <returns>True if there is a match, otherwise false.</returns>
     protected static bool FilterListPathMatch(string[] filterListPath, string[] currentSubDirectoryPath, int currentSubDirectoryLevel)
     {
-      if(filterListPath.Length>currentSubDirectoryLevel)
+      if (filterListPath.Length > currentSubDirectoryLevel)
         return false;
 
-      for(int i=0;i<filterListPath.Length;i++)
+      for (int i = 0; i < filterListPath.Length; i++)
       {
-        if(filterListPath[i].ToLower()!=currentSubDirectoryPath[i].ToLower())
+        if (filterListPath[i].ToLower() != currentSubDirectoryPath[i].ToLower())
           return false;
       }
 
       return true;
     }
 
-   
+
 
     protected void UpdateActiveList()
     {
       // presumption: the length of the active list shold be at least 1 item longer as the _filterList.
-      if(_activeList.Length<_filterList.Count)
+      if (_activeList.Length < _filterList.Count)
         _activeList = new int[_filterList.Count];
 
-      int i,j;
-      for(i=0,j=0;i<_filterList.Count;i++)
+      int i, j;
+      for (i = 0, j = 0; i < _filterList.Count; i++)
       {
-        if(FilterListPathMatch(_filterList[i].PathSubDirectory,this._subDirectory,this._subDirectoryLevel))
+        if (FilterListPathMatch(_filterList[i].PathSubDirectory, this._subDirectory, this._subDirectoryLevel))
         {
           _activeList[j++] = i;
         }
@@ -181,32 +180,32 @@ namespace Syncoco.Filter
     /// <returns>True if the file should be included.</returns>
     private bool IsNameIncluded(string name)
     {
-      
-      if(!_activeListValid)
+
+      if (!_activeListValid)
         UpdateActiveList();
 
       string fileWithPath;
       FilterAction action;
-      
-      
-      for(int i=0;i<_activeListCount;i++)
+
+
+      for (int i = 0; i < _activeListCount; i++)
       {
         FilterListItem filterListItem = _filterList[_activeList[i]];
 
         // now create the relative file path (relative to the filter item)
-        fileWithPath = this.GetBiasedpathFilename(filterListItem.PathDepth,name);
+        fileWithPath = this.GetBiasedpathFilename(filterListItem.PathDepth, name);
 
         action = filterListItem.Filter.Match(fileWithPath);
 
-        if(action!=FilterAction.Ignore)
-          return action==FilterAction.Include;
-  
+        if (action != FilterAction.Ignore)
+          return action == FilterAction.Include;
+
       }
 
       fileWithPath = this.GetZeroLevelFileName(name);
       action = this.DefaultList.Match(fileWithPath);
 
-      return action!=FilterAction.Exclude; // per default, all files are included
+      return action != FilterAction.Exclude; // per default, all files are included
     }
 
     /// <summary>
@@ -236,8 +235,8 @@ namespace Syncoco.Filter
       return IsNameIncluded(directoryname + System.IO.Path.DirectorySeparatorChar);
     }
 
- 
 
-  
+
+
   }
 }

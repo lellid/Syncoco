@@ -21,28 +21,25 @@
 #endregion
 
 using System;
-using System.Collections;
-using System.Runtime.InteropServices;
 
 
 namespace Syncoco
 {
   using Filter;
-  using Traversing;
 
-  
+
   /// <summary>
   /// Summary description for RootPair.
   /// </summary>
   [Serializable]
   public class RootPair
   {
-    FileSystemRoot _root1;
-    FileSystemRoot _root2;
-    PathFilter _pathFilter;
+    private FileSystemRoot _root1;
+    private FileSystemRoot _root2;
+    private PathFilter _pathFilter;
 
     [NonSerialized]
-    MainDocument _parent;
+    private MainDocument _parent;
 
     public RootPair(MainDocument parent)
     {
@@ -62,20 +59,20 @@ namespace Syncoco
     {
       _parent = parent;
 
-      if(null!=_root1)
+      if (null != _root1)
         _root1.RestoreParentOfChildObjects();
-      if(null!=_root2)
+      if (null != _root2)
         _root2.RestoreParentOfChildObjects();
     }
 
     public void Save(System.Xml.XmlTextWriter tw)
     {
-      Save(tw,false);
+      Save(tw, false);
     }
 
     public void SaveFilterOnly(System.Xml.XmlTextWriter tw)
     {
-      Save(tw,true);
+      Save(tw, true);
     }
 
     public void Save(System.Xml.XmlTextWriter tw, bool saveFilterOnly)
@@ -84,17 +81,17 @@ namespace Syncoco
       _pathFilter.Save(tw);
       tw.WriteEndElement();
 
-      if(_root1!=null && _root1.IsValid)
+      if (_root1 != null && _root1.IsValid)
       {
-        _root1.Save(tw,"Root1",saveFilterOnly);
+        _root1.Save(tw, "Root1", saveFilterOnly);
       }
 
-      if(_root2!=null && _root2.IsValid)
+      if (_root2 != null && _root2.IsValid)
       {
-        _root2.Save(tw,"Root2",saveFilterOnly);
+        _root2.Save(tw, "Root2", saveFilterOnly);
       }
 
-    
+
     }
 
     public void Open(System.Xml.XmlTextReader tr)
@@ -104,33 +101,33 @@ namespace Syncoco
       tr.ReadEndElement();
 
 
-      if(tr.LocalName=="Root1")
+      if (tr.LocalName == "Root1")
       {
-        _root1 = new FileSystemRoot(tr,"Root1");
+        _root1 = new FileSystemRoot(tr, "Root1");
       }
       else
       {
         _root1 = new FileSystemRoot();
       }
-      
-      
-      if(tr.LocalName=="Root2")
+
+
+      if (tr.LocalName == "Root2")
       {
-        _root2 = new FileSystemRoot(tr,"Root2");
+        _root2 = new FileSystemRoot(tr, "Root2");
       }
       else
       {
         _root2 = new FileSystemRoot();
       }
 
-   
+
 
     }
 
     public FileSystemRoot MyRoot
     {
-      get 
-      { 
+      get
+      {
         return _parent.RootsExchanged ? _root2 : _root1;
       }
     }
@@ -150,8 +147,8 @@ namespace Syncoco
 
     public FileSystemRoot root1
     {
-      get 
-      { 
+      get
+      {
         return _root1;
       }
       set
@@ -174,6 +171,6 @@ namespace Syncoco
 
 
 
-   
+
   }
 }

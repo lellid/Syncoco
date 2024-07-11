@@ -1,4 +1,4 @@
-#region Copyright
+﻿#region Copyright
 
 /////////////////////////////////////////////////////////////////////////////
 //    Syncoco: offline file synchronization
@@ -243,7 +243,7 @@ namespace Syncoco
       string compu1 = tr.ReadElementString("ComputerName1");
       string compu2 = tr.ReadElementString("ComputerName2");
 
-    TestComputer:
+TestComputer:
       if (Current.ComputerName != compu1 && Current.ComputerName != compu2 && compu2 != string.Empty)
       {
         if (DialogResult.Yes == MessageBox.Show(

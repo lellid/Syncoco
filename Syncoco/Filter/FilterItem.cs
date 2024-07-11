@@ -24,7 +24,7 @@ using System;
 
 namespace Syncoco.Filter
 {
-  
+
   /// <summary>
   /// FilterItem holds a match string along with the information whether to include or to exclude the item.
   /// </summary>
@@ -62,7 +62,7 @@ namespace Syncoco.Filter
       }
     }
 
-  
+
 
     /// <summary>
     /// Match string to check the name against. Can contain wildcards.
@@ -100,12 +100,12 @@ namespace Syncoco.Filter
     public void Save(System.Xml.XmlTextWriter tw)
     {
       tw.WriteElementString("Action", Action.ToString());
-      tw.WriteElementString("Match",MatchString);
+      tw.WriteElementString("Match", MatchString);
     }
 
     public void Open(System.Xml.XmlTextReader tr)
     {
-      Action = (FilterAction)System.Enum.Parse(typeof(FilterAction),tr.ReadElementString("Action"));
+      Action = (FilterAction)System.Enum.Parse(typeof(FilterAction), tr.ReadElementString("Action"));
       MatchString = tr.ReadElementString("Match");
     }
 
@@ -116,30 +116,30 @@ namespace Syncoco.Filter
 
     public FilterAction Match(string name)
     {
-      return _action==FilterAction.Ignore ? _action : _matcher.Match(name) ? _action : FilterAction.Ignore;
+      return _action == FilterAction.Ignore ? _action : _matcher.Match(name) ? _action : FilterAction.Ignore;
     }
 
 
     private IMatch GetMatcher(string matchstring)
     {
       string sub, sub1;
-      if(ExactMatchCondition(matchstring))
+      if (ExactMatchCondition(matchstring))
         return new ExactMatcher(matchstring.ToLower());
-      else if(StartMatchCondition(matchstring, out sub))
+      else if (StartMatchCondition(matchstring, out sub))
         return new StartMatcher(sub.ToLower());
-      else if(EndMatchCondition(matchstring, out sub))
+      else if (EndMatchCondition(matchstring, out sub))
         return new EndMatcher(sub.ToLower());
-      else if(StartAndEndMatchCondition(matchstring, out sub, out sub1))
-        return new StartAndEndMatcher(sub.ToLower(),sub1.ToLower());
+      else if (StartAndEndMatchCondition(matchstring, out sub, out sub1))
+        return new StartAndEndMatcher(sub.ToLower(), sub1.ToLower());
       else
         return new FullMatch(matchstring.ToLower());
     }
 
     private static bool ExactMatchCondition(string name)
     {
-      if(name.IndexOf('*')>=0)
+      if (name.IndexOf('*') >= 0)
         return false;
-      if(name.IndexOf('?')>=0)
+      if (name.IndexOf('?') >= 0)
         return false;
 
       return true;
@@ -149,19 +149,19 @@ namespace Syncoco.Filter
     {
       endstring = null;
       int idx = name.LastIndexOf('*');
-      if(idx<0)
+      if (idx < 0)
         return false;
 
       // test that the first char till idx only contain stars
-      for(int i=0;i<=idx;i++)
-        if(name[i]!='*')
+      for (int i = 0; i <= idx; i++)
+        if (name[i] != '*')
           return false;
 
       // test that the rest of the string does not contain other jokers
-      if(name.IndexOf('?',idx+1)>=0)
+      if (name.IndexOf('?', idx + 1) >= 0)
         return false;
 
-      endstring = name.Substring(idx+1);
+      endstring = name.Substring(idx + 1);
       return true;
     }
 
@@ -169,19 +169,19 @@ namespace Syncoco.Filter
     {
       startstring = null;
       int idx = name.IndexOf('*');
-      if(idx<0)
+      if (idx < 0)
         return false;
 
       // test that the last chars till idx only contain stars
-      for(int i=name.Length-1;i>=idx;i--)
-        if(name[i]!='*')
+      for (int i = name.Length - 1; i >= idx; i--)
+        if (name[i] != '*')
           return false;
 
       // test that the rest of the string does not contain other jokers
-      if(name.IndexOf('?',0,idx)>=0)
+      if (name.IndexOf('?', 0, idx) >= 0)
         return false;
 
-      startstring = name.Substring(0,idx);
+      startstring = name.Substring(0, idx);
       return true;
 
     }
@@ -190,25 +190,25 @@ namespace Syncoco.Filter
     {
       startstring = null;
       endstring = null;
-      
+
       int idxs = name.IndexOf('*');
       int idxe = name.LastIndexOf('*');
-      if(idxs<0)
+      if (idxs < 0)
         return false; // there has to be at last one joker-free char at the beginning
 
 
       // test that the chars from idxa till idxe only contain stars
-      for(int i=idxs;i<=idxe;i++)
-        if(name[i]!='*')
+      for (int i = idxs; i <= idxe; i++)
+        if (name[i] != '*')
           return false;
 
       // test that the rest of the string does not contain other jokers
-      startstring = name.Substring(0,idxs);
-      if(startstring.Length==0 || startstring.IndexOf('?')>=0)
+      startstring = name.Substring(0, idxs);
+      if (startstring.Length == 0 || startstring.IndexOf('?') >= 0)
         return false;
 
-      endstring = name.Substring(idxe+1);
-      if(endstring.Length==0 || endstring.IndexOf('?')>=0)
+      endstring = name.Substring(idxe + 1);
+      if (endstring.Length == 0 || endstring.IndexOf('?') >= 0)
         return false;
 
       return true;
@@ -222,8 +222,7 @@ namespace Syncoco.Filter
       bool Match(string name);
     }
 
-
-    class FullMatch : IMatch
+    private class FullMatch : IMatch
     {
       private string _matchString;
 
@@ -234,7 +233,7 @@ namespace Syncoco.Filter
 
       public bool Match(string name)
       {
-        return Match(_matchString,0,name,0);
+        return Match(_matchString, 0, name, 0);
       }
 
       /// <summary>
@@ -246,18 +245,18 @@ namespace Syncoco.Filter
       /// <param name="fn">The file name.</param>
       /// <param name="fni">First index into the file name that is used for comparism.</param>
       /// <returns>True if the two strings match, false otherwise.</returns>
-      static bool Match( string ms, int msi,  string fn, int fni) // ms==Matchstring, fn=filename;
+      private static bool Match(string ms, int msi, string fn, int fni) // ms==Matchstring, fn=filename;
       {
-        if(msi==ms.Length) return fni==fn.Length;
-        if(fni==fn.Length) return (ms[msi]=='*')&&(Match(ms,msi+1,fn,fni));  // Matchfrage wenn ein String am Ende
-        if(ms[msi]=='?') return Match(ms,msi+1,fn,fni+1); // bei ? tut ein Zeichen nichts zur Sache
-        if(ms[msi]!='*') return (ms[msi]==fn[fni]) && Match(ms,msi+1,fn,fni+1); // stimmen Buchstaben und Reststring
-        if((msi+1)<ms.Length && ms[msi+1]=='*') return Match(ms,msi+1,fn,fni); // Fix gegen mehrere Stern-Joker hintereinander
-        return Match(ms,msi+1,fn,fni) || Match(ms,msi,fn,fni+1); // Stern ersetzt kein Zeichen oder  Stern ersetzt zunächst ein Zeichen
+        if (msi == ms.Length) return fni == fn.Length;
+        if (fni == fn.Length) return (ms[msi] == '*') && (Match(ms, msi + 1, fn, fni));  // Matchfrage wenn ein String am Ende
+        if (ms[msi] == '?') return Match(ms, msi + 1, fn, fni + 1); // bei ? tut ein Zeichen nichts zur Sache
+        if (ms[msi] != '*') return (ms[msi] == fn[fni]) && Match(ms, msi + 1, fn, fni + 1); // stimmen Buchstaben und Reststring
+        if ((msi + 1) < ms.Length && ms[msi + 1] == '*') return Match(ms, msi + 1, fn, fni); // Fix gegen mehrere Stern-Joker hintereinander
+        return Match(ms, msi + 1, fn, fni) || Match(ms, msi, fn, fni + 1); // Stern ersetzt kein Zeichen oder  Stern ersetzt zunächst ein Zeichen
       }
     }
 
-    class ExactMatcher : IMatch
+    private class ExactMatcher : IMatch
     {
       private string _matchstring;
 
@@ -268,11 +267,11 @@ namespace Syncoco.Filter
 
       public bool Match(string name)
       {
-        return name==_matchstring;
+        return name == _matchstring;
       }
     }
 
-    class StartMatcher : IMatch
+    private class StartMatcher : IMatch
     {
       private string _startstring;
 
@@ -287,7 +286,7 @@ namespace Syncoco.Filter
       }
     }
 
-    class EndMatcher : IMatch
+    private class EndMatcher : IMatch
     {
       private string _endstring;
 
@@ -302,7 +301,7 @@ namespace Syncoco.Filter
       }
     }
 
-    class StartAndEndMatcher : IMatch
+    private class StartAndEndMatcher : IMatch
     {
       private string _startstring;
       private string _endstring;

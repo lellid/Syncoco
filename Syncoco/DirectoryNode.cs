@@ -22,12 +22,9 @@
 
 using System;
 using System.Collections;
-using System.IO;
 
 namespace Syncoco
 {
-  using Filter;
-  using Traversing;
   /// <summary>
   /// Holds information about itself and about all files and subdirectories in this node.
   /// </summary>
@@ -37,26 +34,26 @@ namespace Syncoco
     #region Member variables
 
     // Directory name
-    string _name;
+    private string _name;
 
     /// <summary>
     /// Hashtable of subdirectory name as key and DirectoryNode as value. Note that the
     /// name is stored as it is, i.e. without directory separator char.
     /// </summary>
-    DirectoryNodeList _subDirectories = new DirectoryNodeList();
+    private DirectoryNodeList _subDirectories = new DirectoryNodeList();
 
     /// <summary>
     /// Hashtable of file name as key and FileNode as value
     /// </summary>
-    FileNodeList _files = new FileNodeList();
+    private FileNodeList _files = new FileNodeList();
 
     /// <summary>
     /// True if the directory now longer exists and should therefore be also removed on the foreign system.
     /// </summary>
-    bool _IsRemoved;
+    private bool _IsRemoved;
 
     [NonSerialized]
-    IParentDirectory _parent;
+    private IParentDirectory _parent;
 
     #endregion
 
@@ -80,69 +77,67 @@ namespace Syncoco
       tr.ReadEndElement();
     }
 
-    
-
-    void Read(System.Xml.XmlTextReader tr)
+    private void Read(System.Xml.XmlTextReader tr)
     {
       bool isEmptyElement;
       this._IsRemoved = System.Xml.XmlConvert.ToBoolean(tr.ReadElementString("IsRemoved"));
-      
+
       isEmptyElement = tr.IsEmptyElement;
       tr.ReadStartElement("Files");
-      if(!isEmptyElement)
+      if (!isEmptyElement)
       {
-        while(tr.LocalName=="File")
+        while (tr.LocalName == "File")
         {
-          FileNode node = new FileNode(tr,this);
-          AddFile(node.Name,node);
+          FileNode node = new FileNode(tr, this);
+          AddFile(node.Name, node);
         }
         tr.ReadEndElement(); // Files
       }
 
       isEmptyElement = tr.IsEmptyElement;
       tr.ReadStartElement("Dirs");
-      if(!isEmptyElement)
+      if (!isEmptyElement)
       {
-        while(tr.LocalName=="Dir")
+        while (tr.LocalName == "Dir")
         {
-          DirectoryNode node = new DirectoryNode(tr,this);
-          AddSubDirectory(node.Name,node);
+          DirectoryNode node = new DirectoryNode(tr, this);
+          AddSubDirectory(node.Name, node);
         }
         tr.ReadEndElement(); // Dirs
       }
 
-     
+
     }
 
 
     public void Save(System.Xml.XmlTextWriter tw, string localName)
     {
       tw.WriteStartElement(localName);
-      tw.WriteAttributeString("Name",_name);
+      tw.WriteAttributeString("Name", _name);
 
-      tw.WriteElementString("IsRemoved",System.Xml.XmlConvert.ToString(_IsRemoved));
+      tw.WriteElementString("IsRemoved", System.Xml.XmlConvert.ToString(_IsRemoved));
       tw.WriteStartElement("Files");
-      foreach(FileNode fnode in _files)
+      foreach (FileNode fnode in _files)
       {
         fnode.Save(tw);
       }
       tw.WriteEndElement(); // Files
 
       tw.WriteStartElement("Dirs");
-      foreach(DirectoryNode dnode in _subDirectories)
+      foreach (DirectoryNode dnode in _subDirectories)
       {
-        dnode.Save(tw,"Dir");
+        dnode.Save(tw, "Dir");
       }
       tw.WriteEndElement(); // Dirs
 
       tw.WriteEndElement(); // localName
     }
 
-  
+
     #endregion
 
     #region Constructors
-  
+
     /// <summary>
     /// Creates a new empty directory node with a name and a parent. This node is not (!) updated here.
     /// </summary>
@@ -153,8 +148,8 @@ namespace Syncoco
       _name = name;
       _parent = parent;
     }
-  
-   
+
+
 
     #endregion
 
@@ -165,15 +160,15 @@ namespace Syncoco
     /// </summary>
     /// <param name="name">The name of the file.</param>
     /// <returns>True if the directory node contains the file.</returns>
-    public bool ContainsFile(string name) 
+    public bool ContainsFile(string name)
     {
-      return _files.Contains(name); 
+      return _files.Contains(name);
     }
 
 
     public IList Files
     {
-      get 
+      get
       {
         return _files;
       }
@@ -186,14 +181,14 @@ namespace Syncoco
     /// <returns>The file node with name 'name', or null if it doesn't exists.</returns>
     public FileNode File(string name)
     {
-      return (FileNode)_files[name]; 
+      return (FileNode)_files[name];
     }
-    
+
     public void AddFile(string name, FileNode node)
     {
-      System.Diagnostics.Debug.Assert(name!=null,"File name must not be null!");
-      System.Diagnostics.Debug.Assert(name.Length>0,"File name must not be empty!");
-      System.Diagnostics.Debug.Assert(node!=null,"File node must not be null!");
+      System.Diagnostics.Debug.Assert(name != null, "File name must not be null!");
+      System.Diagnostics.Debug.Assert(name.Length > 0, "File name must not be empty!");
+      System.Diagnostics.Debug.Assert(node != null, "File node must not be null!");
       this._files.Add(node);
     }
 
@@ -202,14 +197,14 @@ namespace Syncoco
     /// </summary>
     /// <param name="name">The name of the subdirectory.</param>
     /// <returns>True if the directory node contains the subdirectory.</returns>
-    public bool ContainsDirectory(string name) 
+    public bool ContainsDirectory(string name)
     {
-      return _subDirectories.Contains(name); 
+      return _subDirectories.Contains(name);
     }
 
     public IList Directories
     {
-      get 
+      get
       {
         return _subDirectories;
       }
@@ -220,30 +215,30 @@ namespace Syncoco
     /// </summary>
     /// <param name="name">Name of the subdirectory.</param>
     /// <returns>The subdirectory node with name 'name', or null if it doesn't exists.</returns>
-    public DirectoryNode Directory(string name) 
-    { 
-      return (DirectoryNode)_subDirectories[name]; 
+    public DirectoryNode Directory(string name)
+    {
+      return (DirectoryNode)_subDirectories[name];
     }
 
     public void AddSubDirectory(string name, DirectoryNode node)
     {
-      System.Diagnostics.Debug.Assert(node!=null,"Directory node must not be null!");
-      System.Diagnostics.Debug.Assert(node.Name!=null,"Directory name must not be null!");
-      System.Diagnostics.Debug.Assert(node.Name.Length>0,"Directory name must not be empty!");
-   
+      System.Diagnostics.Debug.Assert(node != null, "Directory node must not be null!");
+      System.Diagnostics.Debug.Assert(node.Name != null, "Directory name must not be null!");
+      System.Diagnostics.Debug.Assert(node.Name.Length > 0, "Directory name must not be empty!");
+
       this._subDirectories.Add(node);
-     
+
     }
 
 
     #endregion
-   
+
     #region Set properties
 
     /// <summary>
     /// Indicates whether this directory no longer exists in the file system.
     /// </summary>
-    public bool IsRemoved 
+    public bool IsRemoved
     {
       get { return _IsRemoved; }
       set { _IsRemoved = value; }
@@ -257,10 +252,10 @@ namespace Syncoco
     {
       _IsRemoved = true;
 
-      foreach(FileNode node in _files)
+      foreach (FileNode node in _files)
         node.SetToRemoved();
 
-      foreach(DirectoryNode node in _subDirectories)
+      foreach (DirectoryNode node in _subDirectories)
         node.SetToRemoved();
     }
 
@@ -276,7 +271,7 @@ namespace Syncoco
       PathUtil.SplitInto_Relpath_Filename(path, out relpath, out filename);
 
       DirectoryNode dirnode = GetDirectoryNodeFullPath(relpath);
-      if(dirnode!=null)
+      if (dirnode != null)
         return dirnode.File(filename);
       else
         return null;
@@ -288,9 +283,9 @@ namespace Syncoco
       PathUtil.SplitInto_Relpath_Filename(path, out relpath, out filename);
 
       DirectoryNode dirnode = GetDirectoryNodeFullPath(relpath);
-      if(dirnode!=null)
+      if (dirnode != null)
       {
-        if(dirnode.ContainsFile(filename))
+        if (dirnode.ContainsFile(filename))
           dirnode._files.Remove(filename);
       }
     }
@@ -307,7 +302,7 @@ namespace Syncoco
 
       DirectoryNode node = GetDirectoryNodeFullPath(path);
 
-      if(node!=null)
+      if (node != null)
       {
         DirectoryNode parent = (DirectoryNode)node._parent;
         parent._subDirectories.Remove(node._name);
@@ -324,37 +319,37 @@ namespace Syncoco
 #if DEBUG
       PathUtil.Assert_Relpath(relpath);
 #endif
-      if(relpath.Length==1)
+      if (relpath.Length == 1)
         return this;
 
-      int pos = relpath.IndexOf(System.IO.Path.DirectorySeparatorChar,1);
-      string dirnamehere = relpath.Substring(1,pos-1);
+      int pos = relpath.IndexOf(System.IO.Path.DirectorySeparatorChar, 1);
+      string dirnamehere = relpath.Substring(1, pos - 1);
 #if DEBUG
       PathUtil.Assert_Dirname(dirnamehere);
 #endif
 
-      if(this.ContainsDirectory(dirnamehere))
+      if (this.ContainsDirectory(dirnamehere))
         return this.Directory(dirnamehere).GetDirectoryNodeFullPath(relpath.Substring(pos));
       else
         return null;
-      
+
     }
 
     #endregion
 
- 
 
-  
 
-   
+
+
+
     #region IComparable Members
 
     public int CompareTo(object obj)
     {
-      if(obj is string)
-        return string.Compare(this._name,(string)obj,true);
-      else if(obj is DirectoryNode)
-        return string.Compare(this._name,((DirectoryNode)obj)._name,true);
+      if (obj is string)
+        return string.Compare(this._name, (string)obj, true);
+      else if (obj is DirectoryNode)
+        return string.Compare(this._name, ((DirectoryNode)obj)._name, true);
       else
         throw new ArgumentException("Cannot compare a FileNode with a object of type " + obj.GetType().ToString());
     }
@@ -384,7 +379,7 @@ namespace Syncoco
     /// </summary>
     public string Name
     {
-      get 
+      get
       {
         return _name;
       }
@@ -394,7 +389,7 @@ namespace Syncoco
     {
       get
       {
-        if(_parent is DirectoryNode)
+        if (_parent is DirectoryNode)
           return ((DirectoryNode)_parent).FullRelativePath + _name + System.IO.Path.DirectorySeparatorChar;
         else
           return System.IO.Path.DirectorySeparatorChar.ToString();
@@ -403,7 +398,7 @@ namespace Syncoco
 
     public override string ToString()
     {
-      return _name==null || _name==string.Empty ? base.ToString() : _name;
+      return _name == null || _name == string.Empty ? base.ToString() : _name;
     }
 
     public void SetParent(IParentDirectory parent)
@@ -416,9 +411,9 @@ namespace Syncoco
     {
       _parent = parent;
 
-      foreach(FileNode file in this._files)
+      foreach (FileNode file in this._files)
         file.RestoreParentOfChildObjects(this);
-      foreach(DirectoryNode dir in this._subDirectories)
+      foreach (DirectoryNode dir in this._subDirectories)
         dir.RestoreParentOfChildObjects(this);
     }
 
@@ -430,7 +425,7 @@ namespace Syncoco
     public void Compact()
     {
       this._files.TrimToSize();
-      foreach(DirectoryNode fnode in _subDirectories)
+      foreach (DirectoryNode fnode in _subDirectories)
         fnode.Compact();
     }
   }

@@ -33,25 +33,24 @@ namespace Syncoco
     void ReportError(string msg);
     void ReportWarning(string msg);
     void ReportText(string msg);
-    int  NumberOfErrors { get; }
-    int  NumberOfWarnings { get; }
+    int NumberOfErrors { get; }
+    int NumberOfWarnings { get; }
     string ErrorText { get; }
-    int    TextLength { get; }
+    int TextLength { get; }
   }
 
-  class DefaultErrorReporter : IErrorReporter
+  internal class DefaultErrorReporter : IErrorReporter
   {
-    System.Text.StringBuilder _text = new System.Text.StringBuilder();
-
-    bool _newParagraphPending=true;
-    int _numberOfErrors;
-    int _numberOfWarnings;
+    private System.Text.StringBuilder _text = new System.Text.StringBuilder();
+    private bool _newParagraphPending = true;
+    private int _numberOfErrors;
+    private int _numberOfWarnings;
 
     #region IErrorReporter Members
 
     public void ReportBeginNewParagraph()
     {
-      if(_newParagraphPending)
+      if (_newParagraphPending)
       {
         _newParagraphPending = false;
         _text.Append("-------- " + DateTime.Now.ToLongTimeString() + " --------\n");

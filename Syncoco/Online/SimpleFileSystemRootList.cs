@@ -20,9 +20,6 @@
 /////////////////////////////////////////////////////////////////////////////
 #endregion
 
-using System;
-using System.Collections;
-
 namespace Syncoco.Online
 {
   /// <summary>
@@ -31,6 +28,6 @@ namespace Syncoco.Online
   public class SimpleFileSystemRootList : System.Collections.CollectionBase
   {
 
-   
+
   }
 }

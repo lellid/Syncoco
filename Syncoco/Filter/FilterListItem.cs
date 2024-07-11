@@ -36,8 +36,8 @@ namespace Syncoco.Filter
 
     /// <summary>Subdirectories that this path includes.</summary>
     [NonSerialized]
-    string[] _subDirs = new string[0];
-    
+    private string[] _subDirs = new string[0];
+
 
     public FilterListItem(FilterListItem from)
     {
@@ -54,8 +54,8 @@ namespace Syncoco.Filter
 
     public void Save(System.Xml.XmlTextWriter tw)
     {
-     
-      tw.WriteElementString("Path",this._path);
+
+      tw.WriteElementString("Path", this._path);
       tw.WriteStartElement("Filter");
       this.Filter.Save(tw);
       tw.WriteEndElement();
@@ -63,7 +63,7 @@ namespace Syncoco.Filter
 
     public void Open(System.Xml.XmlTextReader tr)
     {
-      
+
       Path = tr.ReadElementString("Path");
       tr.ReadStartElement("Filter");
       this.Filter = new FilterList(tr);
@@ -80,16 +80,16 @@ namespace Syncoco.Filter
     public string Path
     {
       get { return _path; }
-      set 
+      set
       {
 #if DEBUG
         PathUtil.Assert_Relpath(value);
 #endif
         _path = value;
-        _subDirs = _path.Trim(System.IO.Path.DirectorySeparatorChar).Split(new char[]{System.IO.Path.DirectorySeparatorChar});
+        _subDirs = _path.Trim(System.IO.Path.DirectorySeparatorChar).Split(new char[] { System.IO.Path.DirectorySeparatorChar });
       }
     }
-    
+
     public void CopyFrom(FilterListItem from)
     {
       this.Path = from.Path;
@@ -103,7 +103,7 @@ namespace Syncoco.Filter
     {
       get { return _subDirs; }
     }
-    
+
     /// <summary>
     /// The depth of the path, i.e. the number of subdirectories that the path includes.
     /// </summary>
@@ -112,6 +112,6 @@ namespace Syncoco.Filter
       get { return _subDirs.Length; }
     }
 
-    
+
   }
 }

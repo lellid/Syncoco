@@ -20,8 +20,6 @@
 /////////////////////////////////////////////////////////////////////////////
 #endregion
 
-using System;
-
 namespace Syncoco
 {
   /// <summary>
@@ -34,6 +32,6 @@ namespace Syncoco
     {
     }
 
-  
+
   }
 }

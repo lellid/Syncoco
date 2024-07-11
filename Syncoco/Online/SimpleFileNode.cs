@@ -30,7 +30,7 @@ namespace Syncoco.Online
   public class SimpleFileNode : FileNodeBase
   {
     [NonSerialized]
-    bool _IsUpdated;
+    private bool _IsUpdated;
 
     public bool IsUpdated
     {
@@ -50,7 +50,7 @@ namespace Syncoco.Online
       : base(from)
     {
     }
-  
+
     /// <summary>
     /// Constructor. Creates a SimpleFileNode out of a file info for that file.
     /// </summary>

@@ -20,12 +20,6 @@
 /////////////////////////////////////////////////////////////////////////////
 #endregion
 
-using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
-using System.Windows.Forms;
-
 
 namespace Syncoco.GUI
 {
@@ -37,14 +31,14 @@ namespace Syncoco.GUI
     private System.Windows.Forms.Label lblText;
     private System.Windows.Forms.Button btCancel;
     private System.Timers.Timer _timer;
-    System.Threading.Thread _thread;
-    ExternalDrivenBackgroundMonitor _monitor;
+    private System.Threading.Thread _thread;
+    private ExternalDrivenBackgroundMonitor _monitor;
     /// <summary>
     /// Required designer variable.
     /// </summary>
     private System.ComponentModel.Container components = null;
 
-    public BackgroundCancelDialog(  System.Threading.Thread thread, ExternalDrivenBackgroundMonitor monitor)
+    public BackgroundCancelDialog(System.Threading.Thread thread, ExternalDrivenBackgroundMonitor monitor)
     {
       _thread = thread;
       _monitor = monitor;
@@ -61,16 +55,16 @@ namespace Syncoco.GUI
     /// <summary>
     /// Clean up any resources being used.
     /// </summary>
-    protected override void Dispose( bool disposing )
+    protected override void Dispose(bool disposing)
     {
-      if( disposing )
+      if (disposing)
       {
-        if(components != null)
+        if (components != null)
         {
           components.Dispose();
         }
       }
-      base.Dispose( disposing );
+      base.Dispose(disposing);
     }
 
     #region Windows Form Designer generated code
@@ -88,8 +82,8 @@ namespace Syncoco.GUI
       // 
       // lblText
       // 
-      this.lblText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-        | System.Windows.Forms.AnchorStyles.Left) 
+      this.lblText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+        | System.Windows.Forms.AnchorStyles.Left)
         | System.Windows.Forms.AnchorStyles.Right)));
       this.lblText.Location = new System.Drawing.Point(8, 8);
       this.lblText.Name = "lblText";
@@ -126,11 +120,11 @@ namespace Syncoco.GUI
     }
     #endregion
 
-   
-  
+
+
     private void _timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
     {
-      if(!_thread.IsAlive)
+      if (!_thread.IsAlive)
       {
         this.Close();
       }
@@ -141,7 +135,7 @@ namespace Syncoco.GUI
     }
 
 
-  
+
     private void btCancel_Click(object sender, System.EventArgs e)
     {
       _monitor.CancelledByUser = true;
@@ -149,7 +143,7 @@ namespace Syncoco.GUI
 
     private void BackgroundCancelDialog_Closing(object sender, System.ComponentModel.CancelEventArgs e)
     {
-      if(_thread.IsAlive)
+      if (_thread.IsAlive)
         e.Cancel = true;
     }
   }

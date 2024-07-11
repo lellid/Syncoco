@@ -34,7 +34,7 @@ namespace Syncoco
 
     /// <summary>Number of array items in <see>_subDirectory</see> that are valid.</summary>
     [NonSerialized]
-    protected int      _subDirectoryLevel = 0;
+    protected int _subDirectoryLevel = 0;
 
     /// <summary>Current directory stored as single subdirectory names. The number <see>_subDirectoryLevel</see> gives the number of
     /// array items that are valid.</summary>
@@ -48,36 +48,36 @@ namespace Syncoco
     /// <summary>True if <see>_directoryPath</see> is valid. If false, it must be rebuild from the <see>_subDirectory</see> array.</summary>
     [NonSerialized]
     protected bool _directoryPathValid = false;
-    
+
 
     /// <summary>
     /// Provides the level, where building the relative subdirectory path starts. This is intended for filters or so,
     /// where base of the filter is not the root directory, but some subdirectory above.
     /// </summary>
     [NonSerialized]
-    int _relativeSubDirLevel=int.MinValue;
+    private int _relativeSubDirLevel = int.MinValue;
     /// <summary>True if the <see>_relativeSubDirPath</see> is valid.</summary>
     [NonSerialized]
-    bool _relativeSubDirPathValid=false;
+    private bool _relativeSubDirPathValid = false;
     /// <summary>Path from base level subdirectory up to the current directory.</summary>
     [NonSerialized]
-    System.Text.StringBuilder _relativeSubDirPath = new System.Text.StringBuilder();
+    private System.Text.StringBuilder _relativeSubDirPath = new System.Text.StringBuilder();
 
     #endregion
 
-   
+
     /// <summary>
     /// This sets the current directory to the root directory.
     /// </summary>
     public virtual void ResetCurrentDirectory()
     {
-     
+
       //Invalidate
       _directoryPathValid = false;
-      _relativeSubDirLevel=int.MinValue;
-      _relativeSubDirPathValid=false;
+      _relativeSubDirLevel = int.MinValue;
+      _relativeSubDirPathValid = false;
 
-      _subDirectoryLevel=0;
+      _subDirectoryLevel = 0;
     }
 
     /// <summary>
@@ -92,13 +92,13 @@ namespace Syncoco
 
       _subDirectory[_subDirectoryLevel] = name;
       ++_subDirectoryLevel;
-   
+
       // Invalidate
       _directoryPathValid = false;
-      _relativeSubDirLevel=int.MinValue;
-      _relativeSubDirPathValid=false;
+      _relativeSubDirLevel = int.MinValue;
+      _relativeSubDirPathValid = false;
 
-      
+
 
     }
 
@@ -108,21 +108,21 @@ namespace Syncoco
     /// <param name="name">The name of the subdirectory to leave.</param>
     public virtual void LeaveSubDirectory(string name)
     {
-      System.Diagnostics.Debug.Assert(_subDirectory[_subDirectoryLevel-1]==name);
+      System.Diagnostics.Debug.Assert(_subDirectory[_subDirectoryLevel - 1] == name);
       --_subDirectoryLevel;
 
       // Invalidate
       _directoryPathValid = false;
-      _relativeSubDirLevel=int.MinValue;
-      _relativeSubDirPathValid=false;
+      _relativeSubDirLevel = int.MinValue;
+      _relativeSubDirPathValid = false;
 
-       
+
     }
 
-   
 
 
-  
+
+
 
     /// <summary>
     /// Gives the relative file name of the current directory, but starting on some subdirectory level. This means that the path name that is returned
@@ -138,18 +138,18 @@ namespace Syncoco
       PathUtil.Assert_NameOrNameWithEndSeparator(filename);
 #endif
 
-      if(!_relativeSubDirPathValid || relativeSubDirLevel!=_relativeSubDirLevel)
+      if (!_relativeSubDirPathValid || relativeSubDirLevel != _relativeSubDirLevel)
       {
-        _relativeSubDirLevel=relativeSubDirLevel;
-        _relativeSubDirPathValid=true;
-        _relativeSubDirPath.Length=0;
+        _relativeSubDirLevel = relativeSubDirLevel;
+        _relativeSubDirPathValid = true;
+        _relativeSubDirPath.Length = 0;
         _relativeSubDirPath.Append(System.IO.Path.DirectorySeparatorChar);
-        for(int i=relativeSubDirLevel;i<_subDirectoryLevel;i++)
+        for (int i = relativeSubDirLevel; i < _subDirectoryLevel; i++)
         {
           _relativeSubDirPath.Append(_subDirectory[i]);
           _relativeSubDirPath.Append(System.IO.Path.DirectorySeparatorChar);
         }
-      }    
+      }
 
       string relativesubdirpath = _relativeSubDirPath.ToString();
 #if DEBUG
@@ -172,7 +172,7 @@ namespace Syncoco
       PathUtil.Assert_NameOrNameWithEndSeparator(name);
 #endif
 
-      return CurrentDirectoryPath+name;
+      return CurrentDirectoryPath + name;
     }
 
     /// <summary>
@@ -180,25 +180,25 @@ namespace Syncoco
     /// </summary>
     public string CurrentDirectoryPath
     {
-      get 
+      get
       {
         string result;
 
-        if(_directoryPathValid)
+        if (_directoryPathValid)
         {
-          result= _directoryPath.ToString();
+          result = _directoryPath.ToString();
         }
         else
         {
-          _directoryPath.Length=0;
+          _directoryPath.Length = 0;
           _directoryPath.Append(System.IO.Path.DirectorySeparatorChar);
-          for(int i=0;i<_subDirectoryLevel;i++)
+          for (int i = 0; i < _subDirectoryLevel; i++)
           {
             _directoryPath.Append(_subDirectory[i]);
             _directoryPath.Append(System.IO.Path.DirectorySeparatorChar);
           }
-          _directoryPathValid=true;
-          result =  _directoryPath.ToString();
+          _directoryPathValid = true;
+          result = _directoryPath.ToString();
         }
 
 #if DEBUG

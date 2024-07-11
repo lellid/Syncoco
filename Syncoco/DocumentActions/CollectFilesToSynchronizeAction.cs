@@ -21,10 +21,6 @@
 #endregion
 
 using System;
-using System.Collections;
-using System.Runtime.InteropServices;
-
-using Syncoco.Filter;
 using Syncoco.Traversing;
 
 
@@ -35,18 +31,18 @@ namespace Syncoco.DocumentActions
   /// </summary>
   public class CollectFilesToSynchronizeAction : AbstractDocumentAction
   {
-    FilesToSynchronizeCollector[] _collectedFiles;
+    private FilesToSynchronizeCollector[] _collectedFiles;
 
     [NonSerialized]
-    MD5SumFileNodesHashTable _allFilesHere;
+    private MD5SumFileNodesHashTable _allFilesHere;
 
 
     public CollectFilesToSynchronizeAction(MainDocument doc, IBackgroundMonitor monitor)
-      : base(doc,monitor)
+      : base(doc, monitor)
     {
     }
     public CollectFilesToSynchronizeAction(MainDocument doc)
-      : this(doc,null)
+      : this(doc, null)
     {
     }
 
@@ -54,13 +50,13 @@ namespace Syncoco.DocumentActions
     {
       get { return _collectedFiles; }
     }
-   
+
 
     public override void DirectExecute()
     {
       _doc.EnsureAlignment();
 
-      if(!_doc.HasFileName)
+      if (!_doc.HasFileName)
         throw new ApplicationException("The document was not saved yet");
 
 
@@ -69,10 +65,10 @@ namespace Syncoco.DocumentActions
 
       _monitor.Report("Hashing file checksums ...");
       this._allFilesHere = new MD5SumFileNodesHashTable();
-      for(int i=0;i<_doc.Count;i++)
+      for (int i = 0; i < _doc.Count; i++)
       {
-        if(_doc.MyRoot(i).IsValid)
-          FillMD5SumFileNodesHashTable(_doc.RootPair(i).MyRoot,this._allFilesHere);
+        if (_doc.MyRoot(i).IsValid)
+          FillMD5SumFileNodesHashTable(_doc.RootPair(i).MyRoot, this._allFilesHere);
       }
       _doc.CachedAllMyFiles = _allFilesHere;
 
@@ -80,12 +76,12 @@ namespace Syncoco.DocumentActions
       // decide if a file can be copied or not
 
       _collectedFiles = new FilesToSynchronizeCollector[_doc.Count];
-      for(int i=0;i<_doc.Count;i++)
+      for (int i = 0; i < _doc.Count; i++)
       {
-          if(_monitor.CancelledByUser)
-                 return;
+        if (_monitor.CancelledByUser)
+          return;
 
-        if(_doc.ForeignRoot(i).IsValid && _doc.MyRoot(i).IsValid)
+        if (_doc.ForeignRoot(i).IsValid && _doc.MyRoot(i).IsValid)
         {
           _collectedFiles[i] = new FilesToSynchronizeCollector(
             _doc.MediumDirectoryName,
@@ -96,17 +92,17 @@ namespace Syncoco.DocumentActions
             _doc.RootPair(i).PathFilter,
             _monitor,
             _reporter);
-        
+
           _collectedFiles[i].Traverse();
         }
       }
     }
 
-      
+
 
     public void FillMD5SumFileNodesHashTable(FileSystemRoot fileSystemRoot, MD5SumFileNodesHashTable table)
     {
-      Traversing.MD5SumFileNodesHashTableCollector coll = new Traversing.MD5SumFileNodesHashTableCollector(fileSystemRoot.DirectoryNode,fileSystemRoot.FilePath,table);
+      Traversing.MD5SumFileNodesHashTableCollector coll = new Traversing.MD5SumFileNodesHashTableCollector(fileSystemRoot.DirectoryNode, fileSystemRoot.FilePath, table);
       coll.Traverse();
     }
 

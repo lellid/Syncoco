@@ -22,15 +22,12 @@
 
 
 using System;
-using Syncoco.Filter;
-using Syncoco.Traversing;
 
 namespace Syncoco.DocumentActions
 {
-  
-  class DocumentUpdateSaveAndCopyAction : AbstractDocumentAction
+  internal class DocumentUpdateSaveAndCopyAction : AbstractDocumentAction
   {
- 
+
     public DocumentUpdateSaveAndCopyAction(MainDocument doc)
       : base(doc)
     {
@@ -38,9 +35,9 @@ namespace Syncoco.DocumentActions
 
     public override void BackgroundExecute()
     {
-      if(!_doc.HasFileName)
+      if (!_doc.HasFileName)
         throw new ApplicationException("This operation is possible only if the document has a file name");
-    
+
       base.BackgroundExecute();
     }
 
@@ -49,29 +46,29 @@ namespace Syncoco.DocumentActions
 
     public override void DirectExecute()
     {
-      if(!_doc.HasFileName)
+      if (!_doc.HasFileName)
         throw new ApplicationException("This operation is possible only if the document has a file name");
 
       _monitor.Report("Updating file system ...");
-      new DocumentUpdateAction(_doc,false,_monitor,_reporter).DirectExecute();
-      if(_monitor.CancelledByUser)
+      new DocumentUpdateAction(_doc, false, _monitor, _reporter).DirectExecute();
+      if (_monitor.CancelledByUser)
         return;
 
 
       _monitor.Report("Cleaning transfer medium ...");
-      new ClearMediumDirectoryAction(_doc,_monitor,_reporter).DirectExecute();
-      if(_monitor.CancelledByUser)
+      new ClearMediumDirectoryAction(_doc, _monitor, _reporter).DirectExecute();
+      if (_monitor.CancelledByUser)
         return;
 
 
       _monitor.Report("Saving document ...");
-      new SaveDocumentAction(_doc,_monitor,_reporter,_doc.FileName).DirectExecute();
-      if(_monitor.CancelledByUser)
+      new SaveDocumentAction(_doc, _monitor, _reporter, _doc.FileName).DirectExecute();
+      if (_monitor.CancelledByUser)
         return;
 
 
       _monitor.Report("Copy files to medium ...");
-      new CopyFilesToMediumAction(_doc,_monitor,_reporter).DirectExecute();
+      new CopyFilesToMediumAction(_doc, _monitor, _reporter).DirectExecute();
     }
   }
 }

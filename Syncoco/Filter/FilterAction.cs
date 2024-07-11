@@ -28,18 +28,18 @@ namespace Syncoco.Filter
   /// Enumerates the action for a filter item.
   /// </summary>
   [Serializable]
-  public enum  FilterAction
+  public enum FilterAction
   {
     /// <summary>
     /// Include the item.
     /// </summary>
-    Include=0,
+    Include = 0,
     /// <summary>
     /// Exclude the item.
     /// </summary>
-    Exclude=1,
+    Exclude = 1,
 
     /// <summary>Ignore the item or take no action</summary>
-    Ignore=2
+    Ignore = 2
   }
 }

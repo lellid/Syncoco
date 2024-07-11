@@ -33,7 +33,7 @@ namespace Syncoco
     /// The char to separate directories in file names.
     /// </summary>
     public static readonly char DirectorySeparatorChar = System.IO.Path.DirectorySeparatorChar;
-    private static readonly char[] directorysplitchars = new char[]{System.IO.Path.DirectorySeparatorChar};
+    private static readonly char[] directorysplitchars = new char[] { System.IO.Path.DirectorySeparatorChar };
 
     /// <summary>
     /// Determines wether a file has a parent root path.
@@ -43,7 +43,7 @@ namespace Syncoco
     /// <returns>True if the file name starts with the root path, i.e. the file is located anywhere into the root path.</returns>
     public static bool HasRootPath(string rootpath, string fullfilename)
     {
-      return fullfilename.Substring(0,rootpath.Length)==rootpath;
+      return fullfilename.Substring(0, rootpath.Length) == rootpath;
     }
 
     /// <summary>
@@ -56,16 +56,16 @@ namespace Syncoco
     /// <returns>True if the file name starts with the root path, i.e. the file is located anywhere into the root path.</returns>
     public static bool HasRootPath(string rootpath, string fullfilename, out string relativefilename)
     {
-      System.Diagnostics.Debug.Assert(rootpath[rootpath.Length-1]==System.IO.Path.DirectorySeparatorChar);
+      System.Diagnostics.Debug.Assert(rootpath[rootpath.Length - 1] == System.IO.Path.DirectorySeparatorChar);
 
-      if(HasRootPath(rootpath,fullfilename))
+      if (HasRootPath(rootpath, fullfilename))
       {
         int i;
-        for(i=rootpath.Length;i<fullfilename.Length && fullfilename[i]==DirectorySeparatorChar;i++);
+        for (i = rootpath.Length; i < fullfilename.Length && fullfilename[i] == DirectorySeparatorChar; i++) ;
         relativefilename = fullfilename.Substring(i);
 
-        System.Diagnostics.Debug.Assert(relativefilename.Length>0);
-        System.Diagnostics.Debug.Assert(relativefilename[0]!=System.IO.Path.DirectorySeparatorChar);
+        System.Diagnostics.Debug.Assert(relativefilename.Length > 0);
+        System.Diagnostics.Debug.Assert(relativefilename[0] != System.IO.Path.DirectorySeparatorChar);
         return true;
       }
       else
@@ -84,10 +84,10 @@ namespace Syncoco
     public static string GetRelpathFromAbspath(string fullpath, string rootpath)
     {
       string result;
-      if(HasRootPath(rootpath,fullpath,out result))
-        return System.IO.Path.DirectorySeparatorChar.ToString()+result;
+      if (HasRootPath(rootpath, fullpath, out result))
+        return System.IO.Path.DirectorySeparatorChar.ToString() + result;
       else
-        throw new ArgumentException(string.Format("fullpath {0} does not start with rootpath {1}",fullpath,rootpath));
+        throw new ArgumentException(string.Format("fullpath {0} does not start with rootpath {1}", fullpath, rootpath));
     }
 
 
@@ -100,8 +100,8 @@ namespace Syncoco
     /// <returns></returns>
     public static string[] GetDirectories(string relativename)
     {
-      System.Diagnostics.Debug.Assert(relativename.Length==0 || relativename[0]!=System.IO.Path.DirectorySeparatorChar);
-    
+      System.Diagnostics.Debug.Assert(relativename.Length == 0 || relativename[0] != System.IO.Path.DirectorySeparatorChar);
+
       return System.IO.Path.GetDirectoryName(relativename).Split(directorysplitchars);
     }
 
@@ -112,7 +112,7 @@ namespace Syncoco
       Assert_Relpath(relpath);
 #endif
 
-      string result = abspath+relpath.Substring(1);
+      string result = abspath + relpath.Substring(1);
 #if DEBUG
       Assert_Abspath(result);
 #endif
@@ -126,9 +126,9 @@ namespace Syncoco
     /// <returns>True if the name ends with a directory separator.</returns>
     public static bool IsDirectoryName(string name)
     {
-      return name!=null && name.Length>0 && name[name.Length-1]==System.IO.Path.DirectorySeparatorChar;
+      return name != null && name.Length > 0 && name[name.Length - 1] == System.IO.Path.DirectorySeparatorChar;
     }
-    
+
 
     /// <summary>
     /// Combine a relative path (starts and ends with DirectorySeparatorChar) with a file name (must not contain DirectorySeparatorChar) to a new name.
@@ -142,7 +142,7 @@ namespace Syncoco
       Assert_Relpath(relpath);
       Assert_Filename(filename);
 #endif
-      return relpath+filename;
+      return relpath + filename;
     }
 
     /// <summary>
@@ -157,7 +157,7 @@ namespace Syncoco
       Assert_Abspath(abspath);
       Assert_Filename(filename);
 #endif
-      return abspath+filename;
+      return abspath + filename;
     }
 
     /// <summary>
@@ -172,9 +172,9 @@ namespace Syncoco
       Assert_Abspath(abspath);
       Assert_RelpathFilename(relpathFilename);
 #endif
-      return abspath+relpathFilename.Substring(1);
+      return abspath + relpathFilename.Substring(1);
     }
-   
+
     /// <summary>
     /// Combine a absolue path (starts with either driveletter: or with \\ and ends with a DirectorySeparatorChar) with a file name (must not contain DirectorySeparatorChar) to a new name.
     /// </summary>
@@ -187,7 +187,7 @@ namespace Syncoco
       Assert_Abspath(abspath);
       Assert_RelpathOrFilename(filename);
 #endif
-      return abspath+filename.Substring(1);
+      return abspath + filename.Substring(1);
     }
 
     /// <summary>
@@ -203,7 +203,7 @@ namespace Syncoco
       Assert_Relpath(relpath);
       Assert_Dirname(dirname);
 #endif
-      string result = relpath+dirname+System.IO.Path.DirectorySeparatorChar;
+      string result = relpath + dirname + System.IO.Path.DirectorySeparatorChar;
 
 #if DEBUG
       Assert_Relpath(result);
@@ -226,7 +226,7 @@ namespace Syncoco
       Assert_Dirname(dirname);
 #endif
 
-      string result = abspath+dirname+System.IO.Path.DirectorySeparatorChar;
+      string result = abspath + dirname + System.IO.Path.DirectorySeparatorChar;
 
 #if DEBUG
       Assert_Abspath(result);
@@ -237,85 +237,85 @@ namespace Syncoco
 
     public static void Assert_NameOrNameWithEndSeparator(string name)
     {
-      System.Diagnostics.Debug.Assert(name!=null);
-      System.Diagnostics.Debug.Assert(name.Length>=1);
+      System.Diagnostics.Debug.Assert(name != null);
+      System.Diagnostics.Debug.Assert(name.Length >= 1);
       int pos = name.IndexOf(System.IO.Path.DirectorySeparatorChar);
-      System.Diagnostics.Debug.Assert(pos<0 || (name.Length>=2 && pos==name.Length-1));
+      System.Diagnostics.Debug.Assert(pos < 0 || (name.Length >= 2 && pos == name.Length - 1));
     }
 
 
     public static void Assert_Filename(string name)
     {
-      System.Diagnostics.Debug.Assert(name!=null);
-      System.Diagnostics.Debug.Assert(name.Length>0);
-      System.Diagnostics.Debug.Assert(name.IndexOf(System.IO.Path.DirectorySeparatorChar)<0);
+      System.Diagnostics.Debug.Assert(name != null);
+      System.Diagnostics.Debug.Assert(name.Length > 0);
+      System.Diagnostics.Debug.Assert(name.IndexOf(System.IO.Path.DirectorySeparatorChar) < 0);
     }
 
     public static void Assert_Dirname(string name)
     {
-      System.Diagnostics.Debug.Assert(name!=null);
-      System.Diagnostics.Debug.Assert(name.Length>0);
-      System.Diagnostics.Debug.Assert(name.IndexOf(System.IO.Path.DirectorySeparatorChar)<0);
+      System.Diagnostics.Debug.Assert(name != null);
+      System.Diagnostics.Debug.Assert(name.Length > 0);
+      System.Diagnostics.Debug.Assert(name.IndexOf(System.IO.Path.DirectorySeparatorChar) < 0);
     }
 
     public static void Assert_RelpathOrFilename(string name)
     {
-      System.Diagnostics.Debug.Assert(name!=null);
-      System.Diagnostics.Debug.Assert(name.Length>0);
-      System.Diagnostics.Debug.Assert(name[0]==System.IO.Path.DirectorySeparatorChar);
-      System.Diagnostics.Debug.Assert(name.Length==1 || name[1]!=System.IO.Path.DirectorySeparatorChar);
+      System.Diagnostics.Debug.Assert(name != null);
+      System.Diagnostics.Debug.Assert(name.Length > 0);
+      System.Diagnostics.Debug.Assert(name[0] == System.IO.Path.DirectorySeparatorChar);
+      System.Diagnostics.Debug.Assert(name.Length == 1 || name[1] != System.IO.Path.DirectorySeparatorChar);
     }
 
     public static void Assert_RelpathFilename(string name)
     {
-      System.Diagnostics.Debug.Assert(name!=null);
-      System.Diagnostics.Debug.Assert(name.Length>=2); // at least Separator and a letter
-      System.Diagnostics.Debug.Assert(name[0]==System.IO.Path.DirectorySeparatorChar);
-      System.Diagnostics.Debug.Assert(name[1]!=System.IO.Path.DirectorySeparatorChar);
-      System.Diagnostics.Debug.Assert(name[name.Length-1]!=System.IO.Path.DirectorySeparatorChar);
+      System.Diagnostics.Debug.Assert(name != null);
+      System.Diagnostics.Debug.Assert(name.Length >= 2); // at least Separator and a letter
+      System.Diagnostics.Debug.Assert(name[0] == System.IO.Path.DirectorySeparatorChar);
+      System.Diagnostics.Debug.Assert(name[1] != System.IO.Path.DirectorySeparatorChar);
+      System.Diagnostics.Debug.Assert(name[name.Length - 1] != System.IO.Path.DirectorySeparatorChar);
     }
 
 
     public static void Assert_Relpath(string name)
     {
       Assert_RelpathOrFilename(name);
-      System.Diagnostics.Debug.Assert(name[name.Length-1]==System.IO.Path.DirectorySeparatorChar);
+      System.Diagnostics.Debug.Assert(name[name.Length - 1] == System.IO.Path.DirectorySeparatorChar);
     }
 
     public static void Assert_Abspath(string name)
     {
-      System.Diagnostics.Debug.Assert(name!=null);
-      if('\\'==System.IO.Path.DirectorySeparatorChar) // WINDOWS
+      System.Diagnostics.Debug.Assert(name != null);
+      if ('\\' == System.IO.Path.DirectorySeparatorChar) // WINDOWS
       {
-        System.Diagnostics.Debug.Assert(name.Length>=3);
-        System.Diagnostics.Debug.Assert((name[1]==':'  && name[2]==System.IO.Path.DirectorySeparatorChar) || (name[0]==System.IO.Path.DirectorySeparatorChar && name[1]==System.IO.Path.DirectorySeparatorChar));
+        System.Diagnostics.Debug.Assert(name.Length >= 3);
+        System.Diagnostics.Debug.Assert((name[1] == ':' && name[2] == System.IO.Path.DirectorySeparatorChar) || (name[0] == System.IO.Path.DirectorySeparatorChar && name[1] == System.IO.Path.DirectorySeparatorChar));
       }
       else // UNIX
       {
-        System.Diagnostics.Debug.Assert(name.Length>=1);
+        System.Diagnostics.Debug.Assert(name.Length >= 1);
       }
-      System.Diagnostics.Debug.Assert(name[name.Length-1]==System.IO.Path.DirectorySeparatorChar);
+      System.Diagnostics.Debug.Assert(name[name.Length - 1] == System.IO.Path.DirectorySeparatorChar);
     }
 
     public static void Assert_AbspathFilename(string name)
     {
-      System.Diagnostics.Debug.Assert(name!=null);
-      if('\\'==System.IO.Path.DirectorySeparatorChar) // WINDOWS
+      System.Diagnostics.Debug.Assert(name != null);
+      if ('\\' == System.IO.Path.DirectorySeparatorChar) // WINDOWS
       {
-        System.Diagnostics.Debug.Assert(name.Length>=4);
-        System.Diagnostics.Debug.Assert((name[1]==':' && name[2]==System.IO.Path.DirectorySeparatorChar) || (name[0]==System.IO.Path.DirectorySeparatorChar && name[1]==System.IO.Path.DirectorySeparatorChar));
+        System.Diagnostics.Debug.Assert(name.Length >= 4);
+        System.Diagnostics.Debug.Assert((name[1] == ':' && name[2] == System.IO.Path.DirectorySeparatorChar) || (name[0] == System.IO.Path.DirectorySeparatorChar && name[1] == System.IO.Path.DirectorySeparatorChar));
       }
       else // UNIX
       {
-        System.Diagnostics.Debug.Assert(name.Length>=2);
+        System.Diagnostics.Debug.Assert(name.Length >= 2);
       }
     }
 
     public static void SplitInto_Relpath_Filename(string relpathfilename, out string relpath, out string filename)
     {
       int pos = relpathfilename.LastIndexOf(System.IO.Path.DirectorySeparatorChar);
-      relpath = relpathfilename.Substring(0,pos+1);
-      filename = relpathfilename.Substring(pos+1);
+      relpath = relpathfilename.Substring(0, pos + 1);
+      filename = relpathfilename.Substring(pos + 1);
 
 #if DEBUG
       Assert_Relpath(relpath);
@@ -325,18 +325,18 @@ namespace Syncoco
 
     public static void SplitInto_Relpath_Dirname(string relpathfilename, out string relpath, out string dirname)
     {
-      int pos = relpathfilename.LastIndexOf(System.IO.Path.DirectorySeparatorChar,relpathfilename.Length-2);
-      relpath = relpathfilename.Substring(0,pos+1);
-      dirname = relpathfilename.Substring(pos+1,relpathfilename.Length-pos-2);
+      int pos = relpathfilename.LastIndexOf(System.IO.Path.DirectorySeparatorChar, relpathfilename.Length - 2);
+      relpath = relpathfilename.Substring(0, pos + 1);
+      dirname = relpathfilename.Substring(pos + 1, relpathfilename.Length - pos - 2);
 
 #if DEBUG
       Assert_Relpath(relpath);
       Assert_Dirname(dirname);
 #endif
     }
-    
 
-   
+
+
     /// <summary>
     /// Returns a path with is forced to end with a DirectorySeparatorChar
     /// </summary>
@@ -345,7 +345,7 @@ namespace Syncoco
     public static string NormalizeAbspath(string path)
     {
       string result = path;
-      if(path[path.Length-1]!=System.IO.Path.DirectorySeparatorChar)
+      if (path[path.Length - 1] != System.IO.Path.DirectorySeparatorChar)
         result += System.IO.Path.DirectorySeparatorChar;
 #if DEBUG
       Assert_Abspath(result);
@@ -360,8 +360,8 @@ namespace Syncoco
     /// <returns>The normalized path.</returns>
     public static string NormalizeRelpath(string path)
     {
-      string result = path[0]==System.IO.Path.DirectorySeparatorChar ? path : System.IO.Path.DirectorySeparatorChar.ToString()+path;
-      if(path[path.Length-1]!=System.IO.Path.DirectorySeparatorChar)
+      string result = path[0] == System.IO.Path.DirectorySeparatorChar ? path : System.IO.Path.DirectorySeparatorChar.ToString() + path;
+      if (path[path.Length - 1] != System.IO.Path.DirectorySeparatorChar)
         result += System.IO.Path.DirectorySeparatorChar;
 #if DEBUG
       Assert_Relpath(result);
@@ -389,7 +389,7 @@ namespace Syncoco
     /// <returns>True if the two paths are considered equal.</returns>
     public static bool ArePathsEqual(string name1, string name2)
     {
-      return NormalizeForComparison(name1)==NormalizeForComparison(name2);
+      return NormalizeForComparison(name1) == NormalizeForComparison(name2);
     }
   }
 }

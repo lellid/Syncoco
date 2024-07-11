@@ -41,12 +41,12 @@ namespace Syncoco
 
     public void Save(System.Xml.XmlTextWriter tw)
     {
-      
+
     }
 
     public void Open(System.Xml.XmlTextReader tr)
     {
-      
+
     }
   }
 }

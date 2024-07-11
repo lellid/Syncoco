@@ -24,11 +24,11 @@ using System;
 
 namespace Syncoco
 {
-  
+
   public class PathAndFileNode
   {
-    string _Path;
-    FileNode _Node;
+    private string _Path;
+    private FileNode _Node;
 
     public PathAndFileNode(string path, FileNode node)
     {
@@ -36,9 +36,9 @@ namespace Syncoco
       _Node = node;
     }
 
-    public string Path { get { return _Path; }}
-    public FileNode Node { get { return _Node; }}
-  
+    public string Path { get { return _Path; } }
+    public FileNode Node { get { return _Node; } }
+
   }
 
 
@@ -46,17 +46,17 @@ namespace Syncoco
   {
     public void Add(FileHash arr, string path, FileNode node)
     {
-      if(base.ContainsKey(arr))
+      if (base.ContainsKey(arr))
       {
         PathAndFileNode existingNode = this[arr];
-                if (node.FileLength != existingNode.Node.FileLength)
-                {
-                    throw new ApplicationException($"It should not happen, that two files with different length have the same hash, so rethink this: The two nodes here are: {existingNode.Path}(length={existingNode.Node.FileLength}) and {path}(length={node.FileLength})");
-                }
+        if (node.FileLength != existingNode.Node.FileLength)
+        {
+          throw new ApplicationException($"It should not happen, that two files with different length have the same hash, so rethink this: The two nodes here are: {existingNode.Path}(length={existingNode.Node.FileLength}) and {path}(length={node.FileLength})");
+        }
       }
       else
       {
-        base.Add(arr,new PathAndFileNode(path,node));
+        base.Add(arr, new PathAndFileNode(path, node));
       }
     }
 
@@ -66,19 +66,19 @@ namespace Syncoco
     }
   }
 
-  
+
 
   public class MD5SumFileNodesHashTable : System.Collections.Hashtable
   {
-   
 
-    public void Add(FileHash arr, string path , FileNode node )
+
+    public void Add(FileHash arr, string path, FileNode node)
     {
-      PathAndFileNode pan = new PathAndFileNode(path,node);
-      if(base.ContainsKey(arr))
+      PathAndFileNode pan = new PathAndFileNode(path, node);
+      if (base.ContainsKey(arr))
       {
         object item = base[arr];
-        if(item is PathAndFileNode)
+        if (item is PathAndFileNode)
         {
           System.Collections.ArrayList list = new System.Collections.ArrayList();
           list.Add(item);
@@ -92,11 +92,11 @@ namespace Syncoco
       }
       else
       {
-        base.Add(arr,pan);
+        base.Add(arr, pan);
       }
     }
 
-   
+
   }
 
 

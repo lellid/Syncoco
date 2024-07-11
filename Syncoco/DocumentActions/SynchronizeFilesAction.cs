@@ -20,11 +20,11 @@
 /////////////////////////////////////////////////////////////////////////////
 #endregion
 
-using Syncoco.GUI;
-using Syncoco.Traversing;
 using System;
 using System.Collections;
 using System.IO;
+using Syncoco.GUI;
+using Syncoco.Traversing;
 
 
 namespace Syncoco.DocumentActions

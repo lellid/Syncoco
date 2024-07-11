@@ -20,10 +20,10 @@
 /////////////////////////////////////////////////////////////////////////////
 #endregion
 
-using Syncoco.DocumentActions;
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using Syncoco.DocumentActions;
 
 namespace Syncoco.GUI
 {

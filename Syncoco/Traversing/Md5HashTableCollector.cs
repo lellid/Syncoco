@@ -20,8 +20,6 @@
 /////////////////////////////////////////////////////////////////////////////
 #endregion
 
-using System;
-
 namespace Syncoco.Traversing
 {
   /// <summary>
@@ -29,16 +27,16 @@ namespace Syncoco.Traversing
   /// </summary>
   public class Md5HashTableCollector
   {
-    DirectoryNode _rootDir;
-    MD5SumHashTable _table;
-    string _pathRoot;
+    private DirectoryNode _rootDir;
+    private MD5SumHashTable _table;
+    private string _pathRoot;
 
     public Md5HashTableCollector(DirectoryNode rootDir, string pathRoot, MD5SumHashTable table)
     {
 #if DEBUG
       PathUtil.Assert_Abspath(pathRoot);
 #endif
-      
+
       _rootDir = rootDir;
       _table = table;
       _pathRoot = pathRoot;
@@ -48,7 +46,7 @@ namespace Syncoco.Traversing
 
     public void Traverse()
     {
-      VisitDirectory(_rootDir,_pathRoot);
+      VisitDirectory(_rootDir, _pathRoot);
     }
 
 
@@ -59,13 +57,13 @@ namespace Syncoco.Traversing
       PathUtil.Assert_Abspath(currentPath);
 #endif
 
-      foreach(FileNode fnode in dir.Files)
-      {        
-        fnode.FillMd5HashTable(_table,currentPath+fnode.Name);
-      }
-      foreach(DirectoryNode dnode in dir.Directories)
+      foreach (FileNode fnode in dir.Files)
       {
-        VisitDirectory(dnode,PathUtil.Combine_Abspath_Dirname(currentPath, dnode.Name));
+        fnode.FillMd5HashTable(_table, currentPath + fnode.Name);
+      }
+      foreach (DirectoryNode dnode in dir.Directories)
+      {
+        VisitDirectory(dnode, PathUtil.Combine_Abspath_Dirname(currentPath, dnode.Name));
       }
     }
   }
