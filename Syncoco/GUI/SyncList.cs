@@ -33,6 +33,7 @@ namespace Syncoco.GUI
   {
     private System.Windows.Forms.ListView lvSyncList;
     private System.Windows.Forms.ColumnHeader _chName;
+    private ContextMenuStrip contextMenu;
 
     /// <summary> 
     /// Required designer variable.
@@ -45,22 +46,20 @@ namespace Syncoco.GUI
       InitializeComponent();
 
       // TODO: Add any initialization after the InitializeComponent call
-      ContextMenu contextMenu = new ContextMenu();
-      contextMenu.MenuItems.Add("Set remove manually to remove", new EventHandler(this.EhSetRemoveManuallyToRemove));
-      contextMenu.MenuItems.Add("Set remove to forced remove", new EventHandler(this.EhSetRemoveToForcedRemove));
-      contextMenu.MenuItems.Add("Set remove manually to rollback remove", new EventHandler(this.EhSetRemoveManuallyToRollback));
-      contextMenu.MenuItems.Add("-");
+      contextMenu.Items.Add("Set remove manually to remove", null, new EventHandler(this.EhSetRemoveManuallyToRemove));
+      contextMenu.Items.Add("Set remove to forced remove", null, new EventHandler(this.EhSetRemoveToForcedRemove));
+      contextMenu.Items.Add("Set remove manually to rollback remove", null, new EventHandler(this.EhSetRemoveManuallyToRollback));
+      contextMenu.Items.Add(new ToolStripSeparator());
 
-      contextMenu.MenuItems.Add("Set resolve manually to overwrite", new EventHandler(this.EhSetResolveManuallyToOverwrite));
-      contextMenu.MenuItems.Add("Set resolve manually to ignore", new EventHandler(this.EhSetResolveManuallyToIgnore));
-      contextMenu.MenuItems.Add("Set resolve manually to rollback", new EventHandler(this.EhSetResolveManuallyToRollback));
+      contextMenu.Items.Add("Set resolve manually to overwrite", null, new EventHandler(this.EhSetResolveManuallyToOverwrite));
+      contextMenu.Items.Add("Set resolve manually to ignore", null, new EventHandler(this.EhSetResolveManuallyToIgnore));
+      contextMenu.Items.Add("Set resolve manually to rollback", null, new EventHandler(this.EhSetResolveManuallyToRollback));
 
-      contextMenu.MenuItems.Add("-");
-      contextMenu.MenuItems.Add("Set remove to rollback remove", new EventHandler(this.EhSetRemoveToRollbackRemove));
-      contextMenu.MenuItems.Add("Set overwrite to rollback overwrite", new EventHandler(this.EhSetOverwriteToRollbackOverwrite));
+      contextMenu.Items.Add(new ToolStripSeparator());
+      contextMenu.Items.Add("Set remove to rollback remove", null, new EventHandler(this.EhSetRemoveToRollbackRemove));
+      contextMenu.Items.Add("Set overwrite to rollback overwrite", null, new EventHandler(this.EhSetOverwriteToRollbackOverwrite));
 
-      this.ContextMenu = contextMenu;
-
+      this.ContextMenuStrip = contextMenu;
     }
 
     public SyncListController _controller;
@@ -206,9 +205,12 @@ namespace Syncoco.GUI
     /// </summary>
     private void InitializeComponent()
     {
+      components = new System.ComponentModel.Container();
       this.lvSyncList = new System.Windows.Forms.ListView();
       this._chName = new System.Windows.Forms.ColumnHeader();
+      contextMenu = new ContextMenuStrip(this.components);
       this.SuspendLayout();
+
       // 
       // lvSyncList
       // 

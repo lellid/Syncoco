@@ -32,37 +32,37 @@ namespace Syncoco.GUI
   /// </summary>
   public class MainForm : System.Windows.Forms.Form
   {
-    private System.Windows.Forms.MainMenu mainMenu1;
-
-    private System.Windows.Forms.MenuItem menuFileNew;
-    private System.Windows.Forms.MenuItem menuFileOpen;
-    private System.Windows.Forms.MenuItem menuFileExit;
-    private System.Windows.Forms.MenuItem menuFileSave;
-    private System.Windows.Forms.MenuItem menuEditUpdate;
-    private System.Windows.Forms.MenuItem menuEditCopyFiles;
-    private System.Windows.Forms.MenuItem menuEditCollect;
-    private System.Windows.Forms.MenuItem menuFileSaveAs;
-    private System.Windows.Forms.MenuItem menuBeginWork;
-    private System.Windows.Forms.MenuItem menuEndWork;
-    private System.Windows.Forms.MenuItem menuBeginShowSyncFiles;
-    private System.Windows.Forms.MenuItem menuBeginSyncSelected;
-    private System.Windows.Forms.MenuItem menuEndUpdateSaveCopy;
-    private System.Windows.Forms.MenuItem menuItem3;
-    private System.Windows.Forms.MenuItem menuUpdateHash;
     private System.Windows.Forms.TabControl _tabControl;
-    private System.Windows.Forms.MenuItem menuItem4;
-    private System.Windows.Forms.MenuItem menuHelp;
-    private System.Windows.Forms.MenuItem menuHelpAbout;
-    private System.Windows.Forms.MenuItem menuFile;
-    private System.Windows.Forms.MenuItem menuActions;
-    private System.Windows.Forms.MenuItem menuItem1;
-    private System.Windows.Forms.MenuItem menuEditSynchronize;
-    private System.Windows.Forms.MenuItem menuEditCleanTransferDir;
-    private System.Windows.Forms.MenuItem menuItem2;
-    private System.Windows.Forms.MenuItem menuBeginSaveCleanIfNeccessary;
-    private System.Windows.Forms.MenuItem menuHelpSyncoco;
-    private System.Windows.Forms.MenuItem menuItem5;
-    private System.Windows.Forms.MenuItem menuEditDifferenceReport;
+
+    private System.Windows.Forms.MenuStrip mainMenu1;
+    private System.Windows.Forms.ToolStripMenuItem menuFileNew;
+    private System.Windows.Forms.ToolStripMenuItem menuFileOpen;
+    private System.Windows.Forms.ToolStripMenuItem menuFileExit;
+    private System.Windows.Forms.ToolStripMenuItem menuFileSave;
+    private System.Windows.Forms.ToolStripMenuItem menuEditUpdate;
+    private System.Windows.Forms.ToolStripMenuItem menuEditCopyFiles;
+    private System.Windows.Forms.ToolStripMenuItem menuEditCollect;
+    private System.Windows.Forms.ToolStripMenuItem menuFileSaveAs;
+    private System.Windows.Forms.ToolStripMenuItem menuBeginWork;
+    private System.Windows.Forms.ToolStripMenuItem menuEndWork;
+    private System.Windows.Forms.ToolStripMenuItem menuBeginShowSyncFiles;
+    private System.Windows.Forms.ToolStripMenuItem menuBeginSyncSelected;
+    private System.Windows.Forms.ToolStripMenuItem menuEndUpdateSaveCopy;
+    private System.Windows.Forms.ToolStripMenuItem menuItem3;
+    private System.Windows.Forms.ToolStripMenuItem menuUpdateHash;
+    private System.Windows.Forms.ToolStripSeparator menuItem4;
+    private System.Windows.Forms.ToolStripMenuItem menuHelp;
+    private System.Windows.Forms.ToolStripMenuItem menuHelpAbout;
+    private System.Windows.Forms.ToolStripMenuItem menuFile;
+    private System.Windows.Forms.ToolStripMenuItem menuActions;
+    private System.Windows.Forms.ToolStripSeparator menuItem1;
+    private System.Windows.Forms.ToolStripMenuItem menuEditSynchronize;
+    private System.Windows.Forms.ToolStripMenuItem menuEditCleanTransferDir;
+    private System.Windows.Forms.ToolStripSeparator menuItem2;
+    private System.Windows.Forms.ToolStripMenuItem menuBeginSaveCleanIfNeccessary;
+    private System.Windows.Forms.ToolStripMenuItem menuHelpSyncoco;
+    private System.Windows.Forms.ToolStripSeparator menuItem5;
+    private System.Windows.Forms.ToolStripMenuItem menuEditDifferenceReport;
 
     /// <summary>
     /// Required designer variable.
@@ -104,230 +104,247 @@ namespace Syncoco.GUI
     /// </summary>
     private void InitializeComponent()
     {
-      System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(MainForm));
-      this.mainMenu1 = new System.Windows.Forms.MainMenu();
-      this.menuFile = new System.Windows.Forms.MenuItem();
-      this.menuFileNew = new System.Windows.Forms.MenuItem();
-      this.menuFileOpen = new System.Windows.Forms.MenuItem();
-      this.menuFileSave = new System.Windows.Forms.MenuItem();
-      this.menuFileSaveAs = new System.Windows.Forms.MenuItem();
-      this.menuItem3 = new System.Windows.Forms.MenuItem();
-      this.menuItem4 = new System.Windows.Forms.MenuItem();
-      this.menuFileExit = new System.Windows.Forms.MenuItem();
-      this.menuBeginWork = new System.Windows.Forms.MenuItem();
-      this.menuBeginShowSyncFiles = new System.Windows.Forms.MenuItem();
-      this.menuBeginSyncSelected = new System.Windows.Forms.MenuItem();
-      this.menuItem2 = new System.Windows.Forms.MenuItem();
-      this.menuBeginSaveCleanIfNeccessary = new System.Windows.Forms.MenuItem();
-      this.menuEndWork = new System.Windows.Forms.MenuItem();
-      this.menuEndUpdateSaveCopy = new System.Windows.Forms.MenuItem();
-      this.menuActions = new System.Windows.Forms.MenuItem();
-      this.menuEditCollect = new System.Windows.Forms.MenuItem();
-      this.menuEditSynchronize = new System.Windows.Forms.MenuItem();
-      this.menuEditUpdate = new System.Windows.Forms.MenuItem();
-      this.menuEditCleanTransferDir = new System.Windows.Forms.MenuItem();
-      this.menuEditCopyFiles = new System.Windows.Forms.MenuItem();
-      this.menuItem1 = new System.Windows.Forms.MenuItem();
-      this.menuUpdateHash = new System.Windows.Forms.MenuItem();
-      this.menuHelp = new System.Windows.Forms.MenuItem();
-      this.menuHelpSyncoco = new System.Windows.Forms.MenuItem();
-      this.menuItem5 = new System.Windows.Forms.MenuItem();
-      this.menuHelpAbout = new System.Windows.Forms.MenuItem();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+      this.mainMenu1 = new System.Windows.Forms.MenuStrip();
+      this.menuFile = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuFileNew = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuFileOpen = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuFileSave = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuFileSaveAs = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuItem4 = new System.Windows.Forms.ToolStripSeparator();
+      this.menuFileExit = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuBeginWork = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuBeginShowSyncFiles = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuBeginSyncSelected = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuItem2 = new System.Windows.Forms.ToolStripSeparator();
+      this.menuBeginSaveCleanIfNeccessary = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuEndWork = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuEndUpdateSaveCopy = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuActions = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuEditCollect = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuEditSynchronize = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuEditUpdate = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuEditCleanTransferDir = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuEditCopyFiles = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuItem1 = new System.Windows.Forms.ToolStripSeparator();
+      this.menuUpdateHash = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuEditDifferenceReport = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuHelp = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuHelpSyncoco = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuItem5 = new System.Windows.Forms.ToolStripSeparator();
+      this.menuHelpAbout = new System.Windows.Forms.ToolStripMenuItem();
       this._tabControl = new System.Windows.Forms.TabControl();
-      this.menuEditDifferenceReport = new System.Windows.Forms.MenuItem();
+      this.mainMenu1.SuspendLayout();
       this.SuspendLayout();
       // 
       // mainMenu1
       // 
-      this.mainMenu1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                              this.menuFile,
-                                                                              this.menuBeginWork,
-                                                                              this.menuEndWork,
-                                                                              this.menuActions,
-                                                                              this.menuHelp});
+      this.mainMenu1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuFile,
+            this.menuBeginWork,
+            this.menuEndWork,
+            this.menuActions,
+            this.menuHelp});
+      this.mainMenu1.Location = new System.Drawing.Point(0, 0);
+      this.mainMenu1.Name = "mainMenu1";
+      this.mainMenu1.Size = new System.Drawing.Size(200, 24);
+      this.mainMenu1.TabIndex = 0;
       // 
       // menuFile
       // 
-      this.menuFile.Index = 0;
-      this.menuFile.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                             this.menuFileNew,
-                                                                             this.menuFileOpen,
-                                                                             this.menuFileSave,
-                                                                             this.menuFileSaveAs,
-                                                                             this.menuItem3,
-                                                                             this.menuItem4,
-                                                                             this.menuFileExit});
+      this.menuFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuFileNew,
+            this.menuFileOpen,
+            this.menuFileSave,
+            this.menuFileSaveAs,
+            this.menuItem3,
+            this.menuItem4,
+            this.menuFileExit});
+      this.menuFile.Name = "menuFile";
+      this.menuFile.Size = new System.Drawing.Size(37, 20);
       this.menuFile.Text = "File";
-      this.menuFile.Popup += new System.EventHandler(this.menuFile_Popup);
+      this.menuFile.DropDownOpened += new System.EventHandler(this.menuFile_Popup);
       // 
       // menuFileNew
       // 
-      this.menuFileNew.Index = 0;
+      this.menuFileNew.Name = "menuFileNew";
+      this.menuFileNew.Size = new System.Drawing.Size(177, 22);
       this.menuFileNew.Text = "New";
       this.menuFileNew.Click += new System.EventHandler(this.menuFileNew_Click);
       // 
       // menuFileOpen
       // 
-      this.menuFileOpen.Index = 1;
+      this.menuFileOpen.Name = "menuFileOpen";
+      this.menuFileOpen.Size = new System.Drawing.Size(177, 22);
       this.menuFileOpen.Text = "Open";
       this.menuFileOpen.Click += new System.EventHandler(this.menuFileOpen_Click);
       // 
       // menuFileSave
       // 
-      this.menuFileSave.Index = 2;
+      this.menuFileSave.Name = "menuFileSave";
+      this.menuFileSave.Size = new System.Drawing.Size(177, 22);
       this.menuFileSave.Text = "Save";
       this.menuFileSave.Click += new System.EventHandler(this.menuFileSave_Click);
       // 
       // menuFileSaveAs
       // 
-      this.menuFileSaveAs.Index = 3;
+      this.menuFileSaveAs.Name = "menuFileSaveAs";
+      this.menuFileSaveAs.Size = new System.Drawing.Size(177, 22);
       this.menuFileSaveAs.Text = "Save As..";
       this.menuFileSaveAs.Click += new System.EventHandler(this.menuFileSaveAs_Click);
       // 
       // menuItem3
       // 
-      this.menuItem3.Index = 4;
+      this.menuItem3.Name = "menuItem3";
+      this.menuItem3.Size = new System.Drawing.Size(177, 22);
       this.menuItem3.Text = "Save Filter Only As..";
       this.menuItem3.Click += new System.EventHandler(this.menuFileSaveFilterOnly_Click);
-      // 
-      // menuItem4
-      // 
-      this.menuItem4.Index = 5;
-      this.menuItem4.Text = "-";
+
       // 
       // menuFileExit
       // 
-      this.menuFileExit.Index = 6;
+      this.menuFileExit.Name = "menuFileExit";
+      this.menuFileExit.Size = new System.Drawing.Size(177, 22);
       this.menuFileExit.Text = "Exit";
       this.menuFileExit.Click += new System.EventHandler(this.menuFileExit_Click);
       // 
       // menuBeginWork
       // 
-      this.menuBeginWork.Index = 1;
-      this.menuBeginWork.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                  this.menuBeginShowSyncFiles,
-                                                                                  this.menuBeginSyncSelected,
-                                                                                  this.menuItem2,
-                                                                                  this.menuBeginSaveCleanIfNeccessary});
+      this.menuBeginWork.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuBeginShowSyncFiles,
+            this.menuBeginSyncSelected,
+            this.menuItem2,
+            this.menuBeginSaveCleanIfNeccessary});
+      this.menuBeginWork.Name = "menuBeginWork";
+      this.menuBeginWork.Size = new System.Drawing.Size(111, 20);
       this.menuBeginWork.Text = "Beginning work...";
-      this.menuBeginWork.Popup += new System.EventHandler(this.menuBeginWork_Popup);
+      this.menuBeginWork.DropDownOpened += new System.EventHandler(this.menuBeginWork_Popup);
       // 
       // menuBeginShowSyncFiles
       // 
-      this.menuBeginShowSyncFiles.Index = 0;
+      this.menuBeginShowSyncFiles.Name = "menuBeginShowSyncFiles";
+      this.menuBeginShowSyncFiles.Size = new System.Drawing.Size(216, 22);
       this.menuBeginShowSyncFiles.Text = "Show files to sync";
       this.menuBeginShowSyncFiles.Click += new System.EventHandler(this.menuBeginShowSyncFiles_Click);
       // 
       // menuBeginSyncSelected
       // 
-      this.menuBeginSyncSelected.Index = 1;
+      this.menuBeginSyncSelected.Name = "menuBeginSyncSelected";
+      this.menuBeginSyncSelected.Size = new System.Drawing.Size(216, 22);
       this.menuBeginSyncSelected.Text = "Sync selected files";
       this.menuBeginSyncSelected.Click += new System.EventHandler(this.menuBeginSyncSelected_Click);
       // 
-      // menuItem2
-      // 
-      this.menuItem2.Index = 2;
-      this.menuItem2.Text = "-";
-      // 
       // menuBeginSaveCleanIfNeccessary
       // 
-      this.menuBeginSaveCleanIfNeccessary.Index = 3;
+      this.menuBeginSaveCleanIfNeccessary.Name = "menuBeginSaveCleanIfNeccessary";
+      this.menuBeginSaveCleanIfNeccessary.Size = new System.Drawing.Size(216, 22);
       this.menuBeginSaveCleanIfNeccessary.Text = "SaveAndCleanIfNeccessary";
       this.menuBeginSaveCleanIfNeccessary.Click += new System.EventHandler(this.menuBeginSaveCleanIfNeccessary_Click);
       // 
       // menuEndWork
       // 
-      this.menuEndWork.Index = 2;
-      this.menuEndWork.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                this.menuEndUpdateSaveCopy});
+      this.menuEndWork.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuEndUpdateSaveCopy});
+      this.menuEndWork.Name = "menuEndWork";
+      this.menuEndWork.Size = new System.Drawing.Size(94, 20);
       this.menuEndWork.Text = "Ending work...";
-      this.menuEndWork.Popup += new System.EventHandler(this.menuEndWork_Popup);
+      this.menuEndWork.DropDownOpened += new System.EventHandler(this.menuEndWork_Popup);
       // 
       // menuEndUpdateSaveCopy
       // 
-      this.menuEndUpdateSaveCopy.Index = 0;
+      this.menuEndUpdateSaveCopy.Name = "menuEndUpdateSaveCopy";
+      this.menuEndUpdateSaveCopy.Size = new System.Drawing.Size(209, 22);
       this.menuEndUpdateSaveCopy.Text = "UpdateSaveAndCopyFiles";
       this.menuEndUpdateSaveCopy.Click += new System.EventHandler(this.menuEndUpdateSaveCopy_Click);
       // 
       // menuActions
       // 
-      this.menuActions.Index = 3;
-      this.menuActions.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                this.menuEditCollect,
-                                                                                this.menuEditSynchronize,
-                                                                                this.menuEditUpdate,
-                                                                                this.menuEditCleanTransferDir,
-                                                                                this.menuEditCopyFiles,
-                                                                                this.menuItem1,
-                                                                                this.menuUpdateHash,
-                                                                                this.menuEditDifferenceReport});
+      this.menuActions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuEditCollect,
+            this.menuEditSynchronize,
+            this.menuEditUpdate,
+            this.menuEditCleanTransferDir,
+            this.menuEditCopyFiles,
+            this.menuItem1,
+            this.menuUpdateHash,
+            this.menuEditDifferenceReport});
+      this.menuActions.Name = "menuActions";
+      this.menuActions.Size = new System.Drawing.Size(94, 20);
       this.menuActions.Text = "Single Actions";
-      this.menuActions.Popup += new System.EventHandler(this.menuActions_Popup);
+      this.menuActions.DropDownOpened += new System.EventHandler(this.menuActions_Popup);
       // 
       // menuEditCollect
       // 
-      this.menuEditCollect.Index = 0;
+      this.menuEditCollect.Name = "menuEditCollect";
+      this.menuEditCollect.Size = new System.Drawing.Size(202, 22);
       this.menuEditCollect.Text = "Show files to sync";
       this.menuEditCollect.Click += new System.EventHandler(this.menuEditCollect_Click);
       // 
       // menuEditSynchronize
       // 
-      this.menuEditSynchronize.Index = 1;
+      this.menuEditSynchronize.Name = "menuEditSynchronize";
+      this.menuEditSynchronize.Size = new System.Drawing.Size(202, 22);
       this.menuEditSynchronize.Text = "Sync selected files";
       this.menuEditSynchronize.Click += new System.EventHandler(this.menuEditSyncronize_Click);
       // 
       // menuEditUpdate
       // 
-      this.menuEditUpdate.Index = 2;
+      this.menuEditUpdate.Name = "menuEditUpdate";
+      this.menuEditUpdate.Size = new System.Drawing.Size(202, 22);
       this.menuEditUpdate.Text = "Update";
       this.menuEditUpdate.Click += new System.EventHandler(this.menuEditUpdate_Click);
       // 
       // menuEditCleanTransferDir
       // 
-      this.menuEditCleanTransferDir.Index = 3;
+      this.menuEditCleanTransferDir.Name = "menuEditCleanTransferDir";
+      this.menuEditCleanTransferDir.Size = new System.Drawing.Size(202, 22);
       this.menuEditCleanTransferDir.Text = "Clean transfer directory";
       this.menuEditCleanTransferDir.Click += new System.EventHandler(this.menuEditCleanTransferDir_Click);
       // 
       // menuEditCopyFiles
       // 
-      this.menuEditCopyFiles.Index = 4;
+      this.menuEditCopyFiles.Name = "menuEditCopyFiles";
+      this.menuEditCopyFiles.Size = new System.Drawing.Size(202, 22);
       this.menuEditCopyFiles.Text = "Copy files to medium";
       this.menuEditCopyFiles.Click += new System.EventHandler(this.menuEditCopyFiles_Click);
       // 
-      // menuItem1
-      // 
-      this.menuItem1.Index = 5;
-      this.menuItem1.Text = "-";
-      // 
       // menuUpdateHash
       // 
-      this.menuUpdateHash.Index = 6;
+      this.menuUpdateHash.Name = "menuUpdateHash";
+      this.menuUpdateHash.Size = new System.Drawing.Size(202, 22);
       this.menuUpdateHash.Text = "Force update hash sums";
       this.menuUpdateHash.Click += new System.EventHandler(this.menuUpdateHash_Click);
       // 
+      // menuEditDifferenceReport
+      // 
+      this.menuEditDifferenceReport.Name = "menuEditDifferenceReport";
+      this.menuEditDifferenceReport.Size = new System.Drawing.Size(202, 22);
+      this.menuEditDifferenceReport.Text = "Difference report";
+      this.menuEditDifferenceReport.Click += new System.EventHandler(this.menuEditDifferenceReport_Click);
+      // 
       // menuHelp
       // 
-      this.menuHelp.Index = 4;
-      this.menuHelp.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                             this.menuHelpSyncoco,
-                                                                             this.menuItem5,
-                                                                             this.menuHelpAbout});
+      this.menuHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuHelpSyncoco,
+            this.menuItem5,
+            this.menuHelpAbout});
+      this.menuHelp.Name = "menuHelp";
+      this.menuHelp.Size = new System.Drawing.Size(44, 20);
       this.menuHelp.Text = "Help";
       // 
       // menuHelpSyncoco
       // 
-      this.menuHelpSyncoco.Index = 0;
+      this.menuHelpSyncoco.Name = "menuHelpSyncoco";
+      this.menuHelpSyncoco.Size = new System.Drawing.Size(113, 22);
       this.menuHelpSyncoco.Text = "Index..";
       this.menuHelpSyncoco.Click += new System.EventHandler(this.menuHelpSyncoco_Click);
-      // 
-      // menuItem5
-      // 
-      this.menuItem5.Index = 1;
-      this.menuItem5.Text = "-";
+
       // 
       // menuHelpAbout
       // 
-      this.menuHelpAbout.Index = 2;
+      this.menuHelpAbout.Name = "menuHelpAbout";
+      this.menuHelpAbout.Size = new System.Drawing.Size(113, 22);
       this.menuHelpAbout.Text = "About..";
       this.menuHelpAbout.Click += new System.EventHandler(this.menuHelpAbout_Click);
       // 
@@ -337,27 +354,25 @@ namespace Syncoco.GUI
       this._tabControl.Location = new System.Drawing.Point(0, 0);
       this._tabControl.Name = "_tabControl";
       this._tabControl.SelectedIndex = 0;
-      this._tabControl.Size = new System.Drawing.Size(520, 398);
+      this._tabControl.Size = new System.Drawing.Size(725, 514);
       this._tabControl.TabIndex = 0;
       this._tabControl.SelectedIndexChanged += new System.EventHandler(this._tabControl_SelectedIndexChanged);
       // 
-      // menuEditDifferenceReport
+      // MainForm
       // 
-      this.menuEditDifferenceReport.Index = 7;
-      this.menuEditDifferenceReport.Text = "Difference report";
-      this.menuEditDifferenceReport.Click += new System.EventHandler(this.menuEditDifferenceReport_Click);
-      // 
-      // Syncoco
-      // 
-      this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-      this.ClientSize = new System.Drawing.Size(520, 398);
-      this.Controls.Add(this._tabControl);
+      AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+      AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.ClientSize = new System.Drawing.Size(725, 514);
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-      this.Menu = this.mainMenu1;
-      this.Name = "Syncoco";
+      this.Controls.Add(this._tabControl);
+      this.Controls.Add(this.mainMenu1);
+      this.MainMenuStrip = this.mainMenu1;
+      this.Name = "MainForm";
       this.Text = "Syncoco";
       this.Closing += new System.ComponentModel.CancelEventHandler(this.EhFormClosing);
       this.Load += new System.EventHandler(this.Syncoco_Load);
+      this.mainMenu1.ResumeLayout(false);
+      this.mainMenu1.PerformLayout();
       this.ResumeLayout(false);
 
     }

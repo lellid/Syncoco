@@ -8,7 +8,6 @@
     <ApplicationIcon>App.ico</ApplicationIcon>
    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
    <PlatformTarget>AnyCPU</PlatformTarget>
-   <DefineConstants>READDATEASTICKS</DefineConstants>
   </PropertyGroup>
 
 

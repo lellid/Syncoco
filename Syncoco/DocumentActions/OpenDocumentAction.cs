@@ -29,16 +29,16 @@ namespace Syncoco.DocumentActions
   /// </summary>
   public class OpenDocumentAction : AbstractDocumentAction
   {
-    string _filename;
+    private string _filename;
 
     public OpenDocumentAction(string filename, IBackgroundMonitor monitor)
-      : base(null,monitor)
+      : base(null, monitor)
     {
       _filename = filename;
       _monitor = new ExternalDrivenTimeReportMonitor();
     }
     public OpenDocumentAction(string filename)
-      : this(filename,null)
+      : this(filename, null)
     {
     }
 
@@ -47,39 +47,34 @@ namespace Syncoco.DocumentActions
       get { return _doc; }
     }
 
-    
+
     protected override void CatchedDirectExecute()
     {
       try
       {
         DirectExecute();
       }
-      catch(System.IO.FileNotFoundException fnfex)
+      catch (System.IO.FileNotFoundException fnfex)
       {
         _reporter.ReportError(string.Format("during file open: {0}", fnfex.Message));
       }
-      catch(DocumentNotForThisComputerException dnftce)
+      catch (DocumentNotForThisComputerException dnftce)
       {
         _reporter.ReportError(dnftce.Message);
       }
-      catch(Exception ex)
+      catch (Exception ex)
       {
-        _reporter.ReportError(string.Format("Unexpeced exception occured during action {0}: {1}",this.GetType().ToString(),ex.ToString()));
+        _reporter.ReportError(string.Format("Unexpeced exception occured during action {0}: {1}", this.GetType().ToString(), ex.ToString()));
       }
     }
 
     public override void DirectExecute()
-    
+
     {
-      if(System.IO.Path.GetExtension(_filename).ToLower()==".sccbin")
-      {
-        _doc = MainDocument.OpenAsBinary(_filename);
-      }
-      else
-      {
-        _doc = new MainDocument();
-        _doc.OpenAsXML(_filename);
-      }
+
+      _doc = new MainDocument();
+      _doc.OpenAsXML(_filename);
+
     }
 
   }

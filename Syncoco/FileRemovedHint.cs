@@ -30,7 +30,7 @@ namespace Syncoco
   [Serializable]
   public class FileRemovedHint : IFileHint
   {
-    DateTime _removedTimeUtc;
+    private DateTime _removedTimeUtc;
 
     public FileRemovedHint()
     {
@@ -44,22 +44,22 @@ namespace Syncoco
 
     public void Save(System.Xml.XmlTextWriter tw)
     {
-     
-      
-#if WRITEDATEASTICKS
-      tw.WriteElementString("RT",System.Xml.XmlConvert.ToString(_removedTimeUtc.Ticks));
-#else
+
+
+#if READWRITEDATEASPLAINTEXT
       tw.WriteElementString("RT",System.Xml.XmlConvert.ToString(_removedTimeUtc));
+#else
+      tw.WriteElementString("RT", System.Xml.XmlConvert.ToString(_removedTimeUtc.Ticks));
 #endif
 
     }
 
     public void Open(System.Xml.XmlTextReader tr)
     {
-#if READDATEASTICKS
-      _removedTimeUtc = new DateTime(System.Xml.XmlConvert.ToInt64(tr.ReadElementString("RT")));
-#else
+#if READWRITEDATEASPLAINTEXT
       _removedTimeUtc = System.Xml.XmlConvert.ToDateTime(tr.ReadElementString("RT"));
+#else
+      _removedTimeUtc = new DateTime(System.Xml.XmlConvert.ToInt64(tr.ReadElementString("RT")));
 #endif
     }
   }

@@ -39,7 +39,7 @@ namespace Syncoco.GUI
     private System.Windows.Forms.ListView lvFilterListItemList;
     private System.Windows.Forms.Label lblDefaultFilterAction;
     private System.Windows.Forms.Button btDefaultFilter;
-    private System.Windows.Forms.ContextMenu listContextMenu;
+    private System.Windows.Forms.ContextMenuStrip listContextMenu;
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -96,6 +96,7 @@ namespace Syncoco.GUI
     /// </summary>
     private void InitializeComponent()
     {
+      components = new System.ComponentModel.Container();
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(FilterListItemListControl));
       this.label1 = new System.Windows.Forms.Label();
       this.label2 = new System.Windows.Forms.Label();
@@ -104,7 +105,7 @@ namespace Syncoco.GUI
       this.lvFilterListItemList = new System.Windows.Forms.ListView();
       this.chSubPath = new System.Windows.Forms.ColumnHeader();
       this.chDefaultAction = new System.Windows.Forms.ColumnHeader();
-      this.listContextMenu = new System.Windows.Forms.ContextMenu();
+      this.listContextMenu = new System.Windows.Forms.ContextMenuStrip(components);
       this.lblDefaultFilterAction = new System.Windows.Forms.Label();
       this.btDefaultFilter = new System.Windows.Forms.Button();
       this.edDefaultFilterAction = new System.Windows.Forms.TextBox();
@@ -162,7 +163,7 @@ namespace Syncoco.GUI
       this.lvFilterListItemList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
                                                                                            this.chSubPath,
                                                                                            this.chDefaultAction});
-      this.lvFilterListItemList.ContextMenu = this.listContextMenu;
+      this.lvFilterListItemList.ContextMenuStrip = this.listContextMenu;
       this.lvFilterListItemList.Location = new System.Drawing.Point(8, 72);
       this.lvFilterListItemList.Name = "lvFilterListItemList";
       this.lvFilterListItemList.Size = new System.Drawing.Size(336, 296);
@@ -181,7 +182,7 @@ namespace Syncoco.GUI
       // 
       // listContextMenu
       // 
-      this.listContextMenu.Popup += new System.EventHandler(this.listContextMenu_Popup);
+      this.listContextMenu.Opening += this.listContextMenu_Popup;
       // 
       // lblDefaultFilterAction
       // 
@@ -300,26 +301,26 @@ namespace Syncoco.GUI
     }
     #endregion
 
-    private void listContextMenu_Popup(object sender, System.EventArgs e)
+    private void listContextMenu_Popup(object sender, System.ComponentModel.CancelEventArgs e)
     {
-      listContextMenu.MenuItems.Clear();
+      listContextMenu.Items.Clear();
 
       if (this.lvFilterListItemList.SelectedIndices.Count == 0)
       {
-        listContextMenu.MenuItems.Add(new MenuItem("Add new Path", new EventHandler(EhAddNewPath)));
+        listContextMenu.Items.Add(new ToolStripMenuItem("Add new Path", null, new EventHandler(EhAddNewPath)));
       }
       if (this.lvFilterListItemList.SelectedIndices.Count == 1)
       {
-        listContextMenu.MenuItems.Add(new MenuItem("Edit filter", new EventHandler(EhEditFilter)));
-        listContextMenu.MenuItems.Add(new MenuItem("-"));
-        listContextMenu.MenuItems.Add(new MenuItem("Edit path", new EventHandler(EhEditPath)));
-        listContextMenu.MenuItems.Add(new MenuItem("Delete path", new EventHandler(EhDeletePath)));
+        listContextMenu.Items.Add(new ToolStripMenuItem("Edit filter", null, new EventHandler(EhEditFilter)));
+        listContextMenu.Items.Add(new ToolStripSeparator());
+        listContextMenu.Items.Add(new ToolStripMenuItem("Edit path", null, new EventHandler(EhEditPath)));
+        listContextMenu.Items.Add(new ToolStripMenuItem("Delete path", null, new EventHandler(EhDeletePath)));
       }
       if (this.lvFilterListItemList.SelectedIndices.Count >= 1)
       {
-        listContextMenu.MenuItems.Add(new MenuItem("-"));
-        listContextMenu.MenuItems.Add(new MenuItem("Move up", new EventHandler(EhMoveUp)));
-        listContextMenu.MenuItems.Add(new MenuItem("Move down", new EventHandler(EhMoveDown)));
+        listContextMenu.Items.Add(new ToolStripSeparator());
+        listContextMenu.Items.Add(new ToolStripMenuItem("Move up", null, new EventHandler(EhMoveUp)));
+        listContextMenu.Items.Add(new ToolStripMenuItem("Move down", null, new EventHandler(EhMoveDown)));
 
       }
 
@@ -396,7 +397,7 @@ namespace Syncoco.GUI
 
     private void EhEditFilter(object sender, EventArgs e)
     {
-      if (null != this.Controller)
+      if (null != this.Controller && this.lvFilterListItemList.SelectedIndices.Count > 0)
       {
         Controller.EhView_EditFilter(this.lvFilterListItemList.SelectedIndices[0]);
       }
