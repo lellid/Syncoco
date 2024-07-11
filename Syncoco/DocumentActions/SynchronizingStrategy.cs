@@ -1,4 +1,4 @@
-#region Copyright
+﻿#region Copyright
 /////////////////////////////////////////////////////////////////////////////
 //    Syncoco: offline file synchronization
 //    Copyright (C) 2004-2099 Dr. Dirk Lellinger
@@ -20,11 +20,11 @@
 /////////////////////////////////////////////////////////////////////////////
 #endregion
 
-using Syncoco.GUI;
-using Syncoco.Traversing;
 using System;
 using System.Collections;
 using System.IO;
+using Syncoco.GUI;
+using Syncoco.Traversing;
 
 
 namespace Syncoco.DocumentActions
@@ -278,7 +278,7 @@ namespace Syncoco.DocumentActions
 
   public class SourceItemArray : System.Collections.CollectionBase
   {
-    private System.Collections.Hashtable _pathhash = new System.Collections.Hashtable(new System.Collections.CaseInsensitiveHashCodeProvider(), new System.Collections.CaseInsensitiveComparer());
+    private System.Collections.Hashtable _pathhash = new System.Collections.Hashtable(StringComparer.OrdinalIgnoreCase);
 
     public SourceItem this[int i]
     {

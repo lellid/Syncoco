@@ -1,4 +1,4 @@
-#region Copyright
+﻿#region Copyright
 /////////////////////////////////////////////////////////////////////////////
 //    Syncoco: offline file synchronization
 //    Copyright (C) 2004-2099 Dr. Dirk Lellinger
@@ -20,8 +20,6 @@
 /////////////////////////////////////////////////////////////////////////////
 #endregion
 
-using System;
-
 namespace Syncoco.DocumentActions
 {
   /// <summary>
@@ -29,22 +27,20 @@ namespace Syncoco.DocumentActions
   /// </summary>
   public class CheckParentHierarchyAction : AbstractDocumentAction
   {
-    string _filename;
-
     public CheckParentHierarchyAction(MainDocument doc, IBackgroundMonitor monitor, IErrorReporter reporter)
-      : base(doc,monitor,reporter)
+      : base(doc, monitor, reporter)
     {
     }
     public CheckParentHierarchyAction(MainDocument doc)
-      : this(doc,null,null)
+      : this(doc, null, null)
     {
     }
-  
-   
-    
+
+
+
     public override void DirectExecute()
     {
-      for(int i=0;i<_doc.Count;i++)
+      for (int i = 0; i < _doc.Count; i++)
       {
         Check(_doc.RootPair(i).MyRoot);
         Check(_doc.RootPair(i).ForeignRoot);
@@ -53,31 +49,31 @@ namespace Syncoco.DocumentActions
 
     public void Check(FileSystemRoot fsRoot)
     {
-      if(fsRoot==null)
+      if (fsRoot == null)
         return;
-      if(fsRoot.DirectoryNode==null)
+      if (fsRoot.DirectoryNode == null)
         return;
 
-      System.Diagnostics.Debug.Assert(object.ReferenceEquals(fsRoot.DirectoryNode.ParentDirectory,fsRoot));
+      System.Diagnostics.Debug.Assert(object.ReferenceEquals(fsRoot.DirectoryNode.ParentDirectory, fsRoot));
       Check(fsRoot.DirectoryNode);
     }
 
     public void Check(DirectoryNode dirNode)
     {
       // Check files
-      foreach(FileNode fNode in dirNode.Files)
+      foreach (FileNode fNode in dirNode.Files)
       {
-        System.Diagnostics.Debug.Assert(object.ReferenceEquals(fNode.Parent,dirNode));
+        System.Diagnostics.Debug.Assert(object.ReferenceEquals(fNode.Parent, dirNode));
       }
 
       // Check subdirectories (flat)
-      foreach(DirectoryNode dNode in dirNode.Directories)
+      foreach (DirectoryNode dNode in dirNode.Directories)
       {
-        System.Diagnostics.Debug.Assert(object.ReferenceEquals(dNode.ParentDirectory,dirNode));
+        System.Diagnostics.Debug.Assert(object.ReferenceEquals(dNode.ParentDirectory, dirNode));
       }
 
       // Check subdirectories (recursive)
-      foreach(DirectoryNode dNode in dirNode.Directories)
+      foreach (DirectoryNode dNode in dirNode.Directories)
       {
         Check(dNode);
       }
