@@ -1,4 +1,4 @@
-#region Copyright
+﻿#region Copyright
 /////////////////////////////////////////////////////////////////////////////
 //    Syncoco: offline file synchronization
 //    Copyright (C) 2004-2099 Dr. Dirk Lellinger
@@ -20,6 +20,7 @@
 /////////////////////////////////////////////////////////////////////////////
 #endregion
 
+using System;
 using System.Collections;
 using System.IO;
 using Syncoco.Filter;
@@ -58,8 +59,10 @@ namespace Syncoco.Traversing
     /// <param name="forceUpdateHash">If true, the MD5 hash for the file is recalculated.</param>
     public static FileNode UpdateFileNode(DirectoryNode dirnode, DirectoryInfo dirinfo, FileInfo fileinfo, bool forceUpdateHash, IErrorReporter reporter)
     {
-      System.Diagnostics.Debug.Assert(fileinfo.Exists, "This function is only intended for existing files after copy operations");
-      System.Diagnostics.Debug.Assert(dirinfo.Exists, "The root directory must exist");
+      if (!fileinfo.Exists)
+        throw new InvalidOperationException($"This function is only intended for existing files after copy operations, but file {fileinfo.FullName} does not exist!");
+      if (!dirinfo.Exists)
+        throw new InvalidOperationException($"The root directory must exist, but directory {dirinfo.FullName} does not exist!");
 
       string relativefullname;
       bool isRooted = PathUtil.HasRootPath(dirinfo.FullName, fileinfo.FullName, out relativefullname);

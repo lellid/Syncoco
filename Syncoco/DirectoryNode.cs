@@ -1,4 +1,4 @@
-#region Copyright
+﻿#region Copyright
 /////////////////////////////////////////////////////////////////////////////
 //    Syncoco: offline file synchronization
 //    Copyright (C) 2004-2099 Dr. Dirk Lellinger
@@ -186,9 +186,9 @@ namespace Syncoco
 
     public void AddFile(string name, FileNode node)
     {
-      System.Diagnostics.Debug.Assert(name != null, "File name must not be null!");
-      System.Diagnostics.Debug.Assert(name.Length > 0, "File name must not be empty!");
-      System.Diagnostics.Debug.Assert(node != null, "File node must not be null!");
+      if (name is null) throw new InvalidOperationException("File name must not be null!");
+      if (string.IsNullOrEmpty(name)) throw new InvalidOperationException("File name must not be empty!");
+      if (node is null) throw new InvalidOperationException("File node must not be null!");
       this._files.Add(node);
     }
 
@@ -222,9 +222,8 @@ namespace Syncoco
 
     public void AddSubDirectory(string name, DirectoryNode node)
     {
-      System.Diagnostics.Debug.Assert(node != null, "Directory node must not be null!");
-      System.Diagnostics.Debug.Assert(node.Name != null, "Directory name must not be null!");
-      System.Diagnostics.Debug.Assert(node.Name.Length > 0, "Directory name must not be empty!");
+      if (node is null) throw new InvalidOperationException("Directory node must not be null!");
+      if (string.IsNullOrEmpty(node.Name)) throw new InvalidOperationException("Directory name must not be null!");
 
       this._subDirectories.Add(node);
 
