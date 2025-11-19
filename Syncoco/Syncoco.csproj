@@ -4,13 +4,11 @@
     <CoreCompileDependsOn>GenAssInfo</CoreCompileDependsOn>
     <RootNamespace>Syncoco</RootNamespace>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>App.ico</ApplicationIcon>
    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-   <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
-
 
   <ItemGroup>
     <Compile Remove="Properties\AssemblyInfo.cs" />
